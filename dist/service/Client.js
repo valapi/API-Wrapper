@@ -12,9 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Client = void 0;
 //import
 const AxiosClient_1 = require("../client/AxiosClient");
-const Event_1 = require("../client/Event");
+const lib_1 = require("@valapi/lib");
 //service
-class Client extends Event_1.Event {
+class Client extends lib_1.CustomEvent {
     /**
     * @param {ValWrapperService} data Services Data
     */

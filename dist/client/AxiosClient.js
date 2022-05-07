@@ -14,11 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AxiosClient = void 0;
 //import
-const Event_1 = require("./Event");
+const lib_1 = require("@valapi/lib");
 const axios_1 = __importDefault(require("axios"));
 const http_cookie_agent_1 = require("http-cookie-agent");
 //class
-class AxiosClient extends Event_1.Event {
+class AxiosClient extends lib_1.CustomEvent {
     /**
     * @param {AxiosRequestConfig} config Config
     */

@@ -1,16 +1,16 @@
 //import
 import { AxiosClient, type ValWrapperAxiosError, type ValWrapperAxios } from "../client/AxiosClient";
-import { Event as CustomEvent } from "../client/Event";
+import { CustomEvent } from "@valapi/lib";
 
 import type { ValWrapperService } from "../client/Client";
-import type { ValWrapperRegion } from "../client/Region";
+import type { ValorantAPIRegion } from "@valapi/lib";
 
-import QueueId from "../resources/QueueId";
+import { QueueId } from "@valapi/lib";
 
 //service
 class Match extends CustomEvent {
     protected AxiosClient:AxiosClient;
-    protected Region:ValWrapperRegion;
+    protected Region:ValorantAPIRegion;
 
     /**
     * @param {ValWrapperService} data Services Data

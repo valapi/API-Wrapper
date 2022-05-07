@@ -1,4 +1,4 @@
-import { Event as CustomEvent } from './Event';
+import { CustomEvent } from "@valapi/lib";
 import { type Axios, type AxiosRequestConfig } from 'axios';
 import type { CookieJar } from 'tough-cookie';
 declare module 'axios' {

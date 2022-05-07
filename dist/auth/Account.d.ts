@@ -1,5 +1,5 @@
 import { CookieJar } from 'tough-cookie';
-import { Event as CustomEvent } from '../client/Event';
+import { CustomEvent } from "@valapi/lib";
 interface ValWrapperAuth {
     cookie: CookieJar.Serialized;
     access_token: string;

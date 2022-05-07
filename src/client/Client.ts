@@ -1,14 +1,13 @@
 //import
-import { Event as CustomEvent } from "./Event";
+import { CustomEvent } from "@valapi/lib";
 
 import { toBase64 } from "../util/Uft8";
 import { CookieJar } from "tough-cookie";
 
-import { Region as WrapperRegion } from "./Region";
-import _Region from "../resources/Region";
+import { ValRegion as WrapperRegion, type ValorantAPIRegion } from "@valapi/lib";
+import { Region as _Region } from "@valapi/lib";
 
 import type { AxiosRequestConfig } from "axios";
-import type { ValWrapperRegion } from "./Region";
 import type { ValWrapperAxiosError } from "./AxiosClient";
 
 import { Account as ClientAuthAccount, type ValWrapperAuth } from "../auth/Account";
@@ -60,7 +59,7 @@ interface ValWrapperClientError {
 
 interface ValWrapperService {
     AxiosData: AxiosRequestConfig,
-    Region: ValWrapperRegion,
+    Region: ValorantAPIRegion,
 }
 
 interface ValWrapperConfig {
@@ -103,7 +102,7 @@ class WrapperClient extends CustomEvent {
     config: ValWrapperClientConfig;
 
     //reload
-    private RegionServices: ValWrapperRegion;
+    private RegionServices: ValorantAPIRegion;
     private services: ValWrapperService;
 
     //service
@@ -335,7 +334,50 @@ class WrapperClient extends CustomEvent {
     }
 
     //settings
-    //wait me a bit
+    
+    /**
+    * @param {String} region Region
+    * @returns {void}
+    */
+     public setRegion(region:keyof typeof _Region):void {
+        this.emit('changeSettings', { name: 'region', data: region });
+
+        this.region.live = region;
+        this.reload();
+    }
+
+    /**
+    * @param {String} clientVersion Client Version
+    * @returns {void}
+    */
+    public setClientVersion(clientVersion:string = _Client_Version):void {
+        this.emit('changeSettings', { name: 'client_version', data: clientVersion });
+
+        this.config.client.version = clientVersion;
+        this.reload();
+    }
+
+    /**
+    * @param {ValWrapperClientPlatfrom} clientPlatfrom Client Platfrom in json
+    * @returns {void}
+    */
+    public setClientPlatfrom(clientPlatfrom:ValWrapperClientPlatfrom = _Client_Platfrom):void {
+        this.emit('changeSettings', { name: 'client_platfrom', data: clientPlatfrom });
+
+        this.config.client.platform = clientPlatfrom;
+        this.reload();
+    }
+
+    /**
+    * @param {CookieJar.Serialized} cookie Cookie
+    * @returns {void}
+    */
+    public setCookie(cookie:CookieJar.Serialized):void {
+        this.emit('changeSettings', { name: 'cookie', data: cookie });
+
+        this.cookie = CookieJar.fromJSON(JSON.stringify(cookie));
+        this.reload();
+    }
 
     //static
 
@@ -350,6 +392,7 @@ class WrapperClient extends CustomEvent {
 //event
 interface ValWrapperClientEvent {
     'ready': () => void,
+    'changeSettings': (data: { name:any, data:any }) => void,
     'error': (data: ValWrapperClientError) => void;
 }
 

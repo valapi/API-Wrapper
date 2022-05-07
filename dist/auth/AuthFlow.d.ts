@@ -1,4 +1,4 @@
-import { Event as CustomEvent } from '../client/Event';
+import { CustomEvent } from "@valapi/lib";
 import { type ValWrapperAxios } from '../client/AxiosClient';
 import type { ValWrapperAuth } from './Account';
 /**

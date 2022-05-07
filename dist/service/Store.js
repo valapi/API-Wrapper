@@ -8,17 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Store = void 0;
 //import
 const AxiosClient_1 = require("../client/AxiosClient");
-const Event_1 = require("../client/Event");
-const ItemTypeId_1 = __importDefault(require("../resources/ItemTypeId"));
+const lib_1 = require("@valapi/lib");
+const lib_2 = require("@valapi/lib");
 //service
-class Store extends Event_1.Event {
+class Store extends lib_1.CustomEvent {
     /**
     * @param {ValWrapperService} data Services Data
     */
@@ -37,7 +34,7 @@ class Store extends Event_1.Event {
     */
     GetEntitlements(puuid, itemType) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/store/v1/entitlements/${puuid}/${ItemTypeId_1.default.data[itemType]}`);
+            return yield this.AxiosClient.get(this.Region.url.playerData + `/store/v1/entitlements/${puuid}/${lib_2.ItemTypeId.data[itemType]}`);
         });
     }
     /**

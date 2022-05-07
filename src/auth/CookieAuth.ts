@@ -1,7 +1,7 @@
 //import
 import { CookieJar } from 'tough-cookie';
 
-import { Event as CustomEvent } from '../client/Event';
+import { CustomEvent } from "@valapi/lib";
 import { AxiosClient } from '../client/AxiosClient';
 import { AuthFlow } from "./AuthFlow";
 

@@ -1,8 +1,8 @@
-import { Event as CustomEvent } from "./Event";
+import { CustomEvent } from "@valapi/lib";
 import { CookieJar } from "tough-cookie";
-import _Region from "../resources/Region";
+import { type ValorantAPIRegion } from "@valapi/lib";
+import { Region as _Region } from "@valapi/lib";
 import type { AxiosRequestConfig } from "axios";
-import type { ValWrapperRegion } from "./Region";
 import { Client as ClientService } from "../service/Client";
 import { Contract as ContractService } from "../service/Contract";
 import { CurrentGame as CurrentGameService } from "../service/CurrentGame";
@@ -34,7 +34,7 @@ interface ValWrapperClientError {
 }
 interface ValWrapperService {
     AxiosData: AxiosRequestConfig;
-    Region: ValWrapperRegion;
+    Region: ValorantAPIRegion;
 }
 interface ValWrapperConfig {
     UserAgent?: string;
@@ -85,10 +85,34 @@ declare class WrapperClient extends CustomEvent {
     private fromJSONAuth;
     login(username: string, password: string): Promise<void>;
     verify(verificationCode: number): Promise<void>;
+    /**
+    * @param {String} region Region
+    * @returns {void}
+    */
+    setRegion(region: keyof typeof _Region): void;
+    /**
+    * @param {String} clientVersion Client Version
+    * @returns {void}
+    */
+    setClientVersion(clientVersion?: string): void;
+    /**
+    * @param {ValWrapperClientPlatfrom} clientPlatfrom Client Platfrom in json
+    * @returns {void}
+    */
+    setClientPlatfrom(clientPlatfrom?: ValWrapperClientPlatfrom): void;
+    /**
+    * @param {CookieJar.Serialized} cookie Cookie
+    * @returns {void}
+    */
+    setCookie(cookie: CookieJar.Serialized): void;
     static fromJSON(config: ValWrapperConfig, data: ValWrapperClient): WrapperClient;
 }
 interface ValWrapperClientEvent {
     'ready': () => void;
+    'changeSettings': (data: {
+        name: any;
+        data: any;
+    }) => void;
     'error': (data: ValWrapperClientError) => void;
 }
 declare interface WrapperClient {

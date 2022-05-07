@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/valapi/API-Wrapper.git"
+    "url": "git://git@github.com/valapi/API-Wrapper.git"
   },
   "keywords": [
     "valorant",
@@ -43,6 +43,7 @@
   },
   "homepage": "https://github.com/valapi/API-Wrapper#readme",
   "dependencies": {
+    "@valapi/lib": "^1.0.0",
     "axios": "^0.27.2",
     "crypto-js": "^4.1.1",
     "http-cookie-agent": "^2.1.0",

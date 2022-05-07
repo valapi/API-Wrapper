@@ -12,14 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CookieAuth = void 0;
 //import
 const tough_cookie_1 = require("tough-cookie");
-const Event_1 = require("../client/Event");
+const lib_1 = require("@valapi/lib");
 const AxiosClient_1 = require("../client/AxiosClient");
 const AuthFlow_1 = require("./AuthFlow");
 //class
 /**
  * * Not Recommend
  */
-class CookieAuth extends Event_1.Event {
+class CookieAuth extends lib_1.CustomEvent {
     /**
     * @param {ValWrapperAuth} data Account toJSON data
     */

@@ -11,10 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WrapperClient = void 0;
 //import
-const Event_1 = require("./Event");
+const lib_1 = require("@valapi/lib");
 const Uft8_1 = require("../util/Uft8");
 const tough_cookie_1 = require("tough-cookie");
-const Region_1 = require("./Region");
+const lib_2 = require("@valapi/lib");
 const Account_1 = require("../auth/Account");
 const Multifactor_1 = require("../auth/Multifactor");
 const _Client_Version = 'release-04.08-shipping-15-701907';
@@ -34,7 +34,7 @@ const Player_1 = require("../service/Player");
 const PreGame_1 = require("../service/PreGame");
 const Store_1 = require("../service/Store");
 //class
-class WrapperClient extends Event_1.Event {
+class WrapperClient extends lib_1.CustomEvent {
     constructor(config = {}) {
         super();
         //config
@@ -85,7 +85,7 @@ class WrapperClient extends Event_1.Event {
         this.multifactor = false;
         this.isError = true;
         // first reload
-        this.RegionServices = new Region_1.Region(this.region.live).toJSON();
+        this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
         //services
         this.services = {
             AxiosData: {
@@ -123,7 +123,7 @@ class WrapperClient extends Event_1.Event {
      * @returns {void}
      */
     reload() {
-        this.RegionServices = new Region_1.Region(this.region.live).toJSON();
+        this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
         //services
         this.services = {
             AxiosData: {
@@ -221,7 +221,42 @@ class WrapperClient extends Event_1.Event {
         });
     }
     //settings
-    //wait me a bit
+    /**
+    * @param {String} region Region
+    * @returns {void}
+    */
+    setRegion(region) {
+        this.emit('changeSettings', { name: 'region', data: region });
+        this.region.live = region;
+        this.reload();
+    }
+    /**
+    * @param {String} clientVersion Client Version
+    * @returns {void}
+    */
+    setClientVersion(clientVersion = _Client_Version) {
+        this.emit('changeSettings', { name: 'client_version', data: clientVersion });
+        this.config.client.version = clientVersion;
+        this.reload();
+    }
+    /**
+    * @param {ValWrapperClientPlatfrom} clientPlatfrom Client Platfrom in json
+    * @returns {void}
+    */
+    setClientPlatfrom(clientPlatfrom = _Client_Platfrom) {
+        this.emit('changeSettings', { name: 'client_platfrom', data: clientPlatfrom });
+        this.config.client.platform = clientPlatfrom;
+        this.reload();
+    }
+    /**
+    * @param {CookieJar.Serialized} cookie Cookie
+    * @returns {void}
+    */
+    setCookie(cookie) {
+        this.emit('changeSettings', { name: 'cookie', data: cookie });
+        this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(cookie));
+        this.reload();
+    }
     //static
     static fromJSON(config, data) {
         const NewClient = new WrapperClient(config);

@@ -1,4 +1,4 @@
-import { Event as CustomEvent } from '../client/Event';
+import { CustomEvent } from "@valapi/lib";
 import { ValWrapperAuth } from './Account';
 /**
  * * Not Recommend

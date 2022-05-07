@@ -55,6 +55,7 @@ interface ValWrapperClientPlatfrom {
 interface ValWrapperClientError {
     errorCode: string,
     message: string,
+    data: any,
 }
 
 interface ValWrapperService {
@@ -168,7 +169,7 @@ class WrapperClient extends CustomEvent {
         this.multifactor = false;
         this.isError = true;
 
-        //first reload
+        // first reload
         this.RegionServices = new WrapperRegion(this.region.live as keyof typeof _Region).toJSON();
 
         //services
@@ -186,13 +187,28 @@ class WrapperClient extends CustomEvent {
 
         //service list
         this.Client = new ClientService(this.services);
+        this.Client.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+
         this.Contract = new ContractService(this.services);
+        this.Contract.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+
         this.CurrentGame = new CurrentGameService(this.services);
+        this.CurrentGame.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+
         this.Match = new MatchService(this.services);
+        this.Match.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+
         this.Party = new PartyService(this.services);
+        this.Party.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+
         this.Player = new PlayerService(this.services);
+        this.Player.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+
         this.Pregame = new PreGameService(this.services);
+        this.Pregame.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+
         this.Store = new StoreService(this.services);
+        this.Store.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
 
         //event
         this.emit('ready');
@@ -221,13 +237,28 @@ class WrapperClient extends CustomEvent {
 
         //service list
         this.Client = new ClientService(this.services);
+        this.Client.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+
         this.Contract = new ContractService(this.services);
+        this.Contract.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+
         this.CurrentGame = new CurrentGameService(this.services);
+        this.CurrentGame.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+
         this.Match = new MatchService(this.services);
+        this.Match.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+
         this.Party = new PartyService(this.services);
+        this.Party.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+
         this.Player = new PlayerService(this.services);
+        this.Player.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+
         this.Pregame = new PreGameService(this.services);
+        this.Pregame.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+
         this.Store = new StoreService(this.services);
+        this.Store.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
     }
 
     //save
@@ -283,6 +314,7 @@ class WrapperClient extends CustomEvent {
             const _error: ValWrapperClientError = {
                 errorCode: 'ValWrapper_Authentication_Error',
                 message: 'Authentication Error',
+                data: auth,
             }
             this.emit('error', _error);
         }

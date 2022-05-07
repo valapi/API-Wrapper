@@ -84,7 +84,7 @@ class WrapperClient extends Event_1.Event {
         };
         this.multifactor = false;
         this.isError = true;
-        //first reload
+        // first reload
         this.RegionServices = new Region_1.Region(this.region.live).toJSON();
         //services
         this.services = {
@@ -100,13 +100,21 @@ class WrapperClient extends Event_1.Event {
         };
         //service list
         this.Client = new Client_1.Client(this.services);
+        this.Client.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
         this.Contract = new Contract_1.Contract(this.services);
+        this.Contract.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
         this.CurrentGame = new CurrentGame_1.CurrentGame(this.services);
+        this.CurrentGame.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
         this.Match = new Match_1.Match(this.services);
+        this.Match.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
         this.Party = new Party_1.Party(this.services);
+        this.Party.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
         this.Player = new Player_1.Player(this.services);
+        this.Player.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
         this.Pregame = new PreGame_1.PreGame(this.services);
+        this.Pregame.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
         this.Store = new Store_1.Store(this.services);
+        this.Store.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
         //event
         this.emit('ready');
     }
@@ -130,13 +138,21 @@ class WrapperClient extends Event_1.Event {
         };
         //service list
         this.Client = new Client_1.Client(this.services);
+        this.Client.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
         this.Contract = new Contract_1.Contract(this.services);
+        this.Contract.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
         this.CurrentGame = new CurrentGame_1.CurrentGame(this.services);
+        this.CurrentGame.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
         this.Match = new Match_1.Match(this.services);
+        this.Match.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
         this.Party = new Party_1.Party(this.services);
+        this.Party.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
         this.Player = new Player_1.Player(this.services);
+        this.Player.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
         this.Pregame = new PreGame_1.PreGame(this.services);
+        this.Pregame.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
         this.Store = new Store_1.Store(this.services);
+        this.Store.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
     }
     //save
     toJSON() {
@@ -185,6 +201,7 @@ class WrapperClient extends Event_1.Event {
             const _error = {
                 errorCode: 'ValWrapper_Authentication_Error',
                 message: 'Authentication Error',
+                data: auth,
             };
             this.emit('error', _error);
         }

@@ -12,13 +12,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CurrentGame = void 0;
 //import
 const AxiosClient_1 = require("../client/AxiosClient");
+const Event_1 = require("../client/Event");
 //service
-class CurrentGame {
+class CurrentGame extends Event_1.Event {
     /**
     * @param {ValWrapperService} data Services Data
     */
     constructor(data) {
+        super();
         this.AxiosClient = new AxiosClient_1.AxiosClient(data.AxiosData);
+        this.AxiosClient.on('error', ((data) => {
+            this.emit('error', data);
+        }));
         this.Region = data.Region;
     }
     /**

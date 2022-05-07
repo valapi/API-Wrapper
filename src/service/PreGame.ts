@@ -1,19 +1,26 @@
 //import
-import { AxiosClient, type ValWrapperAxios } from "../client/AxiosClient";
+import { AxiosClient, type ValWrapperAxiosError, type ValWrapperAxios } from "../client/AxiosClient";
+import { Event as CustomEvent } from "../client/Event";
 
 import type { ValWrapperService } from "../client/Client";
 import type { ValWrapperRegion } from "../client/Region";
 
 //service
-class PreGame {
-    public AxiosClient:AxiosClient;
+class PreGame extends CustomEvent {
+    protected AxiosClient:AxiosClient;
     protected Region:ValWrapperRegion;
 
     /**
     * @param {ValWrapperService} data Services Data
     */
     constructor(data:ValWrapperService) {
+        super();
+        
         this.AxiosClient = new AxiosClient(data.AxiosData);
+        this.AxiosClient.on('error', ((data:ValWrapperAxiosError) => {
+            this.emit('error', data);
+        }));
+
         this.Region = data.Region;
     }
 

@@ -30,6 +30,7 @@ interface ValWrapperClientPlatfrom {
 interface ValWrapperClientError {
     errorCode: string;
     message: string;
+    data: any;
 }
 interface ValWrapperService {
     AxiosData: AxiosRequestConfig;

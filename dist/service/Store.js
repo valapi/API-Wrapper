@@ -15,14 +15,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Store = void 0;
 //import
 const AxiosClient_1 = require("../client/AxiosClient");
+const Event_1 = require("../client/Event");
 const ItemTypeId_1 = __importDefault(require("../resources/ItemTypeId"));
 //service
-class Store {
+class Store extends Event_1.Event {
     /**
     * @param {ValWrapperService} data Services Data
     */
     constructor(data) {
+        super();
         this.AxiosClient = new AxiosClient_1.AxiosClient(data.AxiosData);
+        this.AxiosClient.on('error', ((data) => {
+            this.emit('error', data);
+        }));
         this.Region = data.Region;
     }
     /**

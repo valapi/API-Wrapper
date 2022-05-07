@@ -1,8 +1,9 @@
 import { AxiosClient, type ValWrapperAxios } from "../client/AxiosClient";
+import { Event as CustomEvent } from "../client/Event";
 import type { ValWrapperService } from "../client/Client";
 import type { ValWrapperRegion } from "../client/Region";
-declare class PreGame {
-    AxiosClient: AxiosClient;
+declare class PreGame extends CustomEvent {
+    protected AxiosClient: AxiosClient;
     protected Region: ValWrapperRegion;
     /**
     * @param {ValWrapperService} data Services Data

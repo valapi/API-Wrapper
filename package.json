@@ -1,5 +1,5 @@
 {
-  "name": "@val-api/api-wrapper",
+  "name": "@valapi/api-wrapper",
   "version": "1.0.0",
   "description": "Valorant API - API Wrapper",
   "main": "dist/index.js",
@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/Ing-Valorant-API/API-Wrapper.git"
+    "url": "git+ssh://git@github.com/valapi/API-Wrapper.git"
   },
   "keywords": [
     "valorant",
     "riot",
     "node",
     "api",
-    "val-api",
+    "valapi",
     "val",
     "mfa",
     "2fa",
@@ -39,9 +39,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Ing-Valorant-API/API-Wrapper/issues"
+    "url": "https://github.com/valapi/API-Wrapper/issues"
   },
-  "homepage": "https://github.com/Ing-Valorant-API/API-Wrapper#readme",
+  "homepage": "https://github.com/valapi/API-Wrapper#readme",
   "dependencies": {
     "axios": "^0.27.2",
     "crypto-js": "^4.1.1",

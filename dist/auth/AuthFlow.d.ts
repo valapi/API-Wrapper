@@ -2,7 +2,7 @@ import { Event as CustomEvent } from '../client/Event';
 import { type ValWrapperAxios } from '../client/AxiosClient';
 import type { ValWrapperAuth } from './Account';
 /**
- * * Class ID: @ing3kth/val-api/ValClient/AuthFlow
+ * * Class ID: @ing3kth/valapi/ValClient/AuthFlow
  */
 declare class AuthFlow extends CustomEvent {
     private cookie;

@@ -15,7 +15,7 @@ interface ValWrapperAuth {
     isError: boolean;
 }
 /**
- * * Class ID: @ing3kth/val-api/ValClient/Account
+ * * Class ID: @ing3kth/valapi/ValClient/Account
  */
 declare class Account extends CustomEvent {
     private cookie;

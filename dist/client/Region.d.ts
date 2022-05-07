@@ -13,7 +13,7 @@ interface ValWrapperRegion {
     };
 }
 /**
- * * Class ID: @ing3kth/val-api/ValRegion
+ * * Class ID: @ing3kth/valapi/ValRegion
  */
 declare class Region extends CustomEvent {
     private base;

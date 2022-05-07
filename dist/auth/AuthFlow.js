@@ -16,7 +16,7 @@ const Event_1 = require("../client/Event");
 const AxiosClient_1 = require("../client/AxiosClient");
 //class
 /**
- * * Class ID: @ing3kth/val-api/ValClient/AuthFlow
+ * * Class ID: @ing3kth/valapi/ValClient/AuthFlow
  */
 class AuthFlow extends Event_1.Event {
     /**

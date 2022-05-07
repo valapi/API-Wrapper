@@ -20,7 +20,7 @@ interface ValWrapperRegion {
 //class
 
 /**
- * * Class ID: @ing3kth/val-api/ValRegion
+ * * Class ID: @ing3kth/valapi/ValRegion
  */
 class Region extends CustomEvent {
     private base:keyof typeof _Region | string;

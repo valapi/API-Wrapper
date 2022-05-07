@@ -25,7 +25,7 @@ interface ValWrapperAuth {
 //class
 
 /**
- * * Class ID: @ing3kth/val-api/ValClient/Account
+ * * Class ID: @ing3kth/valapi/ValClient/Account
  */
 class Account extends CustomEvent {
     private cookie:CookieJar;

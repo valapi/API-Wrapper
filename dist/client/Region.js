@@ -9,7 +9,7 @@ const Region_1 = __importDefault(require("../resources/Region"));
 const Event_1 = require("./Event");
 //class
 /**
- * * Class ID: @ing3kth/val-api/ValRegion
+ * * Class ID: @ing3kth/valapi/ValRegion
  */
 class Region extends Event_1.Event {
     /**

@@ -9,7 +9,7 @@ import type { ValWrapperAuth } from './Account';
 //class
 
 /**
- * * Class ID: @ing3kth/val-api/ValClient/AuthFlow
+ * * Class ID: @ing3kth/valapi/ValClient/AuthFlow
  */
 class AuthFlow extends CustomEvent {
     private cookie:CookieJar;

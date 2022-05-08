@@ -1,15 +1,14 @@
-import { AxiosClient, type ValWrapperAxios } from "../client/AxiosClient";
-import { CustomEvent } from "@valapi/lib";
-import type { ValWrapperService } from "../client/Client";
+import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
 import type { ValorantAPIRegion } from "@valapi/lib";
 import { QueueId } from "@valapi/lib";
-declare class Match extends CustomEvent {
+declare class Match {
     protected AxiosClient: AxiosClient;
     protected Region: ValorantAPIRegion;
     /**
-    * @param {ValWrapperService} data Services Data
+    * @param {AxiosClient} AxiosClient Services Data
+    * @param {ValorantAPIRegion} Region Services Data
     */
-    constructor(data: ValWrapperService);
+    constructor(AxiosClient: AxiosClient, Region: ValorantAPIRegion);
     /**
     * @description Get contract definitions
     * @param {String} matchId Match ID

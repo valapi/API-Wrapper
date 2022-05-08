@@ -1,14 +1,11 @@
 //import
-import { CustomEvent } from "@valapi/lib";
-
-import { toBase64 } from "../util/Uft8";
+import { CustomEvent, toUft8 } from "@valapi/lib";
 import { CookieJar } from "tough-cookie";
 
 import { ValRegion as WrapperRegion, type ValorantAPIRegion } from "@valapi/lib";
 import { Region as _Region } from "@valapi/lib";
 
-import type { AxiosRequestConfig } from "axios";
-import type { ValWrapperAxiosError } from "./AxiosClient";
+import { AxiosClient, type ValWrapperAxiosError } from "./AxiosClient";
 
 import { Account as ClientAuthAccount, type ValWrapperAuth } from "../auth/Account";
 import { Multifactor as ClientAuthMultifactor } from "../auth/Multifactor";
@@ -36,6 +33,7 @@ import { Store as StoreService } from "../service/Store";
 interface ValWrapperClient {
     cookie: CookieJar.Serialized,
     access_token: string,
+    id_token: string,
     token_type: string,
     entitlements_token: string,
     region: {
@@ -55,11 +53,6 @@ interface ValWrapperClientError {
     errorCode: string,
     message: string,
     data: any,
-}
-
-interface ValWrapperService {
-    AxiosData: AxiosRequestConfig,
-    Region: ValorantAPIRegion,
 }
 
 interface ValWrapperConfig {
@@ -99,11 +92,11 @@ class WrapperClient extends CustomEvent {
         live: string,
     };
 
-    config: ValWrapperClientConfig;
+    protected config: ValWrapperClientConfig;
 
     //reload
     private RegionServices: ValorantAPIRegion;
-    private services: ValWrapperService;
+    private AxiosClient: AxiosClient;
 
     //service
     public Client: ClientService;
@@ -171,43 +164,25 @@ class WrapperClient extends CustomEvent {
         // first reload
         this.RegionServices = new WrapperRegion(this.region.live as keyof typeof _Region).toJSON();
 
-        //services
-        this.services = {
-            AxiosData: {
-                headers: {
-                    'Authorization': `${this.token_type} ${this.access_token}`,
-                    'X-Riot-Entitlements-JWT': this.entitlements_token,
-                    'X-Riot-ClientVersion': this.config.client.version,
-                    'X-Riot-ClientPlatform': toBase64(JSON.stringify(this.config.client.platform)),
-                },
+        this.AxiosClient = new AxiosClient({
+            headers: {
+                'Authorization': `${this.token_type} ${this.access_token}`,
+                'X-Riot-Entitlements-JWT': this.entitlements_token,
+                'X-Riot-ClientVersion': this.config.client.version,
+                'X-Riot-ClientPlatform': toUft8(JSON.stringify(this.config.client.platform)),
             },
-            Region: this.RegionServices,
-        };
+        });
+        this.AxiosClient.on('error', ((data:ValWrapperAxiosError) => { this.emit('error', data as ValWrapperClientError); }));
 
-        //service list
-        this.Client = new ClientService(this.services);
-        this.Client.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
-
-        this.Contract = new ContractService(this.services);
-        this.Contract.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
-
-        this.CurrentGame = new CurrentGameService(this.services);
-        this.CurrentGame.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
-
-        this.Match = new MatchService(this.services);
-        this.Match.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
-
-        this.Party = new PartyService(this.services);
-        this.Party.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
-
-        this.Player = new PlayerService(this.services);
-        this.Player.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
-
-        this.Pregame = new PreGameService(this.services);
-        this.Pregame.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
-
-        this.Store = new StoreService(this.services);
-        this.Store.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+        //service
+        this.Client = new ClientService(this.AxiosClient, this.RegionServices);
+        this.Contract = new ContractService(this.AxiosClient, this.RegionServices);
+        this.CurrentGame = new CurrentGameService(this.AxiosClient, this.RegionServices);
+        this.Match = new MatchService(this.AxiosClient, this.RegionServices);
+        this.Party = new PartyService(this.AxiosClient, this.RegionServices);
+        this.Player = new PlayerService(this.AxiosClient, this.RegionServices);
+        this.Pregame = new PreGameService(this.AxiosClient, this.RegionServices);
+        this.Store = new StoreService(this.AxiosClient, this.RegionServices);
 
         //event
         this.emit('ready');
@@ -221,43 +196,25 @@ class WrapperClient extends CustomEvent {
     private reload(): void {
         this.RegionServices = new WrapperRegion(this.region.live as keyof typeof _Region).toJSON();
 
-        //services
-        this.services = {
-            AxiosData: {
-                headers: {
-                    'Authorization': `${this.token_type} ${this.access_token}`,
-                    'X-Riot-Entitlements-JWT': this.entitlements_token,
-                    'X-Riot-ClientVersion': this.config.client.version,
-                    'X-Riot-ClientPlatform': toBase64(JSON.stringify(this.config.client.platform)),
-                },
+        this.AxiosClient = new AxiosClient({
+            headers: {
+                'Authorization': `${this.token_type} ${this.access_token}`,
+                'X-Riot-Entitlements-JWT': this.entitlements_token,
+                'X-Riot-ClientVersion': this.config.client.version,
+                'X-Riot-ClientPlatform': toUft8(JSON.stringify(this.config.client.platform)),
             },
-            Region: this.RegionServices,
-        };
+        });
+        this.AxiosClient.on('error', ((data:ValWrapperAxiosError) => { this.emit('error', data as ValWrapperClientError); }));
 
-        //service list
-        this.Client = new ClientService(this.services);
-        this.Client.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
-
-        this.Contract = new ContractService(this.services);
-        this.Contract.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
-
-        this.CurrentGame = new CurrentGameService(this.services);
-        this.CurrentGame.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
-
-        this.Match = new MatchService(this.services);
-        this.Match.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
-
-        this.Party = new PartyService(this.services);
-        this.Party.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
-
-        this.Player = new PlayerService(this.services);
-        this.Player.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
-
-        this.Pregame = new PreGameService(this.services);
-        this.Pregame.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
-
-        this.Store = new StoreService(this.services);
-        this.Store.on('error', (_data: ValWrapperAxiosError) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }) });
+        //service
+        this.Client = new ClientService(this.AxiosClient, this.RegionServices);
+        this.Contract = new ContractService(this.AxiosClient, this.RegionServices);
+        this.CurrentGame = new CurrentGameService(this.AxiosClient, this.RegionServices);
+        this.Match = new MatchService(this.AxiosClient, this.RegionServices);
+        this.Party = new PartyService(this.AxiosClient, this.RegionServices);
+        this.Player = new PlayerService(this.AxiosClient, this.RegionServices);
+        this.Pregame = new PreGameService(this.AxiosClient, this.RegionServices);
+        this.Store = new StoreService(this.AxiosClient, this.RegionServices);
     }
 
     //save
@@ -266,6 +223,7 @@ class WrapperClient extends CustomEvent {
         return {
             cookie: this.cookie.toJSON(),
             access_token: this.access_token,
+            id_token: this.id_token,
             token_type: this.token_type,
             entitlements_token: this.entitlements_token,
             region: this.region,
@@ -275,6 +233,7 @@ class WrapperClient extends CustomEvent {
     public fromJSON(data: ValWrapperClient): void {
         this.cookie = CookieJar.fromJSON(JSON.stringify(data.cookie));
         this.access_token = data.access_token;
+        this.id_token = data.id_token;
         this.token_type = data.token_type;
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
@@ -310,12 +269,11 @@ class WrapperClient extends CustomEvent {
         this.isError = auth.isError;
 
         if (auth.isError) {
-            const _error: ValWrapperClientError = {
+            this.emit('error', {
                 errorCode: 'ValWrapper_Authentication_Error',
                 message: 'Authentication Error',
                 data: auth,
-            }
-            this.emit('error', _error);
+            });
         }
     }
 
@@ -392,11 +350,12 @@ class WrapperClient extends CustomEvent {
 //event
 interface ValWrapperClientEvent {
     'ready': () => void,
-    'changeSettings': (data: { name:any, data:any }) => void,
+    'changeSettings': (data: { name:string, data:any }) => void,
     'error': (data: ValWrapperClientError) => void;
 }
 
 declare interface WrapperClient {
+    emit<EventName extends keyof ValWrapperClientEvent>(name: EventName, ...args: Parameters<ValWrapperClientEvent[EventName]>): void;
     on<EventName extends keyof ValWrapperClientEvent>(name: EventName, callback: ValWrapperClientEvent[EventName]): void;
     once<EventName extends keyof ValWrapperClientEvent>(name: EventName, callback: ValWrapperClientEvent[EventName]): void;
     off<EventName extends keyof ValWrapperClientEvent>(name: EventName, callback?: ValWrapperClientEvent[EventName]): void;
@@ -404,4 +363,4 @@ declare interface WrapperClient {
 
 //export
 export { WrapperClient };
-export type { ValWrapperClient, ValWrapperClientPlatfrom, ValWrapperClientError, ValWrapperService, ValWrapperConfig, ValWrapperClientConfig, ValWrapperClientEvent };
+export type { ValWrapperClient, ValWrapperClientPlatfrom, ValWrapperClientError, ValWrapperConfig, ValWrapperClientConfig, ValWrapperClientEvent };

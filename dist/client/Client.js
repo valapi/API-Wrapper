@@ -12,9 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WrapperClient = void 0;
 //import
 const lib_1 = require("@valapi/lib");
-const Uft8_1 = require("../util/Uft8");
 const tough_cookie_1 = require("tough-cookie");
 const lib_2 = require("@valapi/lib");
+const AxiosClient_1 = require("./AxiosClient");
 const Account_1 = require("../auth/Account");
 const Multifactor_1 = require("../auth/Multifactor");
 const _Client_Version = 'release-04.08-shipping-15-701907';
@@ -86,35 +86,24 @@ class WrapperClient extends lib_1.CustomEvent {
         this.isError = true;
         // first reload
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
-        //services
-        this.services = {
-            AxiosData: {
-                headers: {
-                    'Authorization': `${this.token_type} ${this.access_token}`,
-                    'X-Riot-Entitlements-JWT': this.entitlements_token,
-                    'X-Riot-ClientVersion': this.config.client.version,
-                    'X-Riot-ClientPlatform': (0, Uft8_1.toBase64)(JSON.stringify(this.config.client.platform)),
-                },
+        this.AxiosClient = new AxiosClient_1.AxiosClient({
+            headers: {
+                'Authorization': `${this.token_type} ${this.access_token}`,
+                'X-Riot-Entitlements-JWT': this.entitlements_token,
+                'X-Riot-ClientVersion': this.config.client.version,
+                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify(this.config.client.platform)),
             },
-            Region: this.RegionServices,
-        };
-        //service list
-        this.Client = new Client_1.Client(this.services);
-        this.Client.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
-        this.Contract = new Contract_1.Contract(this.services);
-        this.Contract.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
-        this.CurrentGame = new CurrentGame_1.CurrentGame(this.services);
-        this.CurrentGame.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
-        this.Match = new Match_1.Match(this.services);
-        this.Match.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
-        this.Party = new Party_1.Party(this.services);
-        this.Party.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
-        this.Player = new Player_1.Player(this.services);
-        this.Player.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
-        this.Pregame = new PreGame_1.PreGame(this.services);
-        this.Pregame.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
-        this.Store = new Store_1.Store(this.services);
-        this.Store.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
+        });
+        this.AxiosClient.on('error', ((data) => { this.emit('error', data); }));
+        //service
+        this.Client = new Client_1.Client(this.AxiosClient, this.RegionServices);
+        this.Contract = new Contract_1.Contract(this.AxiosClient, this.RegionServices);
+        this.CurrentGame = new CurrentGame_1.CurrentGame(this.AxiosClient, this.RegionServices);
+        this.Match = new Match_1.Match(this.AxiosClient, this.RegionServices);
+        this.Party = new Party_1.Party(this.AxiosClient, this.RegionServices);
+        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices);
+        this.Pregame = new PreGame_1.PreGame(this.AxiosClient, this.RegionServices);
+        this.Store = new Store_1.Store(this.AxiosClient, this.RegionServices);
         //event
         this.emit('ready');
     }
@@ -124,41 +113,31 @@ class WrapperClient extends lib_1.CustomEvent {
      */
     reload() {
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
-        //services
-        this.services = {
-            AxiosData: {
-                headers: {
-                    'Authorization': `${this.token_type} ${this.access_token}`,
-                    'X-Riot-Entitlements-JWT': this.entitlements_token,
-                    'X-Riot-ClientVersion': this.config.client.version,
-                    'X-Riot-ClientPlatform': (0, Uft8_1.toBase64)(JSON.stringify(this.config.client.platform)),
-                },
+        this.AxiosClient = new AxiosClient_1.AxiosClient({
+            headers: {
+                'Authorization': `${this.token_type} ${this.access_token}`,
+                'X-Riot-Entitlements-JWT': this.entitlements_token,
+                'X-Riot-ClientVersion': this.config.client.version,
+                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify(this.config.client.platform)),
             },
-            Region: this.RegionServices,
-        };
-        //service list
-        this.Client = new Client_1.Client(this.services);
-        this.Client.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
-        this.Contract = new Contract_1.Contract(this.services);
-        this.Contract.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
-        this.CurrentGame = new CurrentGame_1.CurrentGame(this.services);
-        this.CurrentGame.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
-        this.Match = new Match_1.Match(this.services);
-        this.Match.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
-        this.Party = new Party_1.Party(this.services);
-        this.Party.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
-        this.Player = new Player_1.Player(this.services);
-        this.Player.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
-        this.Pregame = new PreGame_1.PreGame(this.services);
-        this.Pregame.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
-        this.Store = new Store_1.Store(this.services);
-        this.Store.on('error', (_data) => { this.emit('error', { errorCode: _data.errorCode, message: _data.message, data: _data.data }); });
+        });
+        this.AxiosClient.on('error', ((data) => { this.emit('error', data); }));
+        //service
+        this.Client = new Client_1.Client(this.AxiosClient, this.RegionServices);
+        this.Contract = new Contract_1.Contract(this.AxiosClient, this.RegionServices);
+        this.CurrentGame = new CurrentGame_1.CurrentGame(this.AxiosClient, this.RegionServices);
+        this.Match = new Match_1.Match(this.AxiosClient, this.RegionServices);
+        this.Party = new Party_1.Party(this.AxiosClient, this.RegionServices);
+        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices);
+        this.Pregame = new PreGame_1.PreGame(this.AxiosClient, this.RegionServices);
+        this.Store = new Store_1.Store(this.AxiosClient, this.RegionServices);
     }
     //save
     toJSON() {
         return {
             cookie: this.cookie.toJSON(),
             access_token: this.access_token,
+            id_token: this.id_token,
             token_type: this.token_type,
             entitlements_token: this.entitlements_token,
             region: this.region,
@@ -167,6 +146,7 @@ class WrapperClient extends lib_1.CustomEvent {
     fromJSON(data) {
         this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(data.cookie));
         this.access_token = data.access_token;
+        this.id_token = data.id_token;
         this.token_type = data.token_type;
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
@@ -198,12 +178,11 @@ class WrapperClient extends lib_1.CustomEvent {
         this.multifactor = auth.multifactor;
         this.isError = auth.isError;
         if (auth.isError) {
-            const _error = {
+            this.emit('error', {
                 errorCode: 'ValWrapper_Authentication_Error',
                 message: 'Authentication Error',
                 data: auth,
-            };
-            this.emit('error', _error);
+            });
         }
     }
     login(username, password) {

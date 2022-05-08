@@ -1,16 +1,15 @@
-import { AxiosClient, type ValWrapperAxios } from "../client/AxiosClient";
-import { CustomEvent } from "@valapi/lib";
-import type { ValWrapperService } from "../client/Client";
+import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
 import type { ValorantAPIRegion } from "@valapi/lib";
 import { QueueId } from "@valapi/lib";
 declare type Party_SetAccessibility_accessibility = 'OPEN' | 'CLOSED';
-declare class Party extends CustomEvent {
+declare class Party {
     protected AxiosClient: AxiosClient;
     protected Region: ValorantAPIRegion;
     /**
-    * @param {ValWrapperService} data Services Data
+    * @param {AxiosClient} AxiosClient Services Data
+    * @param {ValorantAPIRegion} Region Services Data
     */
-    constructor(data: ValWrapperService);
+    constructor(AxiosClient: AxiosClient, Region: ValorantAPIRegion);
     /**
      * @returns {Promise<ValWrapperAxios<any>>}
      */

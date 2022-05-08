@@ -1,7 +1,7 @@
 //import
 import { CustomEvent } from "@valapi/lib";
 
-import axios, { type Axios, type AxiosRequestConfig, AxiosError } from 'axios';
+import axios, { type Axios, type AxiosRequestConfig, type AxiosError } from 'axios';
 import type { CookieJar } from 'tough-cookie';
 
 import { HttpsCookieAgent, HttpCookieAgent } from 'http-cookie-agent';
@@ -15,8 +15,8 @@ declare module 'axios' {
 
 //interface
 interface ValWrapperAxios<ValWrapperAxiosReturn = any> {
-    isError: boolean;
-    data: ValWrapperAxiosReturn;
+    isError: boolean,
+    data: ValWrapperAxiosReturn,
 }
 
 type ValWrapperAxiosMethod = 'get' | 'post' | 'put' | 'patch' | 'delete' ;
@@ -29,14 +29,14 @@ interface ValWrapperAxiosError {
 
 interface ValWrapperAxiosRequest {
     method: ValWrapperAxiosMethod,
-    url: string
-    body: Object
-    config: AxiosRequestConfig
+    url: string,
+    body: Object,
+    config: AxiosRequestConfig,
 }
 
 //class
 class AxiosClient extends CustomEvent {
-    axiosClient: Axios;
+    public axiosClient: Axios;
 
     /**
     * @param {AxiosRequestConfig} config Config
@@ -300,6 +300,7 @@ interface ValWrapperAxiosEvent {
 }
 
 declare interface AxiosClient {
+    emit<EventName extends keyof ValWrapperAxiosEvent>(name: EventName, ...args: Parameters<ValWrapperAxiosEvent[EventName]>): void;
     on<EventName extends keyof ValWrapperAxiosEvent>(name: EventName, callback: ValWrapperAxiosEvent[EventName]): void;
     once<EventName extends keyof ValWrapperAxiosEvent>(name: EventName, callback: ValWrapperAxiosEvent[EventName]): void;
     off<EventName extends keyof ValWrapperAxiosEvent>(name: EventName, callback?: ValWrapperAxiosEvent[EventName]): void;

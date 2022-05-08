@@ -74,6 +74,7 @@ interface ValWrapperAxiosEvent {
     'error': (data: ValWrapperAxiosError) => void;
 }
 declare interface AxiosClient {
+    emit<EventName extends keyof ValWrapperAxiosEvent>(name: EventName, ...args: Parameters<ValWrapperAxiosEvent[EventName]>): void;
     on<EventName extends keyof ValWrapperAxiosEvent>(name: EventName, callback: ValWrapperAxiosEvent[EventName]): void;
     once<EventName extends keyof ValWrapperAxiosEvent>(name: EventName, callback: ValWrapperAxiosEvent[EventName]): void;
     off<EventName extends keyof ValWrapperAxiosEvent>(name: EventName, callback?: ValWrapperAxiosEvent[EventName]): void;

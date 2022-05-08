@@ -1,27 +1,19 @@
 //import
-import { AxiosClient, type ValWrapperAxiosError, type ValWrapperAxios } from "../client/AxiosClient";
-import { CustomEvent } from "@valapi/lib";
-
-import type { ValWrapperService } from "../client/Client";
+import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
 import type { ValorantAPIRegion } from "@valapi/lib";
 
 //service
-class Contract extends CustomEvent {
+class Contract {
     protected AxiosClient:AxiosClient;
     protected Region:ValorantAPIRegion;
 
     /**
-    * @param {ValWrapperService} data Services Data
+    * @param {AxiosClient} AxiosClient Services Data
+    * @param {ValorantAPIRegion} Region Services Data
     */
-    constructor(data:ValWrapperService) {
-        super();
-        
-        this.AxiosClient = new AxiosClient(data.AxiosData);
-        this.AxiosClient.on('error', ((data:ValWrapperAxiosError) => {
-            this.emit('error', data);
-        }));
-
-        this.Region = data.Region;
+    constructor(AxiosClient:AxiosClient, Region:ValorantAPIRegion) {
+        this.AxiosClient = AxiosClient;
+        this.Region = Region;
     }
 
     /**

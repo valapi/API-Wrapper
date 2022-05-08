@@ -10,22 +10,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Store = void 0;
-//import
-const AxiosClient_1 = require("../client/AxiosClient");
 const lib_1 = require("@valapi/lib");
-const lib_2 = require("@valapi/lib");
 //service
-class Store extends lib_1.CustomEvent {
+class Store {
     /**
-    * @param {ValWrapperService} data Services Data
+    * @param {AxiosClient} AxiosClient Services Data
+    * @param {ValorantAPIRegion} Region Services Data
     */
-    constructor(data) {
-        super();
-        this.AxiosClient = new AxiosClient_1.AxiosClient(data.AxiosData);
-        this.AxiosClient.on('error', ((data) => {
-            this.emit('error', data);
-        }));
-        this.Region = data.Region;
+    constructor(AxiosClient, Region) {
+        this.AxiosClient = AxiosClient;
+        this.Region = Region;
     }
     /**
     * @param {String} puuid Player UUID
@@ -34,7 +28,7 @@ class Store extends lib_1.CustomEvent {
     */
     GetEntitlements(puuid, itemType) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/store/v1/entitlements/${puuid}/${lib_2.ItemTypeId.data[itemType]}`);
+            return yield this.AxiosClient.get(this.Region.url.playerData + `/store/v1/entitlements/${puuid}/${lib_1.ItemTypeId.data[itemType]}`);
         });
     }
     /**

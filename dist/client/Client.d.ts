@@ -1,8 +1,6 @@
 import { CustomEvent } from "@valapi/lib";
 import { CookieJar } from "tough-cookie";
-import { type ValorantAPIRegion } from "@valapi/lib";
 import { Region as _Region } from "@valapi/lib";
-import type { AxiosRequestConfig } from "axios";
 import { Client as ClientService } from "../service/Client";
 import { Contract as ContractService } from "../service/Contract";
 import { CurrentGame as CurrentGameService } from "../service/CurrentGame";
@@ -14,6 +12,7 @@ import { Store as StoreService } from "../service/Store";
 interface ValWrapperClient {
     cookie: CookieJar.Serialized;
     access_token: string;
+    id_token: string;
     token_type: string;
     entitlements_token: string;
     region: {
@@ -31,10 +30,6 @@ interface ValWrapperClientError {
     errorCode: string;
     message: string;
     data: any;
-}
-interface ValWrapperService {
-    AxiosData: AxiosRequestConfig;
-    Region: ValorantAPIRegion;
 }
 interface ValWrapperConfig {
     UserAgent?: string;
@@ -63,9 +58,9 @@ declare class WrapperClient extends CustomEvent {
     multifactor: boolean;
     isError: boolean;
     private region;
-    config: ValWrapperClientConfig;
+    protected config: ValWrapperClientConfig;
     private RegionServices;
-    private services;
+    private AxiosClient;
     Client: ClientService;
     Contract: ContractService;
     CurrentGame: CurrentGameService;
@@ -110,16 +105,17 @@ declare class WrapperClient extends CustomEvent {
 interface ValWrapperClientEvent {
     'ready': () => void;
     'changeSettings': (data: {
-        name: any;
+        name: string;
         data: any;
     }) => void;
     'error': (data: ValWrapperClientError) => void;
 }
 declare interface WrapperClient {
+    emit<EventName extends keyof ValWrapperClientEvent>(name: EventName, ...args: Parameters<ValWrapperClientEvent[EventName]>): void;
     on<EventName extends keyof ValWrapperClientEvent>(name: EventName, callback: ValWrapperClientEvent[EventName]): void;
     once<EventName extends keyof ValWrapperClientEvent>(name: EventName, callback: ValWrapperClientEvent[EventName]): void;
     off<EventName extends keyof ValWrapperClientEvent>(name: EventName, callback?: ValWrapperClientEvent[EventName]): void;
 }
 export { WrapperClient };
-export type { ValWrapperClient, ValWrapperClientPlatfrom, ValWrapperClientError, ValWrapperService, ValWrapperConfig, ValWrapperClientConfig, ValWrapperClientEvent };
+export type { ValWrapperClient, ValWrapperClientPlatfrom, ValWrapperClientError, ValWrapperConfig, ValWrapperClientConfig, ValWrapperClientEvent };
 //# sourceMappingURL=Client.d.ts.map

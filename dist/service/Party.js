@@ -10,22 +10,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Party = void 0;
-//import
-const AxiosClient_1 = require("../client/AxiosClient");
 const lib_1 = require("@valapi/lib");
-const lib_2 = require("@valapi/lib");
 //service
-class Party extends lib_1.CustomEvent {
+class Party {
     /**
-    * @param {ValWrapperService} data Services Data
+    * @param {AxiosClient} AxiosClient Services Data
+    * @param {ValorantAPIRegion} Region Services Data
     */
-    constructor(data) {
-        super();
-        this.AxiosClient = new AxiosClient_1.AxiosClient(data.AxiosData);
-        this.AxiosClient.on('error', ((data) => {
-            this.emit('error', data);
-        }));
-        this.Region = data.Region;
+    constructor(AxiosClient, Region) {
+        this.AxiosClient = AxiosClient;
+        this.Region = Region;
     }
     /**
      * @returns {Promise<ValWrapperAxios<any>>}
@@ -61,7 +55,7 @@ class Party extends lib_1.CustomEvent {
     ChangeQueue(partyId, queue) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/queue`, {
-                "queueID": `${lib_2.QueueId.data[queue]}`
+                "queueID": `${lib_1.QueueId.data[queue]}`
             });
         });
     }

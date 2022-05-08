@@ -38,6 +38,7 @@ interface ValWrapperConfig {
         version?: string;
         platform?: ValWrapperClientPlatfrom;
     };
+    timeout?: number;
 }
 interface ValWrapperClientConfig {
     UserAgent: string;
@@ -47,6 +48,7 @@ interface ValWrapperClientConfig {
         version: string;
         platform: ValWrapperClientPlatfrom;
     };
+    timeout: number;
 }
 declare class WrapperClient extends CustomEvent {
     private cookie;

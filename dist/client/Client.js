@@ -55,6 +55,9 @@ class WrapperClient extends lib_1.CustomEvent {
                 config.client.platform = _Client_Platfrom;
             }
         }
+        if (!config.timeout) {
+            config.timeout = 60000; // 1 minute (60 * 1000)
+        }
         this.config = {
             UserAgent: config.UserAgent,
             Region: 'na',
@@ -63,6 +66,7 @@ class WrapperClient extends lib_1.CustomEvent {
                 platform: config.client.platform,
             },
             lockRegion: false,
+            timeout: config.timeout,
         };
         if (!config.Region) {
             this.config.lockRegion = false;
@@ -93,6 +97,7 @@ class WrapperClient extends lib_1.CustomEvent {
                 'X-Riot-ClientVersion': this.config.client.version,
                 'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify(this.config.client.platform)),
             },
+            timeout: this.config.timeout,
         });
         this.AxiosClient.on('error', ((data) => { this.emit('error', data); }));
         //service
@@ -120,6 +125,7 @@ class WrapperClient extends lib_1.CustomEvent {
                 'X-Riot-ClientVersion': this.config.client.version,
                 'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify(this.config.client.platform)),
             },
+            timeout: this.config.timeout,
         });
         this.AxiosClient.on('error', ((data) => { this.emit('error', data); }));
         //service

@@ -15,23 +15,23 @@ declare module 'axios' {
 
 //interface
 interface ValWrapperAxios<ValWrapperAxiosReturn = any> {
-    isError: boolean,
-    data: ValWrapperAxiosReturn,
+    isError: boolean;
+    data: ValWrapperAxiosReturn;
 }
 
 type ValWrapperAxiosMethod = 'get' | 'post' | 'put' | 'patch' | 'delete' ;
 
 interface ValWrapperAxiosError {
-    errorCode: string,
-    message: string,
-    data: any,
+    errorCode: string;
+    message: string;
+    data: any;
 }
 
 interface ValWrapperAxiosRequest {
-    method: ValWrapperAxiosMethod,
-    url: string,
-    body: Object,
-    config: AxiosRequestConfig,
+    method: ValWrapperAxiosMethod;
+    url: string;
+    body: Object;
+    config: AxiosRequestConfig;
 }
 
 //class
@@ -53,8 +53,6 @@ class AxiosClient extends CustomEvent {
 
             config.httpAgent = new HttpCookieAgent({ jar: config.jar, keepAlive: true });
             config.httpsAgent = new HttpsCookieAgent({ jar: config.jar, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' });
-
-            delete config.jar;
         }
 
         if(!config.timeout){

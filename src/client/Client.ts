@@ -31,47 +31,49 @@ import { Store as StoreService } from "../service/Store";
 //interface
 
 interface ValWrapperClient {
-    cookie: CookieJar.Serialized,
-    access_token: string,
-    id_token: string,
-    token_type: string,
-    entitlements_token: string,
+    cookie: CookieJar.Serialized;
+    access_token: string;
+    id_token: string;
+    token_type: string;
+    entitlements_token: string;
     region: {
-        pbe: string,
-        live: string,
-    },
+        pbe: string;
+        live: string;
+    };
 }
 
 interface ValWrapperClientPlatfrom {
-    "platformType": string,
-    "platformOS": string,
-    "platformOSVersion": string,
-    "platformChipset": string
+    "platformType": string;
+    "platformOS": string;
+    "platformOSVersion": string;
+    "platformChipset": string;
 }
 
 interface ValWrapperClientError {
-    errorCode: string,
-    message: string,
-    data: any,
+    errorCode: string;
+    message: string;
+    data: any;
 }
 
 interface ValWrapperConfig {
-    UserAgent?: string,
-    Region?: keyof typeof _Region,
+    UserAgent?: string;
+    Region?: keyof typeof _Region;
     client?: {
-        version?: string,
-        platform?: ValWrapperClientPlatfrom,
-    },
+        version?: string;
+        platform?: ValWrapperClientPlatfrom;
+    };
+    timeout?: number;
 }
 
 interface ValWrapperClientConfig {
-    UserAgent: string,
-    Region: keyof typeof _Region,
-    lockRegion: boolean,
+    UserAgent: string;
+    Region: keyof typeof _Region;
+    lockRegion: boolean;
     client: {
-        version: string,
-        platform: ValWrapperClientPlatfrom,
-    },
+        version: string;
+        platform: ValWrapperClientPlatfrom;
+    };
+    timeout: number;
 }
 
 //class
@@ -130,6 +132,10 @@ class WrapperClient extends CustomEvent {
             }
         }
 
+        if(!config.timeout){
+            config.timeout = 60000; // 1 minute (60 * 1000)
+        }
+
         this.config = {
             UserAgent: config.UserAgent,
             Region: 'na',
@@ -138,6 +144,7 @@ class WrapperClient extends CustomEvent {
                 platform: config.client.platform as ValWrapperClientPlatfrom,
             },
             lockRegion: false,
+            timeout: config.timeout,
         };
 
         if (!config.Region) {
@@ -171,6 +178,7 @@ class WrapperClient extends CustomEvent {
                 'X-Riot-ClientVersion': this.config.client.version,
                 'X-Riot-ClientPlatform': toUft8(JSON.stringify(this.config.client.platform)),
             },
+            timeout: this.config.timeout,
         });
         this.AxiosClient.on('error', ((data:ValWrapperAxiosError) => { this.emit('error', data as ValWrapperClientError); }));
 
@@ -203,6 +211,7 @@ class WrapperClient extends CustomEvent {
                 'X-Riot-ClientVersion': this.config.client.version,
                 'X-Riot-ClientPlatform': toUft8(JSON.stringify(this.config.client.platform)),
             },
+            timeout: this.config.timeout,
         });
         this.AxiosClient.on('error', ((data:ValWrapperAxiosError) => { this.emit('error', data as ValWrapperClientError); }));
 

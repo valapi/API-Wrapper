@@ -33,7 +33,6 @@ class AxiosClient extends lib_1.CustomEvent {
             ];
             config.httpAgent = new http_cookie_agent_1.HttpCookieAgent({ jar: config.jar, keepAlive: true });
             config.httpsAgent = new http_cookie_agent_1.HttpsCookieAgent({ jar: config.jar, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' });
-            delete config.jar;
         }
         if (!config.timeout) {
             config.timeout = 60000; // 1 minute (60 * 1000)

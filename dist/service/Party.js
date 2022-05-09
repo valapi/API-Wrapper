@@ -211,6 +211,15 @@ class Party {
             return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/players/${puuid}/leaveparty/${partyId}`);
         });
     }
+    /**
+    * @param {String} partyId Party ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    AutoBalance(partyId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/balance`);
+        });
+    }
 }
 exports.Party = Party;
 //# sourceMappingURL=Party.js.map

@@ -206,6 +206,14 @@ class Party {
      public async LeaveParty(puuid:string, partyId:string):Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/players/${puuid}/leaveparty/${partyId}`);
     }
+
+    /**
+    * @param {String} partyId Party ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+     public async AutoBalance(partyId:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/balance`);
+    }
 }
 
 export { Party };

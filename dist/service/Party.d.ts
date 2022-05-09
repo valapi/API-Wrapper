@@ -130,6 +130,11 @@ declare class Party {
     * @returns {Promise<ValWrapperAxios<any>>}
     */
     LeaveParty(puuid: string, partyId: string): Promise<ValWrapperAxios<any>>;
+    /**
+    * @param {String} partyId Party ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    AutoBalance(partyId: string): Promise<ValWrapperAxios<any>>;
 }
 export { Party };
 export type { ValWrapperSetAccessibility, ValWrapperCustomGameSettings };

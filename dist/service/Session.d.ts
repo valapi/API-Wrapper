@@ -1,6 +1,6 @@
 import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
 import type { ValorantAPIRegion } from "@valapi/lib";
-declare class Client {
+declare class Session {
     protected AxiosClient: AxiosClient;
     protected Region: ValorantAPIRegion;
     /**
@@ -12,15 +12,12 @@ declare class Client {
     * @param {String} puuid Player UUID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    GetSession(puuid: string): Promise<ValWrapperAxios<any>>;
+    Get(puuid: string): Promise<ValWrapperAxios<any>>;
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+    * @param {String} puuid Player UUID
+    * @returns {Promise<ValWrapperAxios<any>>}
     */
-    FetchContent(): Promise<ValWrapperAxios<any>>;
-    /**
-     * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    FetchConfig(): Promise<ValWrapperAxios<any>>;
+    ReConnect(puuid: string): Promise<ValWrapperAxios<any>>;
 }
-export { Client };
-//# sourceMappingURL=Client.d.ts.map
+export { Session };
+//# sourceMappingURL=Session.d.ts.map

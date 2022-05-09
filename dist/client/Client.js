@@ -25,14 +25,16 @@ const _Client_Platfrom = {
     "platformChipset": "Unknown"
 };
 //service
-const Client_1 = require("../service/Client");
 const Contract_1 = require("../service/Contract");
 const CurrentGame_1 = require("../service/CurrentGame");
-const Match_1 = require("../service/Match");
 const Party_1 = require("../service/Party");
-const Player_1 = require("../service/Player");
 const PreGame_1 = require("../service/PreGame");
+const Session_1 = require("../service/Session");
 const Store_1 = require("../service/Store");
+const Client_1 = require("../custom/Client");
+const Match_1 = require("../custom/Match");
+const MMR_1 = require("../custom/MMR");
+const Player_1 = require("../custom/Player");
 //class
 class WrapperClient extends lib_1.CustomEvent {
     constructor(config = {}) {
@@ -68,10 +70,7 @@ class WrapperClient extends lib_1.CustomEvent {
             lockRegion: false,
             timeout: config.timeout,
         };
-        if (!config.Region) {
-            this.config.lockRegion = false;
-        }
-        else {
+        if (config.Region) {
             this.config.Region = config.Region;
             this.config.lockRegion = true;
         }
@@ -101,14 +100,16 @@ class WrapperClient extends lib_1.CustomEvent {
         });
         this.AxiosClient.on('error', ((data) => { this.emit('error', data); }));
         //service
-        this.Client = new Client_1.Client(this.AxiosClient, this.RegionServices);
         this.Contract = new Contract_1.Contract(this.AxiosClient, this.RegionServices);
         this.CurrentGame = new CurrentGame_1.CurrentGame(this.AxiosClient, this.RegionServices);
-        this.Match = new Match_1.Match(this.AxiosClient, this.RegionServices);
         this.Party = new Party_1.Party(this.AxiosClient, this.RegionServices);
-        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices);
         this.Pregame = new PreGame_1.PreGame(this.AxiosClient, this.RegionServices);
+        this.Session = new Session_1.Session(this.AxiosClient, this.RegionServices);
         this.Store = new Store_1.Store(this.AxiosClient, this.RegionServices);
+        this.Client = new Client_1.Client(this.AxiosClient, this.RegionServices);
+        this.Match = new Match_1.Match(this.AxiosClient, this.RegionServices);
+        this.MMR = new MMR_1.MMR(this.AxiosClient, this.RegionServices);
+        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices, this.config.UserAgent);
         //event
         this.emit('ready');
     }
@@ -129,14 +130,16 @@ class WrapperClient extends lib_1.CustomEvent {
         });
         this.AxiosClient.on('error', ((data) => { this.emit('error', data); }));
         //service
-        this.Client = new Client_1.Client(this.AxiosClient, this.RegionServices);
         this.Contract = new Contract_1.Contract(this.AxiosClient, this.RegionServices);
         this.CurrentGame = new CurrentGame_1.CurrentGame(this.AxiosClient, this.RegionServices);
-        this.Match = new Match_1.Match(this.AxiosClient, this.RegionServices);
         this.Party = new Party_1.Party(this.AxiosClient, this.RegionServices);
-        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices);
         this.Pregame = new PreGame_1.PreGame(this.AxiosClient, this.RegionServices);
+        this.Session = new Session_1.Session(this.AxiosClient, this.RegionServices);
         this.Store = new Store_1.Store(this.AxiosClient, this.RegionServices);
+        this.Client = new Client_1.Client(this.AxiosClient, this.RegionServices);
+        this.Match = new Match_1.Match(this.AxiosClient, this.RegionServices);
+        this.MMR = new MMR_1.MMR(this.AxiosClient, this.RegionServices);
+        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices, this.config.UserAgent);
     }
     //save
     toJSON() {
@@ -156,6 +159,10 @@ class WrapperClient extends lib_1.CustomEvent {
         this.token_type = data.token_type;
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
+        if (!this.config.lockRegion) {
+            this.region = data.region;
+        }
+        this.reload();
     }
     //auth
     toJSONAuth() {
@@ -190,6 +197,7 @@ class WrapperClient extends lib_1.CustomEvent {
                 data: auth,
             });
         }
+        this.reload();
     }
     login(username, password) {
         return __awaiter(this, void 0, void 0, function* () {

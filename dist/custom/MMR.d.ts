@@ -1,7 +1,7 @@
 import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
 import type { ValorantAPIRegion } from "@valapi/lib";
 import { QueueId } from "@valapi/lib";
-declare class Player {
+declare class MMR {
     protected AxiosClient: AxiosClient;
     protected Region: ValorantAPIRegion;
     /**
@@ -11,20 +11,6 @@ declare class Player {
     constructor(AxiosClient: AxiosClient, Region: ValorantAPIRegion);
     /**
     * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    GetUsername(puuid: string): Promise<ValWrapperAxios<any>>;
-    /**
-     * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    GetUserInfo(): Promise<ValWrapperAxios<any>>;
-    /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    FetchPlayer(puuid: string): Promise<ValWrapperAxios<any>>;
-    /**
-    * @param {String} puuid Player UUID
     * @param {String} queue Queue
     * @param {Number} startIndex Start Index
     * @param {Number} endIndex End Index
@@ -32,19 +18,17 @@ declare class Player {
     */
     FetchCompetitiveUpdates(puuid: string, queue?: keyof typeof QueueId.data, startIndex?: number, endIndex?: number): Promise<ValWrapperAxios<any>>;
     /**
-    * @param {String} puuid PlayerUUID
+    * @param {String} seasonId Season ID
+    * @param {Number} startIndex Start Index
+    * @param {Number} size Size
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    Loadout(puuid: string): Promise<ValWrapperAxios<any>>;
+    FetchLeaderboard(seasonId: string, startIndex?: number, size?: number): Promise<ValWrapperAxios<any>>;
     /**
-    * @param {String} puuid PlayerUUID
+    * @param {String} puuid Player UUID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    AccountXP(puuid: string): Promise<ValWrapperAxios<any>>;
-    /**
-     * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    FetchPlayerRestrictions(): Promise<ValWrapperAxios<any>>;
+    FetchPlayer(puuid: string): Promise<ValWrapperAxios<any>>;
 }
-export { Player };
-//# sourceMappingURL=Player.d.ts.map
+export { MMR };
+//# sourceMappingURL=MMR.d.ts.map

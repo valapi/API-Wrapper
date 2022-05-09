@@ -2,20 +2,22 @@
 import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
 import type { ValorantAPIRegion } from "@valapi/lib";
 
-import { QueueId } from "@valapi/lib";
-
 //service
 class Player {
     protected AxiosClient:AxiosClient;
     protected Region:ValorantAPIRegion;
 
+    private UserAgent:string;
+
     /**
     * @param {AxiosClient} AxiosClient Services Data
     * @param {ValorantAPIRegion} Region Services Data
     */
-    constructor(AxiosClient:AxiosClient, Region:ValorantAPIRegion) {
+    constructor(AxiosClient:AxiosClient, Region:ValorantAPIRegion, UserAgent:string) {
         this.AxiosClient = AxiosClient;
         this.Region = Region;
+
+        this.UserAgent = UserAgent;
     }
 
     //Mike - Username From ID
@@ -35,33 +37,21 @@ class Player {
      * @returns {Promise<ValWrapperAxios<any>>}
     */
      public async GetUserInfo():Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.post(`https://auth.riotgames.com/userinfo`);
+        return await this.AxiosClient.post(`https://auth.riotgames.com/userinfo`, {
+            headers: {
+                'User-Agent': this.UserAgent,
+            },
+        });
     }
 
     //PVP Endpoints
 
     /**
-    * @param {String} puuid Player UUID
+    * @param {String} puuid PlayerUUID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-     public async FetchPlayer(puuid:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.playerData + `/mmr/v1/players/${puuid}`);
-    }
-
-    /**
-    * @param {String} puuid Player UUID
-    * @param {String} queue Queue
-    * @param {Number} startIndex Start Index
-    * @param {Number} endIndex End Index
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
-     public async FetchCompetitiveUpdates(puuid:string, queue?:keyof typeof QueueId.data, startIndex:number = 0, endIndex:number = 10):Promise<ValWrapperAxios<any>> {
-        let _url = this.Region.url.playerData + `/mmr/v1/players/${puuid}/competitiveupdates?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
-        if (queue) {
-            _url += `&queue=${QueueId.data[queue]}`;
-        }
-
-        return await this.AxiosClient.get(_url);
+     public async AccountXP(puuid:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.get(this.Region.url.playerData + `/account-xp/v1/players/${puuid}`);
     }
 
     /**
@@ -76,8 +66,8 @@ class Player {
     * @param {String} puuid PlayerUUID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-     public async AccountXP(puuid:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.playerData + `/account-xp/v1/players/${puuid}`);
+     public async LoadoutUpdate(puuid:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.put(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
     }
 
     /**

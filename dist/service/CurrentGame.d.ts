@@ -12,6 +12,11 @@ declare class CurrentGame {
     * @param {String} matchId Match ID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
+    FetchAllChatMUCToken(matchId: string): Promise<ValWrapperAxios<any>>;
+    /**
+    * @param {String} matchId Match ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
     FetchMatch(matchId: string): Promise<ValWrapperAxios<any>>;
     /**
     * @param {String} matchId Match ID
@@ -23,6 +28,11 @@ declare class CurrentGame {
     * @returns {Promise<ValWrapperAxios<any>>}
     */
     FetchPlayer(puuid: string): Promise<ValWrapperAxios<any>>;
+    /**
+    * @param {String} matchId Match ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    FetchTeamChatMUCToken(matchId: string): Promise<ValWrapperAxios<any>>;
     /**
     * * Careful to use, Riot will immediately shut down your Project.
     * @param {String} puuid Player UUID

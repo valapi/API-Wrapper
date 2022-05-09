@@ -20,6 +20,14 @@ class CurrentGame {
     * @param {String} matchId Match ID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
+     public async FetchAllChatMUCToken(matchId:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/allchatmuctoken`);
+    }
+
+    /**
+    * @param {String} matchId Match ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
      public async FetchMatch(matchId:string):Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}`);
     }
@@ -38,6 +46,14 @@ class CurrentGame {
     */
      public async FetchPlayer(puuid:string):Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.get(this.Region.url.partyService + `/core-game/v1/players/${puuid}`);
+    }
+
+    /**
+    * @param {String} matchId Match ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+     public async FetchTeamChatMUCToken(matchId:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/teamchatmuctoken`);
     }
 
     /**

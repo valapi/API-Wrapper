@@ -24,6 +24,13 @@ class Contract {
     }
 
     /**
+     * @returns {Promise<ValWrapperAxios<any>>}
+    */
+     public async FetchActiveStory():Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.get(this.Region.url.playerData + `/contract-definitions/v2/definitions/story`);
+    }
+
+    /**
     * @param {String} puuid Player UUID
     * @returns {Promise<ValWrapperAxios<any>>}
     */

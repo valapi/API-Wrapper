@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Client = void 0;
+exports.Session = void 0;
 //service
-class Client {
+class Session {
     /**
     * @param {AxiosClient} AxiosClient Services Data
     * @param {ValorantAPIRegion} Region Services Data
@@ -20,33 +20,24 @@ class Client {
         this.AxiosClient = AxiosClient;
         this.Region = Region;
     }
-    //SESSION
     /**
     * @param {String} puuid Player UUID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    GetSession(puuid) {
+    Get(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}`);
         });
     }
-    //PVP Endpoints
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+    * @param {String} puuid Player UUID
+    * @returns {Promise<ValWrapperAxios<any>>}
     */
-    FetchContent() {
+    ReConnect(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.sharedData + `/content-service/v3/content`);
-        });
-    }
-    /**
-     * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    FetchConfig() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.sharedData + `/v1/config/${this.Region.data.api}`);
+            return yield this.AxiosClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}/reconnect`);
         });
     }
 }
-exports.Client = Client;
-//# sourceMappingURL=Client.js.map
+exports.Session = Session;
+//# sourceMappingURL=Session.js.map

@@ -3,7 +3,7 @@ import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
 import type { ValorantAPIRegion } from "@valapi/lib";
 
 //service
-class Client {
+class Session {
     protected AxiosClient:AxiosClient;
     protected Region:ValorantAPIRegion;
 
@@ -16,30 +16,22 @@ class Client {
         this.Region = Region;
     }
 
-    //SESSION
     /**
     * @param {String} puuid Player UUID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-     public async GetSession(puuid:string):Promise<ValWrapperAxios<any>> {
+     public async Get(puuid:string):Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}`);
     }
-
-    //PVP Endpoints
     
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+    * @param {String} puuid Player UUID
+    * @returns {Promise<ValWrapperAxios<any>>}
     */
-     public async FetchContent():Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.sharedData + `/content-service/v3/content`);
-    }
-
-    /**
-     * @returns {Promise<ValWrapperAxios<any>>}
-    */
-     public async FetchConfig():Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.sharedData + `/v1/config/${this.Region.data.api}`);
+     public async ReConnect(puuid:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}/reconnect`);
     }
 }
 
-export { Client };
+//export
+export { Session };

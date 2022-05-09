@@ -20,6 +20,22 @@ class PreGame {
     * @param {String} matchId Match ID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
+     public async FetchChatToken(matchId:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/chattoken`);
+    }
+
+    /**
+    * @param {String} matchId Match ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+     public async FetchVoiceToken(matchId:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/voicetoken`);
+    }
+
+    /**
+    * @param {String} matchId Match ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
      public async GetMatch(matchId:string):Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}`);
     }

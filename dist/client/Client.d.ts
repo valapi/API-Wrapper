@@ -1,14 +1,17 @@
 import { CustomEvent } from "@valapi/lib";
 import { CookieJar } from "tough-cookie";
 import { Region as _Region } from "@valapi/lib";
-import { Client as ClientService } from "../service/Client";
+import { type ValWrapperAuth } from "../auth/Account";
 import { Contract as ContractService } from "../service/Contract";
 import { CurrentGame as CurrentGameService } from "../service/CurrentGame";
-import { Match as MatchService } from "../service/Match";
 import { Party as PartyService } from "../service/Party";
-import { Player as PlayerService } from "../service/Player";
 import { PreGame as PreGameService } from "../service/PreGame";
+import { Session as SessionService } from "../service/Session";
 import { Store as StoreService } from "../service/Store";
+import { Client as ClientService } from "../custom/Client";
+import { Match as MatchService } from "../custom/Match";
+import { MMR as MMRService } from "../custom/MMR";
+import { Player as PlayerService } from "../custom/Player";
 interface ValWrapperClient {
     cookie: CookieJar.Serialized;
     access_token: string;
@@ -63,14 +66,16 @@ declare class WrapperClient extends CustomEvent {
     protected config: ValWrapperClientConfig;
     private RegionServices;
     private AxiosClient;
-    Client: ClientService;
     Contract: ContractService;
     CurrentGame: CurrentGameService;
-    Match: MatchService;
     Party: PartyService;
-    Player: PlayerService;
     Pregame: PreGameService;
+    Session: SessionService;
     Store: StoreService;
+    Client: ClientService;
+    Match: MatchService;
+    MMR: MMRService;
+    Player: PlayerService;
     constructor(config?: ValWrapperConfig);
     /**
      * @returns {void}
@@ -78,8 +83,8 @@ declare class WrapperClient extends CustomEvent {
     private reload;
     toJSON(): ValWrapperClient;
     fromJSON(data: ValWrapperClient): void;
-    private toJSONAuth;
-    private fromJSONAuth;
+    protected toJSONAuth(): ValWrapperAuth;
+    protected fromJSONAuth(auth: ValWrapperAuth): void;
     login(username: string, password: string): Promise<void>;
     verify(verificationCode: number): Promise<void>;
     /**

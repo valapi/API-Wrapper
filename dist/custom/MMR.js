@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Player = void 0;
+exports.MMR = void 0;
 const lib_1 = require("@valapi/lib");
 //service
-class Player {
+class MMR {
     /**
     * @param {AxiosClient} AxiosClient Services Data
     * @param {ValorantAPIRegion} Region Services Data
@@ -20,37 +20,6 @@ class Player {
     constructor(AxiosClient, Region) {
         this.AxiosClient = AxiosClient;
         this.Region = Region;
-    }
-    //Mike - Username From ID
-    /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    GetUsername(puuid) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.put(this.Region.url.playerData + `/name-service/v2/players`, [
-                `${puuid}`
-            ]);
-        });
-    }
-    //Riot Auth
-    /**
-     * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    GetUserInfo() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.post(`https://auth.riotgames.com/userinfo`);
-        });
-    }
-    //PVP Endpoints
-    /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    FetchPlayer(puuid) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/mmr/v1/players/${puuid}`);
-        });
     }
     /**
     * @param {String} puuid Player UUID
@@ -69,31 +38,25 @@ class Player {
         });
     }
     /**
-    * @param {String} puuid PlayerUUID
+    * @param {String} seasonId Season ID
+    * @param {Number} startIndex Start Index
+    * @param {Number} size Size
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    Loadout(puuid) {
+    FetchLeaderboard(seasonId, startIndex = 0, size = 510) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
+            return yield this.AxiosClient.get(this.Region.url.playerData + `/mmr/v1/leaderboards/affinity/na/queue/competitive/season/${seasonId}?startIndex=${startIndex}&size=${size}`);
         });
     }
     /**
-    * @param {String} puuid PlayerUUID
+    * @param {String} puuid Player UUID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    AccountXP(puuid) {
+    FetchPlayer(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/account-xp/v1/players/${puuid}`);
-        });
-    }
-    /**
-     * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    FetchPlayerRestrictions() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/restrictions/v3/penalties`);
+            return yield this.AxiosClient.get(this.Region.url.playerData + `/mmr/v1/players/${puuid}`);
         });
     }
 }
-exports.Player = Player;
-//# sourceMappingURL=Player.js.map
+exports.MMR = MMR;
+//# sourceMappingURL=MMR.js.map

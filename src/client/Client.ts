@@ -19,14 +19,17 @@ const _Client_Platfrom = {
 }
 
 //service
-import { Client as ClientService } from "../service/Client";
 import { Contract as ContractService } from "../service/Contract";
 import { CurrentGame as CurrentGameService } from "../service/CurrentGame";
-import { Match as MatchService } from "../service/Match";
 import { Party as PartyService } from "../service/Party";
-import { Player as PlayerService } from "../service/Player";
 import { PreGame as PreGameService } from "../service/PreGame";
+import { Session as SessionService } from "../service/Session";
 import { Store as StoreService } from "../service/Store";
+
+import { Client as ClientService } from "../custom/Client";
+import { Match as MatchService } from "../custom/Match";
+import { MMR as MMRService } from "../custom/MMR";
+import { Player as PlayerService } from "../custom/Player";
 
 //interface
 
@@ -101,14 +104,17 @@ class WrapperClient extends CustomEvent {
     private AxiosClient: AxiosClient;
 
     //service
-    public Client: ClientService;
     public Contract: ContractService;
     public CurrentGame: CurrentGameService;
-    public Match: MatchService;
     public Party: PartyService;
-    public Player: PlayerService;
     public Pregame: PreGameService;
+    public Session: SessionService;
     public Store: StoreService;
+
+    public Client: ClientService;
+    public Match: MatchService;
+    public MMR: MMRService;
+    public Player: PlayerService;
 
     constructor(config: ValWrapperConfig = {}) {
         super();
@@ -147,9 +153,7 @@ class WrapperClient extends CustomEvent {
             timeout: config.timeout,
         };
 
-        if (!config.Region) {
-            this.config.lockRegion = false;
-        } else {
+        if (config.Region) {
             this.config.Region = config.Region as keyof typeof _Region;
             this.config.lockRegion = true;
         }
@@ -183,14 +187,17 @@ class WrapperClient extends CustomEvent {
         this.AxiosClient.on('error', ((data:ValWrapperAxiosError) => { this.emit('error', data as ValWrapperClientError); }));
 
         //service
-        this.Client = new ClientService(this.AxiosClient, this.RegionServices);
         this.Contract = new ContractService(this.AxiosClient, this.RegionServices);
         this.CurrentGame = new CurrentGameService(this.AxiosClient, this.RegionServices);
-        this.Match = new MatchService(this.AxiosClient, this.RegionServices);
         this.Party = new PartyService(this.AxiosClient, this.RegionServices);
-        this.Player = new PlayerService(this.AxiosClient, this.RegionServices);
         this.Pregame = new PreGameService(this.AxiosClient, this.RegionServices);
+        this.Session = new SessionService(this.AxiosClient, this.RegionServices);
         this.Store = new StoreService(this.AxiosClient, this.RegionServices);
+
+        this.Client = new ClientService(this.AxiosClient, this.RegionServices);
+        this.Match = new MatchService(this.AxiosClient, this.RegionServices);
+        this.MMR = new MMRService(this.AxiosClient, this.RegionServices);
+        this.Player = new PlayerService(this.AxiosClient, this.RegionServices, this.config.UserAgent);
 
         //event
         this.emit('ready');
@@ -216,14 +223,17 @@ class WrapperClient extends CustomEvent {
         this.AxiosClient.on('error', ((data:ValWrapperAxiosError) => { this.emit('error', data as ValWrapperClientError); }));
 
         //service
-        this.Client = new ClientService(this.AxiosClient, this.RegionServices);
         this.Contract = new ContractService(this.AxiosClient, this.RegionServices);
         this.CurrentGame = new CurrentGameService(this.AxiosClient, this.RegionServices);
-        this.Match = new MatchService(this.AxiosClient, this.RegionServices);
         this.Party = new PartyService(this.AxiosClient, this.RegionServices);
-        this.Player = new PlayerService(this.AxiosClient, this.RegionServices);
         this.Pregame = new PreGameService(this.AxiosClient, this.RegionServices);
+        this.Session = new SessionService(this.AxiosClient, this.RegionServices);
         this.Store = new StoreService(this.AxiosClient, this.RegionServices);
+
+        this.Client = new ClientService(this.AxiosClient, this.RegionServices);
+        this.Match = new MatchService(this.AxiosClient, this.RegionServices);
+        this.MMR = new MMRService(this.AxiosClient, this.RegionServices);
+        this.Player = new PlayerService(this.AxiosClient, this.RegionServices, this.config.UserAgent);
     }
 
     //save
@@ -246,11 +256,17 @@ class WrapperClient extends CustomEvent {
         this.token_type = data.token_type;
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
+
+        if (!this.config.lockRegion) {
+            this.region = data.region;
+        }
+
+        this.reload();
     }
 
     //auth
 
-    private toJSONAuth(): ValWrapperAuth {
+    protected toJSONAuth(): ValWrapperAuth {
         return {
             cookie: this.cookie.toJSON(),
             access_token: this.access_token,
@@ -264,7 +280,7 @@ class WrapperClient extends CustomEvent {
         };
     }
 
-    private fromJSONAuth(auth: ValWrapperAuth): void {
+    protected fromJSONAuth(auth: ValWrapperAuth): void {
         this.cookie = CookieJar.fromJSON(JSON.stringify(auth.cookie));
         this.access_token = auth.access_token;
         this.id_token = auth.id_token;
@@ -284,6 +300,8 @@ class WrapperClient extends CustomEvent {
                 data: auth,
             });
         }
+
+        this.reload();
     }
 
     public async login(username: string, password: string): Promise<void> {

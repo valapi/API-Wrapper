@@ -22,11 +22,30 @@ class Party {
         this.Region = Region;
     }
     /**
+     *
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
+    RemovePlayer(puuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.delete(this.Region.url.partyService + `/parties/v1/players/${puuid}`);
+        });
+    }
+    /**
      * @returns {Promise<ValWrapperAxios<any>>}
      */
     FetchCustomGameConfigs() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.get(this.Region.url.partyService + `/parties/v1/parties/customgameconfigs`);
+        });
+    }
+    /**
+    * @param {String} partyId Party ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    FetchMUCToken(partyId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.get(this.Region.url.partyService + `/parties/v1/parties/${partyId}/muctoken`);
         });
     }
     /**
@@ -49,7 +68,16 @@ class Party {
     }
     /**
     * @param {String} partyId Party ID
-    * @param {String} queue Queue
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    FetchVoiceToken(partyId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.get(this.Region.url.partyService + `/parties/v1/parties/${partyId}/voicetoken`);
+        });
+    }
+    /**
+    * @param {String} partyId Party ID
+    * @param {String} queue Queue (EligibleQueues)
     * @returns {Promise<ValWrapperAxios<any>>}
     */
     ChangeQueue(partyId, queue) {
@@ -57,6 +85,16 @@ class Party {
             return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/queue`, {
                 "queueID": `${lib_1.QueueId.data[queue]}`
             });
+        });
+    }
+    /**
+     * @param {String} partyId Party ID
+     * @param {String} requestId Request ID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
+    DeclineRequest(partyId, requestId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/request/${requestId}/decline`);
         });
     }
     /**
@@ -89,6 +127,36 @@ class Party {
         });
     }
     /**
+    * @param {String} puuid Player UUID
+    * @param {String} partyId Party ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    RefreshCompetitiveTier(puuid, partyId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/refreshCompetitiveTier`);
+        });
+    }
+    /**
+    * @param {String} puuid Player UUID
+    * @param {String} partyId Party ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    RefreshPings(puuid, partyId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/refreshPings`);
+        });
+    }
+    /**
+    * @param {String} puuid Player UUID
+    * @param {String} partyId Party ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    RefreshPlayerIdentity(puuid, partyId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/refreshPlayerIdentity`);
+        });
+    }
+    /**
     * @param {String} partyId Party ID
     * @param {String} accessibility Accessibility
     * @returns {Promise<ValWrapperAxios<any>>}
@@ -102,6 +170,29 @@ class Party {
     }
     /**
     * @param {String} partyId Party ID
+    * @param {CustomGame_Settings} settings Custom Game Settings
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    SetCustomGameSettings(partyId, settings) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/customgamesettings`, settings);
+        });
+    }
+    /**
+    * @param {String} puuid Player UUID
+    * @param {String} partyId Party ID
+    * @param {boolean} ready Ready or not?
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    SetMemberReady(puuid, partyId, ready) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/setReady`, {
+                "ready": ready
+            });
+        });
+    }
+    /**
+    * @param {String} partyId Party ID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
     StartCustomGame(partyId) {
@@ -109,26 +200,7 @@ class Party {
             return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/startcustomgame`);
         });
     }
-    /**
-     *
-     * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
-     */
-    RemovePlayer(puuid) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.delete(this.Region.url.partyService + `/parties/v1/players/${puuid}`);
-        });
-    }
-    /**
-     * @param {String} partyId Party ID
-     * @param {String} requestId Request ID
-     * @returns {Promise<ValWrapperAxios<any>>}
-     */
-    DeclineRequest(partyId, requestId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/request/${requestId}/decline`);
-        });
-    }
+    // NOT IN DOCS //
     /**
     * @param {String} puuid Player UUID
     * @param {String} partyId Party ID
@@ -137,15 +209,6 @@ class Party {
     LeaveParty(puuid, partyId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/players/${puuid}/leaveparty/${partyId}`);
-        });
-    }
-    /**
-    * @param {String} partyId Party ID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    LeaveQueue(partyId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/matchmaking/leave`);
         });
     }
 }

@@ -5,7 +5,21 @@ import type { ValorantAPIRegion } from "@valapi/lib";
 import { QueueId } from "@valapi/lib";
 
 //interface
-type Party_SetAccessibility_accessibility = 'OPEN' | 'CLOSED'
+type ValWrapperSetAccessibility = 'OPEN' | 'CLOSED'
+
+interface ValWrapperCustomGameSettings {
+	"Map": string;
+	"Mode": string;
+	"UseBots": boolean;
+	"GamePod": string;
+	"GameRules": {
+		"AllowGameModifiers": boolean;
+		"PlayOutAllRounds": boolean;
+		"SkipMatchHistory": boolean;
+		"TournamentMode": boolean;
+		"IsOvertimeWinByTwo": boolean;
+	};
+}
 
 //service
 class Party {
@@ -22,10 +36,27 @@ class Party {
     }
 
     /**
+     * 
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
+     public async RemovePlayer(puuid:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.delete(this.Region.url.partyService + `/parties/v1/players/${puuid}`);
+    }
+
+    /**
      * @returns {Promise<ValWrapperAxios<any>>}
      */
      public async FetchCustomGameConfigs():Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.get(this.Region.url.partyService + `/parties/v1/parties/customgameconfigs`);
+    }
+
+    /**
+    * @param {String} partyId Party ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+     public async FetchMUCToken(partyId:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.get(this.Region.url.partyService + `/parties/v1/parties/${partyId}/muctoken`);
     }
 
     /**
@@ -46,13 +77,30 @@ class Party {
 
     /**
     * @param {String} partyId Party ID
-    * @param {String} queue Queue
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+     public async FetchVoiceToken(partyId:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.get(this.Region.url.partyService + `/parties/v1/parties/${partyId}/voicetoken`);
+    }
+
+    /**
+    * @param {String} partyId Party ID
+    * @param {String} queue Queue (EligibleQueues)
     * @returns {Promise<ValWrapperAxios<any>>}
     */
      public async ChangeQueue(partyId:string, queue:keyof typeof QueueId.data):Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/queue`, {
             "queueID": `${QueueId.data[queue]}`
         });
+    }
+
+    /**
+     * @param {String} partyId Party ID
+     * @param {String} requestId Request ID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
+     public async DeclineRequest(partyId:string, requestId:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/request/${requestId}/decline`);
     }
 
     /**
@@ -82,16 +130,64 @@ class Party {
     }
 
     /**
+    * @param {String} puuid Player UUID
+    * @param {String} partyId Party ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+     public async RefreshCompetitiveTier(puuid:string, partyId:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/refreshCompetitiveTier`);
+    }
+
+    /**
+    * @param {String} puuid Player UUID
+    * @param {String} partyId Party ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+     public async RefreshPings(puuid:string, partyId:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/refreshPings`);
+    }
+
+    /**
+    * @param {String} puuid Player UUID
+    * @param {String} partyId Party ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+     public async RefreshPlayerIdentity(puuid:string, partyId:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/refreshPlayerIdentity`);
+    }
+
+    /**
     * @param {String} partyId Party ID
     * @param {String} accessibility Accessibility
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-     public async SetAccessibility(partyId:string, accessibility:Party_SetAccessibility_accessibility):Promise<ValWrapperAxios<any>> {
+     public async SetAccessibility(partyId:string, accessibility:ValWrapperSetAccessibility):Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/accessibility`, {
             "accessibility": `${accessibility}`
         });
     }
-    
+
+    /**
+    * @param {String} partyId Party ID
+    * @param {CustomGame_Settings} settings Custom Game Settings
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+     public async SetCustomGameSettings(partyId:string, settings:ValWrapperCustomGameSettings):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/customgamesettings`, settings);
+    }
+
+    /**
+    * @param {String} puuid Player UUID
+    * @param {String} partyId Party ID
+    * @param {boolean} ready Ready or not?
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+     public async SetMemberReady(puuid:string, partyId:string, ready:boolean):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/setReady`, {
+            "ready": ready
+        });
+    }
+
     /**
     * @param {String} partyId Party ID
     * @returns {Promise<ValWrapperAxios<any>>}
@@ -100,23 +196,7 @@ class Party {
         return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/startcustomgame`);
     }
 
-    /**
-     * 
-     * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
-     */
-     public async RemovePlayer(puuid:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.delete(this.Region.url.partyService + `/parties/v1/players/${puuid}`);
-    }
-
-    /**
-     * @param {String} partyId Party ID
-     * @param {String} requestId Request ID
-     * @returns {Promise<ValWrapperAxios<any>>}
-     */
-     public async DeclineRequest(partyId:string, requestId:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/request/${requestId}/decline`);
-    }
+    // NOT IN DOCS //
 
     /**
     * @param {String} puuid Player UUID
@@ -126,15 +206,7 @@ class Party {
      public async LeaveParty(puuid:string, partyId:string):Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/players/${puuid}/leaveparty/${partyId}`);
     }
-
-    /**
-    * @param {String} partyId Party ID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
-     public async LeaveQueue(partyId:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/matchmaking/leave`);
-    }
 }
 
 export { Party };
-export type { Party_SetAccessibility_accessibility };
+export type { ValWrapperSetAccessibility, ValWrapperCustomGameSettings };

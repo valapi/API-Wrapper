@@ -12,6 +12,16 @@ declare class PreGame {
     * @param {String} matchId Match ID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
+    FetchChatToken(matchId: string): Promise<ValWrapperAxios<any>>;
+    /**
+    * @param {String} matchId Match ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    FetchVoiceToken(matchId: string): Promise<ValWrapperAxios<any>>;
+    /**
+    * @param {String} matchId Match ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
     GetMatch(matchId: string): Promise<ValWrapperAxios<any>>;
     /**
     * @param {String} matchId Match ID

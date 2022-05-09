@@ -24,6 +24,24 @@ class PreGame {
     * @param {String} matchId Match ID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
+    FetchChatToken(matchId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/chattoken`);
+        });
+    }
+    /**
+    * @param {String} matchId Match ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    FetchVoiceToken(matchId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/voicetoken`);
+        });
+    }
+    /**
+    * @param {String} matchId Match ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
     GetMatch(matchId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}`);

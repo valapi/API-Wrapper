@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Contract = void 0;
+exports.Client = void 0;
 //service
-class Contract {
+class Client {
     /**
     * @param {AxiosClient} AxiosClient Services Data
     * @param {ValorantAPIRegion} Region Services Data
@@ -20,41 +20,23 @@ class Contract {
         this.AxiosClient = AxiosClient;
         this.Region = Region;
     }
+    //PVP Endpoints
     /**
      * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    DefinitionsFetch() {
+     */
+    FetchContent() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/contract-definitions/v3/item-upgrades`);
+            return yield this.AxiosClient.get(this.Region.url.sharedData + `/content-service/v3/content`);
         });
     }
     /**
      * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    FetchActiveStory() {
+     */
+    FetchConfig() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/contract-definitions/v2/definitions/story`);
-        });
-    }
-    /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    Fetch(puuid) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}`);
-        });
-    }
-    /**
-    * @param {String} puuid Player UUID
-    * @param {String} contractId Contract ID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    Activate(puuid, contractId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.post(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}/special/${contractId}`);
+            return yield this.AxiosClient.get(this.Region.url.sharedData + `/v1/config/${this.Region.data.api}`);
         });
     }
 }
-exports.Contract = Contract;
-//# sourceMappingURL=Contract.js.map
+exports.Client = Client;
+//# sourceMappingURL=Client.js.map

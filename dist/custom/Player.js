@@ -9,73 +9,79 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CurrentGame = void 0;
+exports.Player = void 0;
 //service
-class CurrentGame {
+class Player {
     /**
     * @param {AxiosClient} AxiosClient Services Data
     * @param {ValorantAPIRegion} Region Services Data
     */
-    constructor(AxiosClient, Region) {
+    constructor(AxiosClient, Region, UserAgent) {
         this.AxiosClient = AxiosClient;
         this.Region = Region;
+        this.UserAgent = UserAgent;
     }
+    //Mike - Username From ID
     /**
-    * @param {String} matchId Match ID
+    * @param {String} puuid Player UUID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    FetchAllChatMUCToken(matchId) {
+    GetUsername(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/allchatmuctoken`);
+            return yield this.AxiosClient.put(this.Region.url.playerData + `/name-service/v2/players`, [
+                `${puuid}`
+            ]);
         });
     }
+    //Riot Auth
     /**
-    * @param {String} matchId Match ID
-    * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    FetchMatch(matchId) {
+    GetUserInfo() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}`);
+            return yield this.AxiosClient.post(`https://auth.riotgames.com/userinfo`, {
+                headers: {
+                    'User-Agent': this.UserAgent,
+                },
+            });
         });
     }
+    //PVP Endpoints
     /**
-    * @param {String} matchId Match ID
+    * @param {String} puuid PlayerUUID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    FetchMatchLoadouts(matchId) {
+    AccountXP(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/loadouts`);
+            return yield this.AxiosClient.get(this.Region.url.playerData + `/account-xp/v1/players/${puuid}`);
         });
     }
     /**
     * @param {String} puuid PlayerUUID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    FetchPlayer(puuid) {
+    Loadout(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.partyService + `/core-game/v1/players/${puuid}`);
+            return yield this.AxiosClient.get(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
         });
     }
     /**
-    * @param {String} matchId Match ID
+    * @param {String} puuid PlayerUUID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    FetchTeamChatMUCToken(matchId) {
+    LoadoutUpdate(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/teamchatmuctoken`);
+            return yield this.AxiosClient.put(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
         });
     }
     /**
-    * * Careful to use, Riot will immediately shut down your Project.
-    * @param {String} puuid Player UUID
-    * @param {String} matchId Match ID
-    * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    DisassociatePlayer(puuid, matchId) {
+    FetchPlayerRestrictions() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.post(this.Region.url.partyService + `/core-game/v1/players/${puuid}/disassociate/${matchId}`);
+            return yield this.AxiosClient.get(this.Region.url.playerData + `/restrictions/v3/penalties`);
         });
     }
 }
-exports.CurrentGame = CurrentGame;
-//# sourceMappingURL=CurrentGame.js.map
+exports.Player = Player;
+//# sourceMappingURL=Player.js.map

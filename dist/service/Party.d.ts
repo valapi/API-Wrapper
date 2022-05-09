@@ -1,7 +1,20 @@
 import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
 import type { ValorantAPIRegion } from "@valapi/lib";
 import { QueueId } from "@valapi/lib";
-declare type Party_SetAccessibility_accessibility = 'OPEN' | 'CLOSED';
+declare type ValWrapperSetAccessibility = 'OPEN' | 'CLOSED';
+interface ValWrapperCustomGameSettings {
+    "Map": string;
+    "Mode": string;
+    "UseBots": boolean;
+    "GamePod": string;
+    "GameRules": {
+        "AllowGameModifiers": boolean;
+        "PlayOutAllRounds": boolean;
+        "SkipMatchHistory": boolean;
+        "TournamentMode": boolean;
+        "IsOvertimeWinByTwo": boolean;
+    };
+}
 declare class Party {
     protected AxiosClient: AxiosClient;
     protected Region: ValorantAPIRegion;
@@ -11,9 +24,20 @@ declare class Party {
     */
     constructor(AxiosClient: AxiosClient, Region: ValorantAPIRegion);
     /**
+     *
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
+    RemovePlayer(puuid: string): Promise<ValWrapperAxios<any>>;
+    /**
      * @returns {Promise<ValWrapperAxios<any>>}
      */
     FetchCustomGameConfigs(): Promise<ValWrapperAxios<any>>;
+    /**
+    * @param {String} partyId Party ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    FetchMUCToken(partyId: string): Promise<ValWrapperAxios<any>>;
     /**
     * @param {String} partyId Party ID
     * @returns {Promise<ValWrapperAxios<any>>}
@@ -26,10 +50,21 @@ declare class Party {
     FetchPlayer(puuid: string): Promise<ValWrapperAxios<any>>;
     /**
     * @param {String} partyId Party ID
-    * @param {String} queue Queue
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    FetchVoiceToken(partyId: string): Promise<ValWrapperAxios<any>>;
+    /**
+    * @param {String} partyId Party ID
+    * @param {String} queue Queue (EligibleQueues)
     * @returns {Promise<ValWrapperAxios<any>>}
     */
     ChangeQueue(partyId: string, queue: keyof typeof QueueId.data): Promise<ValWrapperAxios<any>>;
+    /**
+     * @param {String} partyId Party ID
+     * @param {String} requestId Request ID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
+    DeclineRequest(partyId: string, requestId: string): Promise<ValWrapperAxios<any>>;
     /**
     * @param {String} partyId Party ID
     * @returns {Promise<ValWrapperAxios<any>>}
@@ -48,40 +83,54 @@ declare class Party {
     */
     LeaveMatchmakingQueue(partyId: string): Promise<ValWrapperAxios<any>>;
     /**
+    * @param {String} puuid Player UUID
+    * @param {String} partyId Party ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    RefreshCompetitiveTier(puuid: string, partyId: string): Promise<ValWrapperAxios<any>>;
+    /**
+    * @param {String} puuid Player UUID
+    * @param {String} partyId Party ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    RefreshPings(puuid: string, partyId: string): Promise<ValWrapperAxios<any>>;
+    /**
+    * @param {String} puuid Player UUID
+    * @param {String} partyId Party ID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    RefreshPlayerIdentity(puuid: string, partyId: string): Promise<ValWrapperAxios<any>>;
+    /**
     * @param {String} partyId Party ID
     * @param {String} accessibility Accessibility
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    SetAccessibility(partyId: string, accessibility: Party_SetAccessibility_accessibility): Promise<ValWrapperAxios<any>>;
+    SetAccessibility(partyId: string, accessibility: ValWrapperSetAccessibility): Promise<ValWrapperAxios<any>>;
+    /**
+    * @param {String} partyId Party ID
+    * @param {CustomGame_Settings} settings Custom Game Settings
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    SetCustomGameSettings(partyId: string, settings: ValWrapperCustomGameSettings): Promise<ValWrapperAxios<any>>;
+    /**
+    * @param {String} puuid Player UUID
+    * @param {String} partyId Party ID
+    * @param {boolean} ready Ready or not?
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    SetMemberReady(puuid: string, partyId: string, ready: boolean): Promise<ValWrapperAxios<any>>;
     /**
     * @param {String} partyId Party ID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
     StartCustomGame(partyId: string): Promise<ValWrapperAxios<any>>;
     /**
-     *
-     * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
-     */
-    RemovePlayer(puuid: string): Promise<ValWrapperAxios<any>>;
-    /**
-     * @param {String} partyId Party ID
-     * @param {String} requestId Request ID
-     * @returns {Promise<ValWrapperAxios<any>>}
-     */
-    DeclineRequest(partyId: string, requestId: string): Promise<ValWrapperAxios<any>>;
-    /**
     * @param {String} puuid Player UUID
     * @param {String} partyId Party ID
     * @returns {Promise<ValWrapperAxios<any>>}
     */
     LeaveParty(puuid: string, partyId: string): Promise<ValWrapperAxios<any>>;
-    /**
-    * @param {String} partyId Party ID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
-    LeaveQueue(partyId: string): Promise<ValWrapperAxios<any>>;
 }
 export { Party };
-export type { Party_SetAccessibility_accessibility };
+export type { ValWrapperSetAccessibility, ValWrapperCustomGameSettings };
 //# sourceMappingURL=Party.d.ts.map

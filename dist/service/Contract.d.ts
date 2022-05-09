@@ -13,6 +13,10 @@ declare class Contract {
     */
     DefinitionsFetch(): Promise<ValWrapperAxios<any>>;
     /**
+     * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    FetchActiveStory(): Promise<ValWrapperAxios<any>>;
+    /**
     * @param {String} puuid Player UUID
     * @returns {Promise<ValWrapperAxios<any>>}
     */

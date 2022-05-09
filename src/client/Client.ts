@@ -59,8 +59,8 @@ interface ValWrapperClientError {
 }
 
 interface ValWrapperConfig {
-    UserAgent?: string;
-    Region?: keyof typeof _Region;
+    userAgent?: string;
+    region?: keyof typeof _Region;
     client?: {
         version?: string;
         platform?: ValWrapperClientPlatfrom;
@@ -69,8 +69,8 @@ interface ValWrapperConfig {
 }
 
 interface ValWrapperClientConfig {
-    UserAgent: string;
-    Region: keyof typeof _Region;
+    userAgent: string;
+    region: keyof typeof _Region;
     lockRegion: boolean;
     client: {
         version: string;
@@ -119,8 +119,8 @@ class WrapperClient extends CustomEvent {
     constructor(config: ValWrapperConfig = {}) {
         super();
         //config
-        if (!config.UserAgent) {
-            config.UserAgent = 'RiotClient/43.0.1.41953 86.4190634 rso-auth (Windows; 10;;Professional, x64)';
+        if (!config.userAgent) {
+            config.userAgent = 'RiotClient/43.0.1.41953 86.4190634 rso-auth (Windows; 10;;Professional, x64)';
         }
 
         if (!config.client) {
@@ -143,8 +143,8 @@ class WrapperClient extends CustomEvent {
         }
 
         this.config = {
-            UserAgent: config.UserAgent,
-            Region: 'na',
+            userAgent: config.userAgent,
+            region: 'na',
             client: {
                 version: config.client.version as string,
                 platform: config.client.platform as ValWrapperClientPlatfrom,
@@ -153,8 +153,8 @@ class WrapperClient extends CustomEvent {
             timeout: config.timeout,
         };
 
-        if (config.Region) {
-            this.config.Region = config.Region as keyof typeof _Region;
+        if (config.region) {
+            this.config.region = config.region as keyof typeof _Region;
             this.config.lockRegion = true;
         }
 
@@ -167,7 +167,7 @@ class WrapperClient extends CustomEvent {
         this.entitlements_token = '';
         this.region = {
             pbe: 'na',
-            live: this.config.Region,
+            live: this.config.region,
         };
         this.multifactor = false;
         this.isError = true;
@@ -197,7 +197,7 @@ class WrapperClient extends CustomEvent {
         this.Client = new ClientService(this.AxiosClient, this.RegionServices);
         this.Match = new MatchService(this.AxiosClient, this.RegionServices);
         this.MMR = new MMRService(this.AxiosClient, this.RegionServices);
-        this.Player = new PlayerService(this.AxiosClient, this.RegionServices, this.config.UserAgent);
+        this.Player = new PlayerService(this.AxiosClient, this.RegionServices, this.config.userAgent);
 
         //event
         this.emit('ready');
@@ -233,7 +233,7 @@ class WrapperClient extends CustomEvent {
         this.Client = new ClientService(this.AxiosClient, this.RegionServices);
         this.Match = new MatchService(this.AxiosClient, this.RegionServices);
         this.MMR = new MMRService(this.AxiosClient, this.RegionServices);
-        this.Player = new PlayerService(this.AxiosClient, this.RegionServices, this.config.UserAgent);
+        this.Player = new PlayerService(this.AxiosClient, this.RegionServices, this.config.userAgent);
     }
 
     //save
@@ -305,14 +305,14 @@ class WrapperClient extends CustomEvent {
     }
 
     public async login(username: string, password: string): Promise<void> {
-        const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(username, password, this.config.UserAgent);
+        const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(username, password, this.config.userAgent);
 
         this.fromJSONAuth(NewAuth);
         this.reload();
     }
 
     public async verify(verificationCode: number): Promise<void> {
-        const NewAuth: ValWrapperAuth = await ClientAuthMultifactor.verify(this.toJSONAuth(), verificationCode, this.config.UserAgent);
+        const NewAuth: ValWrapperAuth = await ClientAuthMultifactor.verify(this.toJSONAuth(), verificationCode, this.config.userAgent);
 
         this.fromJSONAuth(NewAuth);
         this.reload();

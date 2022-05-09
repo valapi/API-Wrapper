@@ -40,8 +40,8 @@ class WrapperClient extends lib_1.CustomEvent {
     constructor(config = {}) {
         super();
         //config
-        if (!config.UserAgent) {
-            config.UserAgent = 'RiotClient/43.0.1.41953 86.4190634 rso-auth (Windows; 10;;Professional, x64)';
+        if (!config.userAgent) {
+            config.userAgent = 'RiotClient/43.0.1.41953 86.4190634 rso-auth (Windows; 10;;Professional, x64)';
         }
         if (!config.client) {
             config.client = {
@@ -61,8 +61,8 @@ class WrapperClient extends lib_1.CustomEvent {
             config.timeout = 60000; // 1 minute (60 * 1000)
         }
         this.config = {
-            UserAgent: config.UserAgent,
-            Region: 'na',
+            userAgent: config.userAgent,
+            region: 'na',
             client: {
                 version: config.client.version,
                 platform: config.client.platform,
@@ -70,8 +70,8 @@ class WrapperClient extends lib_1.CustomEvent {
             lockRegion: false,
             timeout: config.timeout,
         };
-        if (config.Region) {
-            this.config.Region = config.Region;
+        if (config.region) {
+            this.config.region = config.region;
             this.config.lockRegion = true;
         }
         //create without auth
@@ -83,7 +83,7 @@ class WrapperClient extends lib_1.CustomEvent {
         this.entitlements_token = '';
         this.region = {
             pbe: 'na',
-            live: this.config.Region,
+            live: this.config.region,
         };
         this.multifactor = false;
         this.isError = true;
@@ -109,7 +109,7 @@ class WrapperClient extends lib_1.CustomEvent {
         this.Client = new Client_1.Client(this.AxiosClient, this.RegionServices);
         this.Match = new Match_1.Match(this.AxiosClient, this.RegionServices);
         this.MMR = new MMR_1.MMR(this.AxiosClient, this.RegionServices);
-        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices, this.config.UserAgent);
+        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices, this.config.userAgent);
         //event
         this.emit('ready');
     }
@@ -139,7 +139,7 @@ class WrapperClient extends lib_1.CustomEvent {
         this.Client = new Client_1.Client(this.AxiosClient, this.RegionServices);
         this.Match = new Match_1.Match(this.AxiosClient, this.RegionServices);
         this.MMR = new MMR_1.MMR(this.AxiosClient, this.RegionServices);
-        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices, this.config.UserAgent);
+        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices, this.config.userAgent);
     }
     //save
     toJSON() {
@@ -201,14 +201,14 @@ class WrapperClient extends lib_1.CustomEvent {
     }
     login(username, password) {
         return __awaiter(this, void 0, void 0, function* () {
-            const NewAuth = yield Account_1.Account.login(username, password, this.config.UserAgent);
+            const NewAuth = yield Account_1.Account.login(username, password, this.config.userAgent);
             this.fromJSONAuth(NewAuth);
             this.reload();
         });
     }
     verify(verificationCode) {
         return __awaiter(this, void 0, void 0, function* () {
-            const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), verificationCode, this.config.UserAgent);
+            const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), verificationCode, this.config.userAgent);
             this.fromJSONAuth(NewAuth);
             this.reload();
         });

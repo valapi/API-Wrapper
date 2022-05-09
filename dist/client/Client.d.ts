@@ -35,8 +35,8 @@ interface ValWrapperClientError {
     data: any;
 }
 interface ValWrapperConfig {
-    UserAgent?: string;
-    Region?: keyof typeof _Region;
+    userAgent?: string;
+    region?: keyof typeof _Region;
     client?: {
         version?: string;
         platform?: ValWrapperClientPlatfrom;
@@ -44,8 +44,8 @@ interface ValWrapperConfig {
     timeout?: number;
 }
 interface ValWrapperClientConfig {
-    UserAgent: string;
-    Region: keyof typeof _Region;
+    userAgent: string;
+    region: keyof typeof _Region;
     lockRegion: boolean;
     client: {
         version: string;

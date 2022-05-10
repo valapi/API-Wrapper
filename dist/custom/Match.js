@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Match = void 0;
-const lib_1 = require("@valapi/lib");
 //service
 class Match {
     /**
@@ -34,16 +33,23 @@ class Match {
     }
     /**
     * @param {String} puuid Player UUID
-    * @param {String} queue Queue
+    * @param {String} queueId Queue
     * @param {Number} startIndex Start Index
     * @param {Number} endIndex End Index
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    FetchMatchHistory(puuid, queue, startIndex = 0, endIndex = 10) {
+    FetchMatchHistory(puuid, queueId, startIndex = 0, endIndex = 10) {
         return __awaiter(this, void 0, void 0, function* () {
             let _url = this.Region.url.playerData + `/match-history/v1/history/${puuid}?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
-            if (queue) {
-                _url += `&queue=${lib_1.QueueId.data[queue]}`;
+            if (queueId === 'data') {
+                this.AxiosClient.emit('error', {
+                    errorCode: 'ValWrapper_Request_Error',
+                    message: 'Queue ID cannot be "data"',
+                    data: queueId,
+                });
+            }
+            if (queueId) {
+                _url += `&queue=${queueId}`;
             }
             return yield this.AxiosClient.get(_url);
         });

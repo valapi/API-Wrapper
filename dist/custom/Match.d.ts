@@ -17,12 +17,12 @@ declare class Match {
     FetchMatchDetails(matchId: string): Promise<ValWrapperAxios<any>>;
     /**
     * @param {String} puuid Player UUID
-    * @param {String} queue Queue
+    * @param {String} queueId Queue
     * @param {Number} startIndex Start Index
     * @param {Number} endIndex End Index
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    FetchMatchHistory(puuid: string, queue?: keyof typeof QueueId.data, startIndex?: number, endIndex?: number): Promise<ValWrapperAxios<any>>;
+    FetchMatchHistory(puuid: string, queueId?: keyof typeof QueueId, startIndex?: number, endIndex?: number): Promise<ValWrapperAxios<any>>;
 }
 export { Match };
 //# sourceMappingURL=Match.d.ts.map

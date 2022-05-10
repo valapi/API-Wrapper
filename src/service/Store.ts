@@ -20,11 +20,19 @@ class Store {
 
     /**
     * @param {String} puuid Player UUID
-    * @param {String} itemType Item Type
+    * @param {String} itemTypeId Item Type
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-     public async GetEntitlements(puuid:string, itemType:keyof typeof ItemTypeId.data):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.playerData + `/store/v1/entitlements/${puuid}/${ItemTypeId.data[itemType]}`);
+     public async GetEntitlements(puuid:string, itemTypeId:keyof typeof ItemTypeId):Promise<ValWrapperAxios<any>> {
+        if(itemTypeId === 'data'){
+            this.AxiosClient.emit('error', {
+                errorCode: 'ValWrapper_Request_Error',
+                message: 'Item Type ID cannot be "data"',
+                data: itemTypeId,
+            })
+        }
+
+        return await this.AxiosClient.get(this.Region.url.playerData + `/store/v1/entitlements/${puuid}/${itemTypeId}`);
     }
 
     /**

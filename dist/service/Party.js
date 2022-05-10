@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Party = void 0;
-const lib_1 = require("@valapi/lib");
 //service
 class Party {
     /**
@@ -77,13 +76,20 @@ class Party {
     }
     /**
     * @param {String} partyId Party ID
-    * @param {String} queue Queue (EligibleQueues)
+    * @param {String} queueId Queue (EligibleQueues)
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    ChangeQueue(partyId, queue) {
+    ChangeQueue(partyId, queueId) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (queueId === 'data') {
+                this.AxiosClient.emit('error', {
+                    errorCode: 'ValWrapper_Request_Error',
+                    message: 'Queue ID cannot be "data"',
+                    data: queueId,
+                });
+            }
             return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/queue`, {
-                "queueID": `${lib_1.QueueId.data[queue]}`
+                "queueID": String(queueId)
             });
         });
     }
@@ -181,13 +187,13 @@ class Party {
     /**
     * @param {String} puuid Player UUID
     * @param {String} partyId Party ID
-    * @param {boolean} ready Ready or not?
+    * @param {boolean} isReady Ready or not?
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    SetMemberReady(puuid, partyId, ready) {
+    SetMemberReady(puuid, partyId, isReady) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/setReady`, {
-                "ready": ready
+                "ready": isReady
             });
         });
     }

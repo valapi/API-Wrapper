@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Store = void 0;
-const lib_1 = require("@valapi/lib");
 //service
 class Store {
     /**
@@ -23,12 +22,19 @@ class Store {
     }
     /**
     * @param {String} puuid Player UUID
-    * @param {String} itemType Item Type
+    * @param {String} itemTypeId Item Type
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    GetEntitlements(puuid, itemType) {
+    GetEntitlements(puuid, itemTypeId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/store/v1/entitlements/${puuid}/${lib_1.ItemTypeId.data[itemType]}`);
+            if (itemTypeId === 'data') {
+                this.AxiosClient.emit('error', {
+                    errorCode: 'ValWrapper_Request_Error',
+                    message: 'Item Type ID cannot be "data"',
+                    data: itemTypeId,
+                });
+            }
+            return yield this.AxiosClient.get(this.Region.url.playerData + `/store/v1/entitlements/${puuid}/${itemTypeId}`);
         });
     }
     /**

@@ -20,15 +20,24 @@ class MMR {
 
     /**
     * @param {String} puuid Player UUID
-    * @param {String} queue Queue
+    * @param {String} queueId Queue
     * @param {Number} startIndex Start Index
     * @param {Number} endIndex End Index
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-     public async FetchCompetitiveUpdates(puuid:string, queue?:keyof typeof QueueId.data, startIndex:number = 0, endIndex:number = 10):Promise<ValWrapperAxios<any>> {
+     public async FetchCompetitiveUpdates(puuid:string, queueId?:keyof typeof QueueId, startIndex:number = 0, endIndex:number = 10):Promise<ValWrapperAxios<any>> {
         let _url = this.Region.url.playerData + `/mmr/v1/players/${puuid}/competitiveupdates?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
-        if (queue) {
-            _url += `&queue=${QueueId.data[queue]}`;
+
+        if(queueId === 'data'){
+            this.AxiosClient.emit('error', {
+                errorCode: 'ValWrapper_Request_Error',
+                message: 'Queue ID cannot be "data"',
+                data: queueId,
+            })
+        }
+
+        if (queueId) {
+            _url += `&queue=${queueId}`;
         }
 
         return await this.AxiosClient.get(_url);

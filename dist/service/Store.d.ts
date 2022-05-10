@@ -11,10 +11,10 @@ declare class Store {
     constructor(AxiosClient: AxiosClient, Region: ValorantAPIRegion);
     /**
     * @param {String} puuid Player UUID
-    * @param {String} itemType Item Type
+    * @param {String} itemTypeId Item Type
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    GetEntitlements(puuid: string, itemType: keyof typeof ItemTypeId.data): Promise<ValWrapperAxios<any>>;
+    GetEntitlements(puuid: string, itemTypeId: keyof typeof ItemTypeId): Promise<ValWrapperAxios<any>>;
     /**
      * @returns {Promise<ValWrapperAxios<any>>}
     */

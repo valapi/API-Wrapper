@@ -56,10 +56,10 @@ declare class Party {
     FetchVoiceToken(partyId: string): Promise<ValWrapperAxios<any>>;
     /**
     * @param {String} partyId Party ID
-    * @param {String} queue Queue (EligibleQueues)
+    * @param {String} queueId Queue (EligibleQueues)
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    ChangeQueue(partyId: string, queue: keyof typeof QueueId.data): Promise<ValWrapperAxios<any>>;
+    ChangeQueue(partyId: string, queueId: keyof typeof QueueId): Promise<ValWrapperAxios<any>>;
     /**
      * @param {String} partyId Party ID
      * @param {String} requestId Request ID
@@ -116,10 +116,10 @@ declare class Party {
     /**
     * @param {String} puuid Player UUID
     * @param {String} partyId Party ID
-    * @param {boolean} ready Ready or not?
+    * @param {boolean} isReady Ready or not?
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    SetMemberReady(puuid: string, partyId: string, ready: boolean): Promise<ValWrapperAxios<any>>;
+    SetMemberReady(puuid: string, partyId: string, isReady: boolean): Promise<ValWrapperAxios<any>>;
     /**
     * @param {String} partyId Party ID
     * @returns {Promise<ValWrapperAxios<any>>}

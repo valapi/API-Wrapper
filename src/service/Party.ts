@@ -87,12 +87,20 @@ class Party {
 
     /**
     * @param {String} partyId Party ID
-    * @param {String} queue Queue (EligibleQueues)
+    * @param {String} queueId Queue (EligibleQueues)
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-     public async ChangeQueue(partyId:string, queue:keyof typeof QueueId.data):Promise<ValWrapperAxios<any>> {
+     public async ChangeQueue(partyId:string, queueId:keyof typeof QueueId):Promise<ValWrapperAxios<any>> {
+        if(queueId === 'data'){
+            this.AxiosClient.emit('error', {
+                errorCode: 'ValWrapper_Request_Error',
+                message: 'Queue ID cannot be "data"',
+                data: queueId,
+            })
+        }
+
         return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/queue`, {
-            "queueID": `${QueueId.data[queue]}`
+            "queueID": String(queueId)
         });
     }
 
@@ -181,12 +189,12 @@ class Party {
     /**
     * @param {String} puuid Player UUID
     * @param {String} partyId Party ID
-    * @param {boolean} ready Ready or not?
+    * @param {boolean} isReady Ready or not?
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-     public async SetMemberReady(puuid:string, partyId:string, ready:boolean):Promise<ValWrapperAxios<any>> {
+     public async SetMemberReady(puuid:string, partyId:string, isReady:boolean):Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/setReady`, {
-            "ready": ready
+            "ready": isReady
         });
     }
 

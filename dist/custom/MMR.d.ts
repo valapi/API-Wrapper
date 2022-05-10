@@ -11,12 +11,12 @@ declare class MMR {
     constructor(AxiosClient: AxiosClient, Region: ValorantAPIRegion);
     /**
     * @param {String} puuid Player UUID
-    * @param {String} queue Queue
+    * @param {String} queueId Queue
     * @param {Number} startIndex Start Index
     * @param {Number} endIndex End Index
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    FetchCompetitiveUpdates(puuid: string, queue?: keyof typeof QueueId.data, startIndex?: number, endIndex?: number): Promise<ValWrapperAxios<any>>;
+    FetchCompetitiveUpdates(puuid: string, queueId?: keyof typeof QueueId, startIndex?: number, endIndex?: number): Promise<ValWrapperAxios<any>>;
     /**
     * @param {String} seasonId Season ID
     * @param {Number} startIndex Start Index

@@ -29,6 +29,12 @@ declare class Store {
     * @returns {Promise<ValWrapperAxios<any>>}
     */
     GetWallet(puuid: string): Promise<ValWrapperAxios<any>>;
+    /**
+     * * NOT TESTED
+    * @param {String} puuid Player UUID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    RevealNightMarketOffers(puuid: string): Promise<ValWrapperAxios<any>>;
 }
 export { Store };
 //# sourceMappingURL=Store.d.ts.map

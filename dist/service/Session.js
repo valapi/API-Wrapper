@@ -30,9 +30,10 @@ class Session {
         });
     }
     /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * * Careful to use, Riot will immediately shut down your Project.
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     ReConnect(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}/reconnect`);

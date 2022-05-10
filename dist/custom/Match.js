@@ -23,7 +23,7 @@ class Match {
     }
     //PVP Endpoints
     /**
-    * @description Get contract definitions
+    * Get contract definitions
     * @param {String} matchId Match ID
     * @returns {Promise<ValWrapperAxios<any>>}
     */

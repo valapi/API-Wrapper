@@ -29,6 +29,11 @@ declare class MMR {
     * @returns {Promise<ValWrapperAxios<any>>}
     */
     FetchPlayer(puuid: string): Promise<ValWrapperAxios<any>>;
+    /**
+    * @param {String} puuid Player UUID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    HideActRankBadge(puuid: string): Promise<ValWrapperAxios<any>>;
 }
 export { MMR };
 //# sourceMappingURL=MMR.d.ts.map

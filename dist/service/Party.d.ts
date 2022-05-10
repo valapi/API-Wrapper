@@ -15,6 +15,7 @@ interface ValWrapperCustomGameSettings {
         "IsOvertimeWinByTwo": boolean;
     };
 }
+declare type ValWrapperCustomGameTeam = 'TeamTwo' | 'TeamOne' | 'TeamSpectate' | 'TeamOneCoaches' | 'TeamTwoCoaches';
 declare class Party {
     protected AxiosClient: AxiosClient;
     protected Region: ValorantAPIRegion;
@@ -135,7 +136,20 @@ declare class Party {
     * @returns {Promise<ValWrapperAxios<any>>}
     */
     AutoBalance(partyId: string): Promise<ValWrapperAxios<any>>;
+    /**
+    * @param {String} partyId Party ID
+    * @param {String} team Team
+    * @param {String} puuid Player UUID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    ChangeTeamInCustomGame(partyId: string, team: ValWrapperCustomGameTeam, puuid: string): Promise<ValWrapperAxios<any>>;
+    /**
+     * * Careful to use, Riot will immediately shut down your Project.
+    * @param {String} puuid Player UUID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    StartSoloExperience(puuid: string): Promise<ValWrapperAxios<any>>;
 }
 export { Party };
-export type { ValWrapperSetAccessibility, ValWrapperCustomGameSettings };
+export type { ValWrapperSetAccessibility, ValWrapperCustomGameSettings, ValWrapperCustomGameTeam };
 //# sourceMappingURL=Party.d.ts.map

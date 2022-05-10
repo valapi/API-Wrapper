@@ -49,6 +49,17 @@ class Store {
      public async GetWallet(puuid:string):Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.get(this.Region.url.playerData + `/store/v1/wallet/${puuid}`);
     }
+
+    // NOT IN DOCS //
+
+    /**
+     * * NOT TESTED
+    * @param {String} puuid Player UUID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+     public async RevealNightMarketOffers(puuid:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.post(this.Region.url.playerData + `/store/v2/storefront/${puuid}/nightmarket/offers`);
+    }
 }
 
 export { Store };

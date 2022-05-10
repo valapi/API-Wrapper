@@ -57,6 +57,16 @@ class MMR {
             return yield this.AxiosClient.get(this.Region.url.playerData + `/mmr/v1/players/${puuid}`);
         });
     }
+    // NOT IN DOCS //
+    /**
+    * @param {String} puuid Player UUID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    HideActRankBadge(puuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.post(this.Region.url.playerData + `/mmr/v1/players/${puuid}/hideactrankbadge`);
+        });
+    }
 }
 exports.MMR = MMR;
 //# sourceMappingURL=MMR.js.map

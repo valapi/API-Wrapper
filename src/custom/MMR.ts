@@ -51,6 +51,16 @@ class MMR {
      public async FetchPlayer(puuid:string):Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.get(this.Region.url.playerData + `/mmr/v1/players/${puuid}`);
     }
+
+    // NOT IN DOCS //
+
+    /**
+    * @param {String} puuid Player UUID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+     public async HideActRankBadge(puuid:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.post(this.Region.url.playerData + `/mmr/v1/players/${puuid}/hideactrankbadge`);
+    }
 }
 
 export { MMR };

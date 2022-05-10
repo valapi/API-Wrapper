@@ -14,9 +14,10 @@ declare class Session {
     */
     Get(puuid: string): Promise<ValWrapperAxios<any>>;
     /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * * Careful to use, Riot will immediately shut down your Project.
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     ReConnect(puuid: string): Promise<ValWrapperAxios<any>>;
 }
 export { Session };

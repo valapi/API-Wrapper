@@ -10,7 +10,7 @@ declare class Match {
     */
     constructor(AxiosClient: AxiosClient, Region: ValorantAPIRegion);
     /**
-    * @description Get contract definitions
+    * Get contract definitions
     * @param {String} matchId Match ID
     * @returns {Promise<ValWrapperAxios<any>>}
     */

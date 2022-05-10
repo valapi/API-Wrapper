@@ -5,7 +5,7 @@ import type { ValorantAPIRegion } from "@valapi/lib";
 import { QueueId } from "@valapi/lib";
 
 //interface
-type ValWrapperSetAccessibility = 'OPEN' | 'CLOSED'
+type ValWrapperSetAccessibility = 'OPEN' | 'CLOSED';
 
 interface ValWrapperCustomGameSettings {
 	"Map": string;
@@ -20,6 +20,8 @@ interface ValWrapperCustomGameSettings {
 		"IsOvertimeWinByTwo": boolean;
 	};
 }
+
+type ValWrapperCustomGameTeam = 'TeamTwo' | 'TeamOne' | 'TeamSpectate' | 'TeamOneCoaches' | 'TeamTwoCoaches';
 
 //service
 class Party {
@@ -214,7 +216,28 @@ class Party {
      public async AutoBalance(partyId:string):Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/balance`);
     }
+
+    /**
+    * @param {String} partyId Party ID
+    * @param {String} team Team
+    * @param {String} puuid Player UUID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+     public async ChangeTeamInCustomGame(partyId:string, team:ValWrapperCustomGameTeam, puuid:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/customgamemembership/${team}`, {
+            "playerToPutOnTeam": String(puuid),
+        });
+    }
+
+    /**
+     * * Careful to use, Riot will immediately shut down your Project.
+    * @param {String} puuid Player UUID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+     public async StartSoloExperience(puuid:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/players/${puuid}/startsoloexperience`);
+    }
 }
 
 export { Party };
-export type { ValWrapperSetAccessibility, ValWrapperCustomGameSettings };
+export type { ValWrapperSetAccessibility, ValWrapperCustomGameSettings, ValWrapperCustomGameTeam };

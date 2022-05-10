@@ -220,6 +220,29 @@ class Party {
             return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/balance`);
         });
     }
+    /**
+    * @param {String} partyId Party ID
+    * @param {String} team Team
+    * @param {String} puuid Player UUID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    ChangeTeamInCustomGame(partyId, team, puuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/customgamemembership/${team}`, {
+                "playerToPutOnTeam": String(puuid),
+            });
+        });
+    }
+    /**
+     * * Careful to use, Riot will immediately shut down your Project.
+    * @param {String} puuid Player UUID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    StartSoloExperience(puuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.post(this.Region.url.partyService + `/parties/v1/players/${puuid}/startsoloexperience`);
+        });
+    }
 }
 exports.Party = Party;
 //# sourceMappingURL=Party.js.map

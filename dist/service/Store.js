@@ -57,6 +57,17 @@ class Store {
             return yield this.AxiosClient.get(this.Region.url.playerData + `/store/v1/wallet/${puuid}`);
         });
     }
+    // NOT IN DOCS //
+    /**
+     * * NOT TESTED
+    * @param {String} puuid Player UUID
+    * @returns {Promise<ValWrapperAxios<any>>}
+    */
+    RevealNightMarketOffers(puuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.post(this.Region.url.playerData + `/store/v2/storefront/${puuid}/nightmarket/offers`);
+        });
+    }
 }
 exports.Store = Store;
 //# sourceMappingURL=Store.js.map

@@ -82,6 +82,17 @@ class Player {
             return yield this.AxiosClient.get(this.Region.url.playerData + `/restrictions/v3/penalties`);
         });
     }
+    // NOT IN DOCS //
+    /**
+     * * IDK what this is
+     * @param {String} puuid PlayerUUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
+    MassRewards(puuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.AxiosClient.post(this.Region.url.playerData + `/mass-rewards/v1/players/${puuid}/reconcile`);
+        });
+    }
 }
 exports.Player = Player;
 //# sourceMappingURL=Player.js.map

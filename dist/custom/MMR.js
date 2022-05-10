@@ -41,11 +41,16 @@ class MMR {
     * @param {String} seasonId Season ID
     * @param {Number} startIndex Start Index
     * @param {Number} size Size
+    * @param {String} serachUsername Search Username
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    FetchLeaderboard(seasonId, startIndex = 0, size = 510) {
+    FetchLeaderboard(seasonId, startIndex = 0, size = 510, serachUsername) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/mmr/v1/leaderboards/affinity/na/queue/competitive/season/${seasonId}?startIndex=${startIndex}&size=${size}`);
+            let _url = this.Region.url.playerData + `/mmr/v1/leaderboards/affinity/${this.Region.data.api}/queue/competitive/season/${seasonId}?startIndex=${startIndex}&size=${size}`;
+            if (serachUsername) {
+                _url += `&query=${serachUsername}`;
+            }
+            return yield this.AxiosClient.get(_url);
         });
     }
     /**

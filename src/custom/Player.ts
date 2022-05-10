@@ -76,6 +76,17 @@ class Player {
      public async FetchPlayerRestrictions():Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.get(this.Region.url.playerData + `/restrictions/v3/penalties`);
     }
+
+    // NOT IN DOCS //
+
+    /**
+     * * IDK what this is
+     * @param {String} puuid PlayerUUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
+     public async MassRewards(puuid:string):Promise<ValWrapperAxios<any>> {
+        return await this.AxiosClient.post(this.Region.url.playerData + `/mass-rewards/v1/players/${puuid}/reconcile`);
+    }
 }
 
 export { Player };

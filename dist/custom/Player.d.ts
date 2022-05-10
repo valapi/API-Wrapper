@@ -37,6 +37,12 @@ declare class Player {
      * @returns {Promise<ValWrapperAxios<any>>}
     */
     FetchPlayerRestrictions(): Promise<ValWrapperAxios<any>>;
+    /**
+     * * IDK what this is
+     * @param {String} puuid PlayerUUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
+    MassRewards(puuid: string): Promise<ValWrapperAxios<any>>;
 }
 export { Player };
 //# sourceMappingURL=Player.d.ts.map

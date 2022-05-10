@@ -21,9 +21,10 @@ declare class MMR {
     * @param {String} seasonId Season ID
     * @param {Number} startIndex Start Index
     * @param {Number} size Size
+    * @param {String} serachUsername Search Username
     * @returns {Promise<ValWrapperAxios<any>>}
     */
-    FetchLeaderboard(seasonId: string, startIndex?: number, size?: number): Promise<ValWrapperAxios<any>>;
+    FetchLeaderboard(seasonId: string, startIndex?: number, size?: number, serachUsername?: string): Promise<ValWrapperAxios<any>>;
     /**
     * @param {String} puuid Player UUID
     * @returns {Promise<ValWrapperAxios<any>>}

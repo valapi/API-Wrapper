@@ -40,6 +40,7 @@ class AuthFlow extends lib_1.CustomEvent {
      * @returns {Promise<ValWrapperAuth>}
      */
     execute(auth_response, UserAgent) {
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             if (auth_response.isError) {
                 this.isError = true;
@@ -73,22 +74,26 @@ class AuthFlow extends lib_1.CustomEvent {
             });
             this.entitlements_token = entitlements_response.data.entitlements_token;
             //REGION
-            const region_response = yield axiosClient.put('https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant', {
+            let region_response = yield axiosClient.put('https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant', {
                 "id_token": this.id_token,
             }, {
                 headers: {
                     'Authorization': `${this.token_type} ${this.access_token}`,
                 }
             });
-            if (region_response.isError === true) {
-                this.region = {
-                    pbe: 'na',
-                    live: 'na',
+            if (!region_response.data.affinities || !((_a = region_response.data.affinities) === null || _a === void 0 ? void 0 : _a.pbe) || !((_b = region_response.data.affinities) === null || _b === void 0 ? void 0 : _b.live)) {
+                region_response = {
+                    isError: true,
+                    data: {
+                        affinities: {
+                            pbe: 'na',
+                            live: 'na',
+                        }
+                    }
                 };
-                return this.toJSON();
             }
-            this.region.pbe = region_response.data.affinities.pbe;
-            this.region.live = region_response.data.affinities.live;
+            this.region.pbe = (_c = region_response.data.affinities) === null || _c === void 0 ? void 0 : _c.pbe;
+            this.region.live = (_d = region_response.data.affinities) === null || _d === void 0 ? void 0 : _d.live;
             return this.toJSON();
         });
     }

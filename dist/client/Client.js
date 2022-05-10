@@ -17,6 +17,7 @@ const lib_2 = require("@valapi/lib");
 const AxiosClient_1 = require("./AxiosClient");
 const Account_1 = require("../auth/Account");
 const Multifactor_1 = require("../auth/Multifactor");
+const CookieAuth_1 = require("../auth/CookieAuth");
 const _Client_Version = 'release-04.08-shipping-15-701907';
 const _Client_Platfrom = {
     "platformType": "PC",
@@ -255,6 +256,23 @@ class WrapperClient extends lib_1.CustomEvent {
         const NewClient = new WrapperClient(config);
         NewClient.fromJSON(data);
         return NewClient;
+    }
+    static fromCookie(config, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const CookieAuthData = {
+                cookie: data.cookie,
+                access_token: data.access_token,
+                id_token: data.id_token,
+                expires_in: 3600,
+                token_type: data.token_type,
+                entitlements_token: data.entitlements_token,
+                region: data.region,
+                multifactor: false,
+                isError: false,
+            };
+            const NewCookieAuth = yield CookieAuth_1.CookieAuth.reauth(CookieAuthData, String(config.userAgent));
+            return WrapperClient.fromJSON(config, NewCookieAuth);
+        });
     }
 }
 exports.WrapperClient = WrapperClient;

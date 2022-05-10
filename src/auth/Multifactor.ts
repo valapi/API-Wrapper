@@ -60,7 +60,7 @@ class Multifactor extends CustomEvent {
         //ACCESS TOKEN
         const auth_response:ValWrapperAxios<any> = await axiosClient.put('https://auth.riotgames.com/api/v1/authorization', {
             "type": "multifactor",
-            "code": verificationCode.toString(),
+            "code": String(verificationCode),
             "rememberDevice": true
         });
 

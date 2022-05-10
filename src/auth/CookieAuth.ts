@@ -6,7 +6,7 @@ import { AxiosClient } from '../client/AxiosClient';
 import { AuthFlow } from "./AuthFlow";
 
 import { ValWrapperAuth } from './Account';
-import type { Axios, AxiosResponse } from 'axios';
+import type { Axios } from 'axios';
 
 //class
 
@@ -62,9 +62,8 @@ class CookieAuth extends CustomEvent {
         }).axiosClient;
 
         //Cookie Reauth
-        var reauth_response:AxiosResponse;
         try{
-            reauth_response = await axiosClient.get('https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1')
+            await axiosClient.get('https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1')
         }catch(err:any){
             return await AuthFlow.fromUrl(this.toJSON(), err.request._currentUrl as string, UserAgent);
         }

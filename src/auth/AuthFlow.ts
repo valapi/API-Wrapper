@@ -86,7 +86,7 @@ class AuthFlow extends CustomEvent {
         this.entitlements_token = entitlements_response.data.entitlements_token;
 
         //REGION
-        const region_response:ValWrapperAxios<any> = await axiosClient.put('https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant', {
+        let region_response:ValWrapperAxios<any> = await axiosClient.put('https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant', {
             "id_token": this.id_token,
         }, {
             headers: {
@@ -94,17 +94,20 @@ class AuthFlow extends CustomEvent {
             }
         });
 
-        if(region_response.isError === true){
-            this.region = {
-                pbe: 'na',
-                live: 'na',
+        if(!region_response.data.affinities || !region_response.data.affinities?.pbe || !region_response.data.affinities?.live){
+            region_response = {
+                isError: true,
+                data: {
+                    affinities: {
+                        pbe: 'na',
+                        live: 'na',
+                    }
+                }
             }
-
-            return this.toJSON();
         }
 
-        this.region.pbe = region_response.data.affinities.pbe;
-        this.region.live = region_response.data.affinities.live;
+        this.region.pbe = region_response.data.affinities?.pbe;
+        this.region.live = region_response.data.affinities?.live;
         return this.toJSON();
     }
 

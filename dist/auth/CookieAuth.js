@@ -53,9 +53,8 @@ class CookieAuth extends lib_1.CustomEvent {
                 maxRedirects: 1,
             }).axiosClient;
             //Cookie Reauth
-            var reauth_response;
             try {
-                reauth_response = yield axiosClient.get('https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1');
+                yield axiosClient.get('https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1');
             }
             catch (err) {
                 return yield AuthFlow_1.AuthFlow.fromUrl(this.toJSON(), err.request._currentUrl, UserAgent);

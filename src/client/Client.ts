@@ -9,6 +9,7 @@ import { AxiosClient, type ValWrapperAxiosError } from "./AxiosClient";
 
 import { Account as ClientAuthAccount, type ValWrapperAuth } from "../auth/Account";
 import { Multifactor as ClientAuthMultifactor } from "../auth/Multifactor";
+import { CookieAuth as ClientAuthCookie } from "../auth/CookieAuth";
 
 const _Client_Version = 'release-04.08-shipping-15-701907';
 const _Client_Platfrom = {
@@ -371,6 +372,24 @@ class WrapperClient extends CustomEvent {
         NewClient.fromJSON(data);
 
         return NewClient;
+    }
+
+    public static async fromCookie(config: ValWrapperConfig, data: ValWrapperClient): Promise<WrapperClient> {
+        const CookieAuthData:ValWrapperAuth = {
+            cookie: data.cookie,
+            access_token: data.access_token,
+            id_token: data.id_token,
+            expires_in: 3600,
+            token_type: data.token_type,
+            entitlements_token: data.entitlements_token,
+            region: data.region,
+            multifactor: false,
+            isError: false,
+        }
+
+        const NewCookieAuth = await ClientAuthCookie.reauth(CookieAuthData, String(config.userAgent));
+
+        return WrapperClient.fromJSON(config, NewCookieAuth);
     }
 }
 

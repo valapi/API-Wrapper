@@ -108,6 +108,7 @@ declare class WrapperClient extends CustomEvent {
     */
     setCookie(cookie: CookieJar.Serialized): void;
     static fromJSON(config: ValWrapperConfig, data: ValWrapperClient): WrapperClient;
+    static fromCookie(config: ValWrapperConfig, data: ValWrapperClient): Promise<WrapperClient>;
 }
 interface ValWrapperClientEvent {
     'ready': () => void;

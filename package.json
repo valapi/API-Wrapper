@@ -43,7 +43,7 @@
   },
   "homepage": "https://github.com/valapi/API-Wrapper#readme",
   "dependencies": {
-    "@valapi/lib": "^1.0.0",
+    "@valapi/lib": "^1.0.1",
     "axios": "^0.27.2",
     "http-cookie-agent": "^2.1.2",
     "tough-cookie": "^4.0.0"

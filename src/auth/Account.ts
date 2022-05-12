@@ -1,7 +1,6 @@
 //import
 import { CookieJar } from 'tough-cookie';
 
-import { CustomEvent } from "@valapi/lib";
 import { AxiosClient, type ValWrapperAxios } from '../client/AxiosClient';
 import { AuthFlow } from "./AuthFlow";
 
@@ -27,7 +26,7 @@ interface ValWrapperAuth {
 /**
  * * Class ID: @ing3kth/valapi/ValClient/Account
  */
-class Account extends CustomEvent {
+class Account {
     private cookie:CookieJar;
     private access_token:string;
     private id_token:string;
@@ -42,7 +41,6 @@ class Account extends CustomEvent {
     public isError:boolean;
 
     constructor() {
-        super();
         this.cookie = new CookieJar();
         this.access_token = '';
         this.id_token = '';

@@ -47,12 +47,11 @@ class AxiosClient extends lib_1.CustomEvent {
      */
     errorHandler(error) {
         //event
-        const RequestError = {
+        this.emit('error', {
             errorCode: 'ValWrapper_Request_Error',
             message: error.message,
             data: error,
-        };
-        this.emit('error', RequestError);
+        });
         //data
         if (error.response && error.response.data) {
             return {

@@ -1,23 +1,16 @@
 //import
-import { CustomEvent, toUft8 } from "@valapi/lib";
+import { CustomEvent, toUft8, type ValorantAPIError } from "@valapi/lib";
 import { CookieJar } from "tough-cookie";
+import type { AxiosRequestConfig } from "axios";
 
 import { ValRegion as WrapperRegion, type ValorantAPIRegion } from "@valapi/lib";
 import { Region as _Region } from "@valapi/lib";
 
-import { AxiosClient, type ValWrapperAxiosError } from "./AxiosClient";
+import { AxiosClient, type ValWrapperAxiosRequest } from "./AxiosClient";
 
 import { Account as ClientAuthAccount, type ValWrapperAuth } from "../auth/Account";
 import { Multifactor as ClientAuthMultifactor } from "../auth/Multifactor";
 import { CookieAuth as ClientAuthCookie } from "../auth/CookieAuth";
-
-const _Client_Version = 'release-04.08-shipping-15-701907';
-const _Client_Platfrom = {
-    "platformType": "PC",
-    "platformOS": "Windows",
-    "platformOSVersion": "10.0.19042.1.256.64bit",
-    "platformChipset": "Unknown"
-}
 
 //service
 import { Contract as ContractService } from "../service/Contract";
@@ -53,12 +46,6 @@ interface ValWrapperClientPlatfrom {
     "platformChipset": string;
 }
 
-interface ValWrapperClientError {
-    errorCode: string;
-    message: string;
-    data: any;
-}
-
 interface ValWrapperConfig {
     userAgent?: string;
     region?: keyof typeof _Region;
@@ -66,18 +53,25 @@ interface ValWrapperConfig {
         version?: string;
         platform?: ValWrapperClientPlatfrom;
     };
-    timeout?: number;
+    axiosConfig?: AxiosRequestConfig,
 }
 
-interface ValWrapperClientConfig {
-    userAgent: string;
-    region: keyof typeof _Region;
-    lockRegion: boolean;
+const _Client_Version = 'release-04.08-shipping-15-701907';
+const _Client_Platfrom = {
+    "platformType": "PC",
+    "platformOS": "Windows",
+    "platformOSVersion": "10.0.19042.1.256.64bit",
+    "platformChipset": "Unknown"
+}
+
+const _defaultConfig: ValWrapperConfig = {
+    userAgent: 'RiotClient/43.0.1.41953 86.4190634 rso-auth (Windows; 10;;Professional, x64)',
+    region: 'na',
     client: {
-        version: string;
-        platform: ValWrapperClientPlatfrom;
-    };
-    timeout: number;
+        version: _Client_Version,
+        platform: _Client_Platfrom,
+    },
+    axiosConfig: {},
 }
 
 //class
@@ -98,7 +92,8 @@ class WrapperClient extends CustomEvent {
         live: string,
     };
 
-    protected config: ValWrapperClientConfig;
+    protected config: ValWrapperConfig;
+    protected lockRegion: boolean;
 
     //reload
     private RegionServices: ValorantAPIRegion;
@@ -120,43 +115,18 @@ class WrapperClient extends CustomEvent {
     constructor(config: ValWrapperConfig = {}) {
         super();
         //config
-        if (!config.userAgent) {
-            config.userAgent = 'RiotClient/43.0.1.41953 86.4190634 rso-auth (Windows; 10;;Professional, x64)';
-        }
-
-        if (!config.client) {
-            config.client = {
-                version: _Client_Version,
-                platform: _Client_Platfrom,
-            }
-        } else {
-            if (!config.client.version) {
-                config.client.version = _Client_Version;
-            }
-
-            if (!config.client.platform) {
-                config.client.platform = _Client_Platfrom;
-            }
-        }
-
-        if(!config.timeout){
-            config.timeout = 60000; // 1 minute (60 * 1000)
-        }
-
-        this.config = {
-            userAgent: config.userAgent,
-            region: 'na',
-            client: {
-                version: config.client.version as string,
-                platform: config.client.platform as ValWrapperClientPlatfrom,
-            },
-            lockRegion: false,
-            timeout: config.timeout,
-        };
+        this.config = new Object({ ..._defaultConfig, ...config });
 
         if (config.region) {
             this.config.region = config.region as keyof typeof _Region;
-            this.config.lockRegion = true;
+            this.lockRegion = true;
+        } else {
+            this.lockRegion = false;
+        }
+
+        if(config.region === 'data'){
+            this.emit('error', { errorCode: 'ValWrapper_Config_Error', message: 'Region Not Found', data: config.region });
+            config.region = 'na';
         }
 
         //create without auth
@@ -168,7 +138,7 @@ class WrapperClient extends CustomEvent {
         this.entitlements_token = '';
         this.region = {
             pbe: 'na',
-            live: this.config.region,
+            live: String(this.config.region),
         };
         this.multifactor = false;
         this.isError = true;
@@ -176,16 +146,17 @@ class WrapperClient extends CustomEvent {
         // first reload
         this.RegionServices = new WrapperRegion(this.region.live as keyof typeof _Region).toJSON();
 
-        this.AxiosClient = new AxiosClient({
+        const _axiosConfig: AxiosRequestConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
-                'X-Riot-ClientVersion': this.config.client.version,
-                'X-Riot-ClientPlatform': toUft8(JSON.stringify(this.config.client.platform)),
-            },
-            timeout: this.config.timeout,
-        });
-        this.AxiosClient.on('error', ((data:ValWrapperAxiosError) => { this.emit('error', data as ValWrapperClientError); }));
+                'X-Riot-ClientVersion': String(this.config.client?.version),
+                'X-Riot-ClientPlatform': toUft8(JSON.stringify(this.config.client?.platform)),
+            }
+        }
+        this.AxiosClient = new AxiosClient(new Object({ ..._axiosConfig, ...this.config.axiosConfig }));
+        this.AxiosClient.on('error', ((data:ValorantAPIError) => { this.emit('error', data as ValorantAPIError); }));
+        this.AxiosClient.on('request', ((data:ValWrapperAxiosRequest) => { this.emit('request', data as ValWrapperAxiosRequest); }));
 
         //service
         this.Contract = new ContractService(this.AxiosClient, this.RegionServices);
@@ -198,7 +169,7 @@ class WrapperClient extends CustomEvent {
         this.Client = new ClientService(this.AxiosClient, this.RegionServices);
         this.Match = new MatchService(this.AxiosClient, this.RegionServices);
         this.MMR = new MMRService(this.AxiosClient, this.RegionServices);
-        this.Player = new PlayerService(this.AxiosClient, this.RegionServices, this.config.userAgent);
+        this.Player = new PlayerService(this.AxiosClient, this.RegionServices, String(this.config.userAgent));
 
         //event
         this.emit('ready');
@@ -212,16 +183,17 @@ class WrapperClient extends CustomEvent {
     private reload(): void {
         this.RegionServices = new WrapperRegion(this.region.live as keyof typeof _Region).toJSON();
 
-        this.AxiosClient = new AxiosClient({
+        const _axiosConfig: AxiosRequestConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
-                'X-Riot-ClientVersion': this.config.client.version,
-                'X-Riot-ClientPlatform': toUft8(JSON.stringify(this.config.client.platform)),
-            },
-            timeout: this.config.timeout,
-        });
-        this.AxiosClient.on('error', ((data:ValWrapperAxiosError) => { this.emit('error', data as ValWrapperClientError); }));
+                'X-Riot-ClientVersion': String(this.config.client?.version),
+                'X-Riot-ClientPlatform': toUft8(JSON.stringify(this.config.client?.platform)),
+            }
+        }
+        this.AxiosClient = new AxiosClient(new Object({ ..._axiosConfig, ...this.config.axiosConfig }));
+        this.AxiosClient.on('error', ((data:ValorantAPIError) => { this.emit('error', data as ValorantAPIError); }));
+        this.AxiosClient.on('request', ((data:ValWrapperAxiosRequest) => { this.emit('request', data as ValWrapperAxiosRequest); }));
 
         //service
         this.Contract = new ContractService(this.AxiosClient, this.RegionServices);
@@ -234,7 +206,10 @@ class WrapperClient extends CustomEvent {
         this.Client = new ClientService(this.AxiosClient, this.RegionServices);
         this.Match = new MatchService(this.AxiosClient, this.RegionServices);
         this.MMR = new MMRService(this.AxiosClient, this.RegionServices);
-        this.Player = new PlayerService(this.AxiosClient, this.RegionServices, this.config.userAgent);
+        this.Player = new PlayerService(this.AxiosClient, this.RegionServices, String(this.config.userAgent));
+
+        //event
+        this.emit('ready');
     }
 
     //save
@@ -258,7 +233,7 @@ class WrapperClient extends CustomEvent {
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
 
-        if (!this.config.lockRegion) {
+        if (!this.lockRegion) {
             this.region = data.region;
         }
 
@@ -288,7 +263,7 @@ class WrapperClient extends CustomEvent {
         this.expires_in = auth.expires_in;
         this.token_type = auth.token_type;
         this.entitlements_token = auth.entitlements_token;
-        if (!this.config.lockRegion) {
+        if (!this.lockRegion) {
             this.region = auth.region;
         }
         this.multifactor = auth.multifactor;
@@ -306,14 +281,14 @@ class WrapperClient extends CustomEvent {
     }
 
     public async login(username: string, password: string): Promise<void> {
-        const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(username, password, this.config.userAgent);
+        const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(username, password, String(this.config.userAgent));
 
         this.fromJSONAuth(NewAuth);
         this.reload();
     }
 
     public async verify(verificationCode: number): Promise<void> {
-        const NewAuth: ValWrapperAuth = await ClientAuthMultifactor.verify(this.toJSONAuth(), verificationCode, this.config.userAgent);
+        const NewAuth: ValWrapperAuth = await ClientAuthMultifactor.verify(this.toJSONAuth(), verificationCode, String(this.config.userAgent));
 
         this.fromJSONAuth(NewAuth);
         this.reload();
@@ -339,7 +314,10 @@ class WrapperClient extends CustomEvent {
     public setClientVersion(clientVersion:string = _Client_Version):void {
         this.emit('changeSettings', { name: 'client_version', data: clientVersion });
 
-        this.config.client.version = clientVersion;
+        this.config.client = {
+            version: clientVersion,
+            platform: this.config.client?.platform,
+        };
         this.reload();
     }
 
@@ -350,7 +328,10 @@ class WrapperClient extends CustomEvent {
     public setClientPlatfrom(clientPlatfrom:ValWrapperClientPlatfrom = _Client_Platfrom):void {
         this.emit('changeSettings', { name: 'client_platfrom', data: clientPlatfrom });
 
-        this.config.client.platform = clientPlatfrom;
+        this.config.client = {
+            version: this.config.client?.version,
+            platform: clientPlatfrom,
+        };
         this.reload();
     }
 
@@ -370,6 +351,10 @@ class WrapperClient extends CustomEvent {
     public static fromJSON(config: ValWrapperConfig, data: ValWrapperClient): WrapperClient {
         const NewClient: WrapperClient = new WrapperClient(config);
         NewClient.fromJSON(data);
+
+        NewClient.expires_in = 3600;
+        NewClient.multifactor = false;
+        NewClient.isError = false;
 
         return NewClient;
     }
@@ -396,8 +381,9 @@ class WrapperClient extends CustomEvent {
 //event
 interface ValWrapperClientEvent {
     'ready': () => void,
+    'request': (data:ValWrapperAxiosRequest) => void,
     'changeSettings': (data: { name:string, data:any }) => void,
-    'error': (data: ValWrapperClientError) => void;
+    'error': (data: ValorantAPIError) => void;
 }
 
 declare interface WrapperClient {
@@ -409,4 +395,4 @@ declare interface WrapperClient {
 
 //export
 export { WrapperClient };
-export type { ValWrapperClient, ValWrapperClientPlatfrom, ValWrapperClientError, ValWrapperConfig, ValWrapperClientConfig, ValWrapperClientEvent };
+export type { ValWrapperClient, ValWrapperClientPlatfrom, ValWrapperConfig, ValWrapperClientEvent };

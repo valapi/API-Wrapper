@@ -1,14 +1,13 @@
 //import
 import { CookieJar } from 'tough-cookie';
 
-import { CustomEvent } from "@valapi/lib";
 import { AxiosClient, type ValWrapperAxios } from '../client/AxiosClient';
 import { AuthFlow } from "./AuthFlow";
 
 import type { ValWrapperAuth } from './Account';
 
 //class
-class Multifactor extends CustomEvent {
+class Multifactor {
     private cookie:CookieJar;
     private access_token:string;
     private id_token:string;
@@ -26,7 +25,6 @@ class Multifactor extends CustomEvent {
     * @param {ValWrapperAuth} data Account toJSON data
     */
     constructor(data: ValWrapperAuth) {
-        super();
         if(!data.multifactor){
             throw new Error('This Account is not have a Multifactor');
         }

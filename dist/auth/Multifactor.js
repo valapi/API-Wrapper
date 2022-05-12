@@ -12,16 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Multifactor = void 0;
 //import
 const tough_cookie_1 = require("tough-cookie");
-const lib_1 = require("@valapi/lib");
 const AxiosClient_1 = require("../client/AxiosClient");
 const AuthFlow_1 = require("./AuthFlow");
 //class
-class Multifactor extends lib_1.CustomEvent {
+class Multifactor {
     /**
     * @param {ValWrapperAuth} data Account toJSON data
     */
     constructor(data) {
-        super();
         if (!data.multifactor) {
             throw new Error('This Account is not have a Multifactor');
         }

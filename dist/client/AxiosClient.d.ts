@@ -1,4 +1,4 @@
-import { CustomEvent } from "@valapi/lib";
+import { CustomEvent, type ValorantAPIError } from "@valapi/lib";
 import { type Axios, type AxiosRequestConfig } from 'axios';
 import type { CookieJar } from 'tough-cookie';
 declare module 'axios' {
@@ -11,11 +11,6 @@ interface ValWrapperAxios<ValWrapperAxiosReturn = any> {
     data: ValWrapperAxiosReturn;
 }
 declare type ValWrapperAxiosMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
-interface ValWrapperAxiosError {
-    errorCode: string;
-    message: string;
-    data: any;
-}
 interface ValWrapperAxiosRequest {
     method: ValWrapperAxiosMethod;
     url: string;
@@ -71,7 +66,7 @@ declare class AxiosClient extends CustomEvent {
 interface ValWrapperAxiosEvent {
     'ready': () => void;
     'request': (data: ValWrapperAxiosRequest) => void;
-    'error': (data: ValWrapperAxiosError) => void;
+    'error': (data: ValorantAPIError) => void;
 }
 declare interface AxiosClient {
     emit<EventName extends keyof ValWrapperAxiosEvent>(name: EventName, ...args: Parameters<ValWrapperAxiosEvent[EventName]>): void;
@@ -80,5 +75,5 @@ declare interface AxiosClient {
     off<EventName extends keyof ValWrapperAxiosEvent>(name: EventName, callback?: ValWrapperAxiosEvent[EventName]): void;
 }
 export { AxiosClient };
-export type { ValWrapperAxios, ValWrapperAxiosMethod, ValWrapperAxiosError, ValWrapperAxiosRequest, ValWrapperAxiosEvent };
+export type { ValWrapperAxios, ValWrapperAxiosMethod, ValWrapperAxiosRequest, ValWrapperAxiosEvent };
 //# sourceMappingURL=AxiosClient.d.ts.map

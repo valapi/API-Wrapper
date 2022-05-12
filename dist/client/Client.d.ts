@@ -1,6 +1,8 @@
-import { CustomEvent } from "@valapi/lib";
+import { CustomEvent, type ValorantAPIError } from "@valapi/lib";
 import { CookieJar } from "tough-cookie";
+import type { AxiosRequestConfig } from "axios";
 import { Region as _Region } from "@valapi/lib";
+import { type ValWrapperAxiosRequest } from "./AxiosClient";
 import { type ValWrapperAuth } from "../auth/Account";
 import { Contract as ContractService } from "../service/Contract";
 import { CurrentGame as CurrentGameService } from "../service/CurrentGame";
@@ -29,11 +31,6 @@ interface ValWrapperClientPlatfrom {
     "platformOSVersion": string;
     "platformChipset": string;
 }
-interface ValWrapperClientError {
-    errorCode: string;
-    message: string;
-    data: any;
-}
 interface ValWrapperConfig {
     userAgent?: string;
     region?: keyof typeof _Region;
@@ -41,17 +38,7 @@ interface ValWrapperConfig {
         version?: string;
         platform?: ValWrapperClientPlatfrom;
     };
-    timeout?: number;
-}
-interface ValWrapperClientConfig {
-    userAgent: string;
-    region: keyof typeof _Region;
-    lockRegion: boolean;
-    client: {
-        version: string;
-        platform: ValWrapperClientPlatfrom;
-    };
-    timeout: number;
+    axiosConfig?: AxiosRequestConfig;
 }
 declare class WrapperClient extends CustomEvent {
     private cookie;
@@ -63,7 +50,8 @@ declare class WrapperClient extends CustomEvent {
     multifactor: boolean;
     isError: boolean;
     private region;
-    protected config: ValWrapperClientConfig;
+    protected config: ValWrapperConfig;
+    protected lockRegion: boolean;
     private RegionServices;
     private AxiosClient;
     Contract: ContractService;
@@ -112,11 +100,12 @@ declare class WrapperClient extends CustomEvent {
 }
 interface ValWrapperClientEvent {
     'ready': () => void;
+    'request': (data: ValWrapperAxiosRequest) => void;
     'changeSettings': (data: {
         name: string;
         data: any;
     }) => void;
-    'error': (data: ValWrapperClientError) => void;
+    'error': (data: ValorantAPIError) => void;
 }
 declare interface WrapperClient {
     emit<EventName extends keyof ValWrapperClientEvent>(name: EventName, ...args: Parameters<ValWrapperClientEvent[EventName]>): void;
@@ -125,5 +114,5 @@ declare interface WrapperClient {
     off<EventName extends keyof ValWrapperClientEvent>(name: EventName, callback?: ValWrapperClientEvent[EventName]): void;
 }
 export { WrapperClient };
-export type { ValWrapperClient, ValWrapperClientPlatfrom, ValWrapperClientError, ValWrapperConfig, ValWrapperClientConfig, ValWrapperClientEvent };
+export type { ValWrapperClient, ValWrapperClientPlatfrom, ValWrapperConfig, ValWrapperClientEvent };
 //# sourceMappingURL=Client.d.ts.map

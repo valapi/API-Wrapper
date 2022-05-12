@@ -1,5 +1,5 @@
 //import
-import { CustomEvent } from "@valapi/lib";
+import { CustomEvent, type ValorantAPIError } from "@valapi/lib";
 
 import axios, { type Axios, type AxiosRequestConfig, type AxiosError } from 'axios';
 import type { CookieJar } from 'tough-cookie';
@@ -20,12 +20,6 @@ interface ValWrapperAxios<ValWrapperAxiosReturn = any> {
 }
 
 type ValWrapperAxiosMethod = 'get' | 'post' | 'put' | 'patch' | 'delete' ;
-
-interface ValWrapperAxiosError {
-    errorCode: string;
-    message: string;
-    data: any;
-}
 
 interface ValWrapperAxiosRequest {
     method: ValWrapperAxiosMethod;
@@ -70,13 +64,11 @@ class AxiosClient extends CustomEvent {
      */
      private errorHandler(error:AxiosError):ValWrapperAxios<any> {
         //event
-        const RequestError:ValWrapperAxiosError = {
+        this.emit('error', {
             errorCode: 'ValWrapper_Request_Error',
             message: error.message,
             data: error,
-        }
-
-        this.emit('error', RequestError)
+        })
 
         //data
         if(error.response && error.response.data){
@@ -294,7 +286,7 @@ class AxiosClient extends CustomEvent {
 interface ValWrapperAxiosEvent {
     'ready': () => void;
     'request': (data: ValWrapperAxiosRequest) => void;
-    'error': (data: ValWrapperAxiosError) => void;
+    'error': (data: ValorantAPIError) => void;
 }
 
 declare interface AxiosClient {
@@ -306,4 +298,4 @@ declare interface AxiosClient {
 
 //export
 export { AxiosClient };
-export type { ValWrapperAxios, ValWrapperAxiosMethod, ValWrapperAxiosError, ValWrapperAxiosRequest, ValWrapperAxiosEvent };
+export type { ValWrapperAxios, ValWrapperAxiosMethod, ValWrapperAxiosRequest, ValWrapperAxiosEvent };

@@ -1,5 +1,5 @@
 export { WrapperClient as Client } from "./client/Client";
-export type { ValWrapperClient, ValWrapperClientConfig, ValWrapperClientError, ValWrapperClientEvent, ValWrapperClientPlatfrom, ValWrapperConfig } from "./client/Client";
-export type { ValWrapperAxios, ValWrapperAxiosEvent, ValWrapperAxiosError, ValWrapperAxiosMethod, ValWrapperAxiosRequest } from "./client/AxiosClient";
+export type { ValWrapperClient, ValWrapperClientEvent, ValWrapperClientPlatfrom, ValWrapperConfig } from "./client/Client";
+export type { ValWrapperAxios, ValWrapperAxiosEvent, ValWrapperAxiosMethod, ValWrapperAxiosRequest } from "./client/AxiosClient";
 export type { ValWrapperAuth } from "./auth/Account";
 //# sourceMappingURL=index.d.ts.map

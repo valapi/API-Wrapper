@@ -18,13 +18,6 @@ const AxiosClient_1 = require("./AxiosClient");
 const Account_1 = require("../auth/Account");
 const Multifactor_1 = require("../auth/Multifactor");
 const CookieAuth_1 = require("../auth/CookieAuth");
-const _Client_Version = 'release-04.08-shipping-15-701907';
-const _Client_Platfrom = {
-    "platformType": "PC",
-    "platformOS": "Windows",
-    "platformOSVersion": "10.0.19042.1.256.64bit",
-    "platformChipset": "Unknown"
-};
 //service
 const Contract_1 = require("../service/Contract");
 const CurrentGame_1 = require("../service/CurrentGame");
@@ -36,44 +29,39 @@ const Client_1 = require("../custom/Client");
 const Match_1 = require("../custom/Match");
 const MMR_1 = require("../custom/MMR");
 const Player_1 = require("../custom/Player");
+const _Client_Version = 'release-04.08-shipping-15-701907';
+const _Client_Platfrom = {
+    "platformType": "PC",
+    "platformOS": "Windows",
+    "platformOSVersion": "10.0.19042.1.256.64bit",
+    "platformChipset": "Unknown"
+};
+const _defaultConfig = {
+    userAgent: 'RiotClient/43.0.1.41953 86.4190634 rso-auth (Windows; 10;;Professional, x64)',
+    region: 'na',
+    client: {
+        version: _Client_Version,
+        platform: _Client_Platfrom,
+    },
+    axiosConfig: {},
+};
 //class
 class WrapperClient extends lib_1.CustomEvent {
     constructor(config = {}) {
+        var _a, _b;
         super();
         //config
-        if (!config.userAgent) {
-            config.userAgent = 'RiotClient/43.0.1.41953 86.4190634 rso-auth (Windows; 10;;Professional, x64)';
-        }
-        if (!config.client) {
-            config.client = {
-                version: _Client_Version,
-                platform: _Client_Platfrom,
-            };
-        }
-        else {
-            if (!config.client.version) {
-                config.client.version = _Client_Version;
-            }
-            if (!config.client.platform) {
-                config.client.platform = _Client_Platfrom;
-            }
-        }
-        if (!config.timeout) {
-            config.timeout = 60000; // 1 minute (60 * 1000)
-        }
-        this.config = {
-            userAgent: config.userAgent,
-            region: 'na',
-            client: {
-                version: config.client.version,
-                platform: config.client.platform,
-            },
-            lockRegion: false,
-            timeout: config.timeout,
-        };
+        this.config = new Object(Object.assign(Object.assign({}, _defaultConfig), config));
         if (config.region) {
             this.config.region = config.region;
-            this.config.lockRegion = true;
+            this.lockRegion = true;
+        }
+        else {
+            this.lockRegion = false;
+        }
+        if (config.region === 'data') {
+            this.emit('error', { errorCode: 'ValWrapper_Config_Error', message: 'Region Not Found', data: config.region });
+            config.region = 'na';
         }
         //create without auth
         this.cookie = new tough_cookie_1.CookieJar();
@@ -84,22 +72,23 @@ class WrapperClient extends lib_1.CustomEvent {
         this.entitlements_token = '';
         this.region = {
             pbe: 'na',
-            live: this.config.region,
+            live: String(this.config.region),
         };
         this.multifactor = false;
         this.isError = true;
         // first reload
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
-        this.AxiosClient = new AxiosClient_1.AxiosClient({
+        const _axiosConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
-                'X-Riot-ClientVersion': this.config.client.version,
-                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify(this.config.client.platform)),
-            },
-            timeout: this.config.timeout,
-        });
+                'X-Riot-ClientVersion': String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
+                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
+            }
+        };
+        this.AxiosClient = new AxiosClient_1.AxiosClient(new Object(Object.assign(Object.assign({}, _axiosConfig), this.config.axiosConfig)));
         this.AxiosClient.on('error', ((data) => { this.emit('error', data); }));
+        this.AxiosClient.on('request', ((data) => { this.emit('request', data); }));
         //service
         this.Contract = new Contract_1.Contract(this.AxiosClient, this.RegionServices);
         this.CurrentGame = new CurrentGame_1.CurrentGame(this.AxiosClient, this.RegionServices);
@@ -110,7 +99,7 @@ class WrapperClient extends lib_1.CustomEvent {
         this.Client = new Client_1.Client(this.AxiosClient, this.RegionServices);
         this.Match = new Match_1.Match(this.AxiosClient, this.RegionServices);
         this.MMR = new MMR_1.MMR(this.AxiosClient, this.RegionServices);
-        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices, this.config.userAgent);
+        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices, String(this.config.userAgent));
         //event
         this.emit('ready');
     }
@@ -119,17 +108,19 @@ class WrapperClient extends lib_1.CustomEvent {
      * @returns {void}
      */
     reload() {
+        var _a, _b;
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
-        this.AxiosClient = new AxiosClient_1.AxiosClient({
+        const _axiosConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
-                'X-Riot-ClientVersion': this.config.client.version,
-                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify(this.config.client.platform)),
-            },
-            timeout: this.config.timeout,
-        });
+                'X-Riot-ClientVersion': String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
+                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
+            }
+        };
+        this.AxiosClient = new AxiosClient_1.AxiosClient(new Object(Object.assign(Object.assign({}, _axiosConfig), this.config.axiosConfig)));
         this.AxiosClient.on('error', ((data) => { this.emit('error', data); }));
+        this.AxiosClient.on('request', ((data) => { this.emit('request', data); }));
         //service
         this.Contract = new Contract_1.Contract(this.AxiosClient, this.RegionServices);
         this.CurrentGame = new CurrentGame_1.CurrentGame(this.AxiosClient, this.RegionServices);
@@ -140,7 +131,9 @@ class WrapperClient extends lib_1.CustomEvent {
         this.Client = new Client_1.Client(this.AxiosClient, this.RegionServices);
         this.Match = new Match_1.Match(this.AxiosClient, this.RegionServices);
         this.MMR = new MMR_1.MMR(this.AxiosClient, this.RegionServices);
-        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices, this.config.userAgent);
+        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices, String(this.config.userAgent));
+        //event
+        this.emit('ready');
     }
     //save
     toJSON() {
@@ -160,7 +153,7 @@ class WrapperClient extends lib_1.CustomEvent {
         this.token_type = data.token_type;
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
-        if (!this.config.lockRegion) {
+        if (!this.lockRegion) {
             this.region = data.region;
         }
         this.reload();
@@ -186,7 +179,7 @@ class WrapperClient extends lib_1.CustomEvent {
         this.expires_in = auth.expires_in;
         this.token_type = auth.token_type;
         this.entitlements_token = auth.entitlements_token;
-        if (!this.config.lockRegion) {
+        if (!this.lockRegion) {
             this.region = auth.region;
         }
         this.multifactor = auth.multifactor;
@@ -202,14 +195,14 @@ class WrapperClient extends lib_1.CustomEvent {
     }
     login(username, password) {
         return __awaiter(this, void 0, void 0, function* () {
-            const NewAuth = yield Account_1.Account.login(username, password, this.config.userAgent);
+            const NewAuth = yield Account_1.Account.login(username, password, String(this.config.userAgent));
             this.fromJSONAuth(NewAuth);
             this.reload();
         });
     }
     verify(verificationCode) {
         return __awaiter(this, void 0, void 0, function* () {
-            const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), verificationCode, this.config.userAgent);
+            const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), verificationCode, String(this.config.userAgent));
             this.fromJSONAuth(NewAuth);
             this.reload();
         });
@@ -229,8 +222,12 @@ class WrapperClient extends lib_1.CustomEvent {
     * @returns {void}
     */
     setClientVersion(clientVersion = _Client_Version) {
+        var _a;
         this.emit('changeSettings', { name: 'client_version', data: clientVersion });
-        this.config.client.version = clientVersion;
+        this.config.client = {
+            version: clientVersion,
+            platform: (_a = this.config.client) === null || _a === void 0 ? void 0 : _a.platform,
+        };
         this.reload();
     }
     /**
@@ -238,8 +235,12 @@ class WrapperClient extends lib_1.CustomEvent {
     * @returns {void}
     */
     setClientPlatfrom(clientPlatfrom = _Client_Platfrom) {
+        var _a;
         this.emit('changeSettings', { name: 'client_platfrom', data: clientPlatfrom });
-        this.config.client.platform = clientPlatfrom;
+        this.config.client = {
+            version: (_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version,
+            platform: clientPlatfrom,
+        };
         this.reload();
     }
     /**
@@ -255,6 +256,9 @@ class WrapperClient extends lib_1.CustomEvent {
     static fromJSON(config, data) {
         const NewClient = new WrapperClient(config);
         NewClient.fromJSON(data);
+        NewClient.expires_in = 3600;
+        NewClient.multifactor = false;
+        NewClient.isError = false;
         return NewClient;
     }
     static fromCookie(config, data) {

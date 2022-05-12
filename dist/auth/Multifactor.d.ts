@@ -1,6 +1,5 @@
-import { CustomEvent } from "@valapi/lib";
 import type { ValWrapperAuth } from './Account';
-declare class Multifactor extends CustomEvent {
+declare class Multifactor {
     private cookie;
     private access_token;
     private id_token;

@@ -12,18 +12,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthFlow = void 0;
 //import
 const tough_cookie_1 = require("tough-cookie");
-const lib_1 = require("@valapi/lib");
 const AxiosClient_1 = require("../client/AxiosClient");
 //class
 /**
  * * Class ID: @ing3kth/valapi/ValClient/AuthFlow
  */
-class AuthFlow extends lib_1.CustomEvent {
+class AuthFlow {
     /**
     * @param {ValWrapperAuth} data Account toJSON data
     */
     constructor(data) {
-        super();
         this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(data.cookie));
         this.access_token = data.access_token;
         this.id_token = data.id_token;

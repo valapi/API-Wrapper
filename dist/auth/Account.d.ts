@@ -1,5 +1,4 @@
 import { CookieJar } from 'tough-cookie';
-import { CustomEvent } from "@valapi/lib";
 interface ValWrapperAuth {
     cookie: CookieJar.Serialized;
     access_token: string;
@@ -17,7 +16,7 @@ interface ValWrapperAuth {
 /**
  * * Class ID: @ing3kth/valapi/ValClient/Account
  */
-declare class Account extends CustomEvent {
+declare class Account {
     private cookie;
     private access_token;
     private id_token;

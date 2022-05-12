@@ -1,9 +1,8 @@
-import { CustomEvent } from "@valapi/lib";
 import { ValWrapperAuth } from './Account';
 /**
  * * Not Recommend
  */
-declare class CookieAuth extends CustomEvent {
+declare class CookieAuth {
     private cookie;
     private access_token;
     private id_token;

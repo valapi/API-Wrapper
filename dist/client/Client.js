@@ -53,7 +53,6 @@ class WrapperClient extends lib_1.CustomEvent {
         //config
         this.config = new Object(Object.assign(Object.assign({}, _defaultConfig), config));
         if (config.region) {
-            this.config.region = config.region;
             this.lockRegion = true;
         }
         else {
@@ -153,8 +152,8 @@ class WrapperClient extends lib_1.CustomEvent {
         this.token_type = data.token_type;
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
-        if (!this.lockRegion) {
-            this.region = data.region;
+        if (this.region.live) {
+            this.lockRegion = true;
         }
         this.reload();
     }

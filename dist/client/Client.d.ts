@@ -71,8 +71,8 @@ declare class WrapperClient extends CustomEvent {
     private reload;
     toJSON(): ValWrapperClient;
     fromJSON(data: ValWrapperClient): void;
-    protected toJSONAuth(): ValWrapperAuth;
-    protected fromJSONAuth(auth: ValWrapperAuth): void;
+    toJSONAuth(): ValWrapperAuth;
+    fromJSONAuth(auth: ValWrapperAuth): void;
     login(username: string, password: string): Promise<void>;
     verify(verificationCode: number): Promise<void>;
     /**

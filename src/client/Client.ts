@@ -118,7 +118,6 @@ class WrapperClient extends CustomEvent {
         this.config = new Object({ ..._defaultConfig, ...config });
 
         if (config.region) {
-            this.config.region = config.region as keyof typeof _Region;
             this.lockRegion = true;
         } else {
             this.lockRegion = false;
@@ -233,8 +232,8 @@ class WrapperClient extends CustomEvent {
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
 
-        if (!this.lockRegion) {
-            this.region = data.region;
+        if (this.region.live) {
+            this.lockRegion = true;
         }
 
         this.reload();
@@ -242,7 +241,7 @@ class WrapperClient extends CustomEvent {
 
     //auth
 
-    protected toJSONAuth(): ValWrapperAuth {
+    public toJSONAuth(): ValWrapperAuth {
         return {
             cookie: this.cookie.toJSON(),
             access_token: this.access_token,
@@ -256,7 +255,7 @@ class WrapperClient extends CustomEvent {
         };
     }
 
-    protected fromJSONAuth(auth: ValWrapperAuth): void {
+    public fromJSONAuth(auth: ValWrapperAuth): void {
         this.cookie = CookieJar.fromJSON(JSON.stringify(auth.cookie));
         this.access_token = auth.access_token;
         this.id_token = auth.id_token;

@@ -61,7 +61,7 @@ class Account {
      * @param {String} UserAgent User Agent
      * @returns {Promise<ValWrapperAuth>}
      */
-     public async execute(username:string, password:string, UserAgent:string):Promise<ValWrapperAuth> {
+     public async execute(username:string, password:string, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
         const axiosClient:AxiosClient = new AxiosClient({
             jar: this.cookie,
             withCredentials: true,
@@ -91,7 +91,7 @@ class Account {
             'remember': true,
         });
 
-        return await AuthFlow.execute(this.toJSON(), auth_response, UserAgent);
+        return await AuthFlow.execute(this.toJSON(), auth_response, UserAgent, clientVersion, clientPlatfrom);
     }
 
     /**
@@ -118,10 +118,10 @@ class Account {
      * @param {String} UserAgent User Agent
      * @returns {Promise<ValWrapperAuth>}
      */
-     public static async login(username:string, password:string, UserAgent:string):Promise<ValWrapperAuth> {
+     public static async login(username:string, password:string, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
         const NewAccount:Account = new Account();
 
-        return await NewAccount.execute(username, password, UserAgent);
+        return await NewAccount.execute(username, password, UserAgent, clientVersion, clientPlatfrom);
     }
 }
 

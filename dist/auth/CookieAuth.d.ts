@@ -20,7 +20,7 @@ declare class CookieAuth {
      * @param {String} UserAgent User Agent
     * @returns {Promise<any>}
     */
-    execute(UserAgent: string): Promise<any>;
+    execute(UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<any>;
     /**
      *
      * @returns {ValWrapperAuth}
@@ -31,7 +31,7 @@ declare class CookieAuth {
     * @param {String} UserAgent User Agent
     * @returns {Promise<ValWrapperAuth>}
     */
-    static reauth(data: ValWrapperAuth, UserAgent: string): Promise<ValWrapperAuth>;
+    static reauth(data: ValWrapperAuth, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
 }
 export { CookieAuth };
 //# sourceMappingURL=CookieAuth.d.ts.map

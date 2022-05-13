@@ -21,7 +21,7 @@ class AuthFlow {
     /**
     * @param {ValWrapperAuth} data Account toJSON data
     */
-    constructor(data) {
+    constructor(data, clientVersion, clientPlatfrom) {
         this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(data.cookie));
         this.access_token = data.access_token;
         this.id_token = data.id_token;
@@ -31,6 +31,8 @@ class AuthFlow {
         this.region = data.region;
         this.multifactor = data.multifactor;
         this.isError = data.isError;
+        this.clientVersion = clientVersion;
+        this.clientPlatfrom = clientPlatfrom;
     }
     /**
      * @param {IAxiosClient} auth_response First Auth Response
@@ -77,9 +79,13 @@ class AuthFlow {
             }, {
                 headers: {
                     'Authorization': `${this.token_type} ${this.access_token}`,
+                    'X-Riot-Entitlements-JWT': this.entitlements_token,
+                    'X-Riot-ClientVersion': this.clientVersion,
+                    'X-Riot-ClientPlatform': this.clientPlatfrom,
+                    'User-Agent': UserAgent,
                 }
             });
-            if (!region_response.data.affinities || !((_a = region_response.data.affinities) === null || _a === void 0 ? void 0 : _a.pbe) || !((_b = region_response.data.affinities) === null || _b === void 0 ? void 0 : _b.live)) {
+            if (region_response.isError || !((_a = region_response.data.affinities) === null || _a === void 0 ? void 0 : _a.pbe) || !((_b = region_response.data.affinities) === null || _b === void 0 ? void 0 : _b.live)) {
                 region_response = {
                     isError: true,
                     data: {
@@ -118,9 +124,9 @@ class AuthFlow {
      * @param {String} UserAgent User Agent
      * @returns {Promise<ValWrapperAuth>}
      */
-    static execute(data, auth_response, UserAgent) {
+    static execute(data, auth_response, UserAgent, clientVersion, clientPlatfrom) {
         return __awaiter(this, void 0, void 0, function* () {
-            const _newAuthFlow = new AuthFlow(data);
+            const _newAuthFlow = new AuthFlow(data, clientVersion, clientPlatfrom);
             return yield _newAuthFlow.execute(auth_response, UserAgent);
         });
     }
@@ -131,13 +137,13 @@ class AuthFlow {
      * @param {String} auth_type Auth Type
      * @returns {Promise<ValWrapperAuth>}
      */
-    static fromUrl(data, url, UserAgent, auth_type = 'auth') {
+    static fromUrl(data, url, UserAgent, clientVersion, clientPlatfrom) {
         return __awaiter(this, void 0, void 0, function* () {
-            const _newAuthFlow = new AuthFlow(data);
+            const _newAuthFlow = new AuthFlow(data, clientVersion, clientPlatfrom);
             const auth_response = {
                 isError: false,
                 data: {
-                    type: auth_type,
+                    type: 'auth',
                     response: {
                         parameters: {
                             uri: url,

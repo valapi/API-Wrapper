@@ -13,10 +13,12 @@ declare class AuthFlow {
     private region;
     multifactor: boolean;
     isError: boolean;
+    private clientVersion;
+    private clientPlatfrom;
     /**
     * @param {ValWrapperAuth} data Account toJSON data
     */
-    constructor(data: ValWrapperAuth);
+    constructor(data: ValWrapperAuth, clientVersion: string, clientPlatfrom: string);
     /**
      * @param {IAxiosClient} auth_response First Auth Response
      * @param {String} UserAgent User Agent
@@ -34,7 +36,7 @@ declare class AuthFlow {
      * @param {String} UserAgent User Agent
      * @returns {Promise<ValWrapperAuth>}
      */
-    static execute(data: ValWrapperAuth, auth_response: ValWrapperAxios, UserAgent: string): Promise<ValWrapperAuth>;
+    static execute(data: ValWrapperAuth, auth_response: ValWrapperAxios, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
     /**
      * @param {ValWrapperAuth} data Account toJSON data
      * @param {String} url Url of First Auth Response
@@ -42,7 +44,7 @@ declare class AuthFlow {
      * @param {String} auth_type Auth Type
      * @returns {Promise<ValWrapperAuth>}
      */
-    static fromUrl(data: ValWrapperAuth, url: string, UserAgent: string, auth_type?: string): Promise<ValWrapperAuth>;
+    static fromUrl(data: ValWrapperAuth, url: string, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
 }
 export { AuthFlow };
 //# sourceMappingURL=AuthFlow.d.ts.map

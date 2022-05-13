@@ -117,15 +117,15 @@ class WrapperClient extends CustomEvent {
         //config
         this.config = new Object({ ..._defaultConfig, ...config });
 
-        if (config.region) {
+        if (this.config.region) {
             this.lockRegion = true;
         } else {
             this.lockRegion = false;
         }
 
-        if(config.region === 'data'){
-            this.emit('error', { errorCode: 'ValWrapper_Config_Error', message: 'Region Not Found', data: config.region });
-            config.region = 'na';
+        if(this.config.region === 'data'){
+            this.emit('error', { errorCode: 'ValWrapper_Config_Error', message: 'Region Not Found', data: this.config.region });
+            this.config.region = 'na';
         }
 
         //create without auth
@@ -280,14 +280,14 @@ class WrapperClient extends CustomEvent {
     }
 
     public async login(username: string, password: string): Promise<void> {
-        const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(username, password, String(this.config.userAgent));
+        const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(username, password, String(this.config.userAgent), String(this.config.client?.version), String(this.config.client?.platform));
 
         this.fromJSONAuth(NewAuth);
         this.reload();
     }
 
     public async verify(verificationCode: number): Promise<void> {
-        const NewAuth: ValWrapperAuth = await ClientAuthMultifactor.verify(this.toJSONAuth(), verificationCode, String(this.config.userAgent));
+        const NewAuth: ValWrapperAuth = await ClientAuthMultifactor.verify(this.toJSONAuth(), verificationCode, String(this.config.userAgent), String(this.config.client?.version), String(this.config.client?.platform));
 
         this.fromJSONAuth(NewAuth);
         this.reload();
@@ -371,7 +371,7 @@ class WrapperClient extends CustomEvent {
             isError: false,
         }
 
-        const NewCookieAuth = await ClientAuthCookie.reauth(CookieAuthData, String(config.userAgent));
+        const NewCookieAuth = await ClientAuthCookie.reauth(CookieAuthData, String(config.userAgent), _Client_Version, toUft8(JSON.stringify(_Client_Platfrom)));
 
         return WrapperClient.fromJSON(config, NewCookieAuth);
     }

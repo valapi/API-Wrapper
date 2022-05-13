@@ -24,10 +24,13 @@ class AuthFlow {
     public multifactor:boolean;
     public isError:boolean;
 
+    private clientVersion:string;
+    private clientPlatfrom:string
+
     /**
     * @param {ValWrapperAuth} data Account toJSON data
     */
-    constructor(data: ValWrapperAuth) {
+    constructor(data: ValWrapperAuth, clientVersion:string, clientPlatfrom:string) {
         this.cookie = CookieJar.fromJSON(JSON.stringify(data.cookie));
         this.access_token = data.access_token;
         this.id_token = data.id_token;
@@ -37,6 +40,9 @@ class AuthFlow {
         this.region = data.region;
         this.multifactor = data.multifactor;
         this.isError = data.isError;
+
+        this.clientVersion = clientVersion;
+        this.clientPlatfrom = clientPlatfrom;
     }
 
     /**
@@ -89,10 +95,14 @@ class AuthFlow {
         }, {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
+                'X-Riot-Entitlements-JWT': this.entitlements_token,
+                'X-Riot-ClientVersion': this.clientVersion,
+                'X-Riot-ClientPlatform': this.clientPlatfrom,
+                'User-Agent': UserAgent,
             }
         });
 
-        if(!region_response.data.affinities || !region_response.data.affinities?.pbe || !region_response.data.affinities?.live){
+        if(region_response.isError || !region_response.data.affinities?.pbe || !region_response.data.affinities?.live){
             region_response = {
                 isError: true,
                 data: {
@@ -133,8 +143,8 @@ class AuthFlow {
      * @param {String} UserAgent User Agent
      * @returns {Promise<ValWrapperAuth>}
      */
-     static async execute(data:ValWrapperAuth, auth_response:ValWrapperAxios, UserAgent:string):Promise<ValWrapperAuth> {
-        const _newAuthFlow:AuthFlow = new AuthFlow(data);
+     static async execute(data:ValWrapperAuth, auth_response:ValWrapperAxios, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
+        const _newAuthFlow:AuthFlow = new AuthFlow(data, clientVersion, clientPlatfrom);
         return await _newAuthFlow.execute(auth_response, UserAgent);
     }
 
@@ -145,13 +155,13 @@ class AuthFlow {
      * @param {String} auth_type Auth Type
      * @returns {Promise<ValWrapperAuth>}
      */
-     public static async fromUrl(data:ValWrapperAuth, url:string, UserAgent:string, auth_type:string = 'auth'):Promise<ValWrapperAuth> {
-        const _newAuthFlow:AuthFlow = new AuthFlow(data);
+     public static async fromUrl(data:ValWrapperAuth, url:string, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
+        const _newAuthFlow:AuthFlow = new AuthFlow(data, clientVersion, clientPlatfrom);
 
         const auth_response:ValWrapperAxios<{ type: string, response: { parameters: { uri: string } } }> = {
             isError: false,
             data: {
-                type: auth_type,
+                type: 'auth',
                 response: {
                     parameters: {
                         uri: url,

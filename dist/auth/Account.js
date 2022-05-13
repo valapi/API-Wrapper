@@ -39,7 +39,7 @@ class Account {
      * @param {String} UserAgent User Agent
      * @returns {Promise<ValWrapperAuth>}
      */
-    execute(username, password, UserAgent) {
+    execute(username, password, UserAgent, clientVersion, clientPlatfrom) {
         return __awaiter(this, void 0, void 0, function* () {
             const axiosClient = new AxiosClient_1.AxiosClient({
                 jar: this.cookie,
@@ -67,7 +67,7 @@ class Account {
                 'password': password,
                 'remember': true,
             });
-            return yield AuthFlow_1.AuthFlow.execute(this.toJSON(), auth_response, UserAgent);
+            return yield AuthFlow_1.AuthFlow.execute(this.toJSON(), auth_response, UserAgent, clientVersion, clientPlatfrom);
         });
     }
     /**
@@ -93,10 +93,10 @@ class Account {
      * @param {String} UserAgent User Agent
      * @returns {Promise<ValWrapperAuth>}
      */
-    static login(username, password, UserAgent) {
+    static login(username, password, UserAgent, clientVersion, clientPlatfrom) {
         return __awaiter(this, void 0, void 0, function* () {
             const NewAccount = new Account();
-            return yield NewAccount.execute(username, password, UserAgent);
+            return yield NewAccount.execute(username, password, UserAgent, clientVersion, clientPlatfrom);
         });
     }
 }

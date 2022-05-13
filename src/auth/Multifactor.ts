@@ -45,7 +45,7 @@ class Multifactor {
     * @param {String} UserAgent User Agent
     * @returns {Promise<ValWrapperAuth>}
     */
-     public async execute(verificationCode:number, UserAgent:string):Promise<ValWrapperAuth> {
+     public async execute(verificationCode:number, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
         const axiosClient:AxiosClient = new AxiosClient({
             jar: this.cookie,
             withCredentials: true,
@@ -66,7 +66,7 @@ class Multifactor {
             this.multifactor = false;
         }
 
-        return await AuthFlow.execute(this.toJSON(), auth_response, UserAgent);
+        return await AuthFlow.execute(this.toJSON(), auth_response, UserAgent, clientVersion, clientPlatfrom);
     }
 
     /**
@@ -93,9 +93,9 @@ class Multifactor {
     * @param {String} UserAgent User Agent
     * @returns {Promise<ValWrapperAuth>}
     */
-     public static async verify(data:ValWrapperAuth, verificationCode:number, UserAgent:string):Promise<ValWrapperAuth> {
+     public static async verify(data:ValWrapperAuth, verificationCode:number, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
         const MultifactorAccount:Multifactor = new Multifactor(data);
-        return await MultifactorAccount.execute(verificationCode, UserAgent);
+        return await MultifactorAccount.execute(verificationCode, UserAgent, clientVersion, clientPlatfrom);
     }
 }
 

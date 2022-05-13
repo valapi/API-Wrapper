@@ -38,7 +38,7 @@ class Multifactor {
     * @param {String} UserAgent User Agent
     * @returns {Promise<ValWrapperAuth>}
     */
-    execute(verificationCode, UserAgent) {
+    execute(verificationCode, UserAgent, clientVersion, clientPlatfrom) {
         return __awaiter(this, void 0, void 0, function* () {
             const axiosClient = new AxiosClient_1.AxiosClient({
                 jar: this.cookie,
@@ -57,7 +57,7 @@ class Multifactor {
             if (!auth_response.isError) {
                 this.multifactor = false;
             }
-            return yield AuthFlow_1.AuthFlow.execute(this.toJSON(), auth_response, UserAgent);
+            return yield AuthFlow_1.AuthFlow.execute(this.toJSON(), auth_response, UserAgent, clientVersion, clientPlatfrom);
         });
     }
     /**
@@ -83,10 +83,10 @@ class Multifactor {
     * @param {String} UserAgent User Agent
     * @returns {Promise<ValWrapperAuth>}
     */
-    static verify(data, verificationCode, UserAgent) {
+    static verify(data, verificationCode, UserAgent, clientVersion, clientPlatfrom) {
         return __awaiter(this, void 0, void 0, function* () {
             const MultifactorAccount = new Multifactor(data);
-            return yield MultifactorAccount.execute(verificationCode, UserAgent);
+            return yield MultifactorAccount.execute(verificationCode, UserAgent, clientVersion, clientPlatfrom);
         });
     }
 }

@@ -33,7 +33,7 @@ declare class Account {
      * @param {String} UserAgent User Agent
      * @returns {Promise<ValWrapperAuth>}
      */
-    execute(username: string, password: string, UserAgent: string): Promise<ValWrapperAuth>;
+    execute(username: string, password: string, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
     /**
      *
      * @returns {ValWrapperAuth}
@@ -45,7 +45,7 @@ declare class Account {
      * @param {String} UserAgent User Agent
      * @returns {Promise<ValWrapperAuth>}
      */
-    static login(username: string, password: string, UserAgent: string): Promise<ValWrapperAuth>;
+    static login(username: string, password: string, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
 }
 export { Account };
 export type { ValWrapperAuth };

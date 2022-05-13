@@ -52,15 +52,15 @@ class WrapperClient extends lib_1.CustomEvent {
         super();
         //config
         this.config = new Object(Object.assign(Object.assign({}, _defaultConfig), config));
-        if (config.region) {
+        if (this.config.region) {
             this.lockRegion = true;
         }
         else {
             this.lockRegion = false;
         }
-        if (config.region === 'data') {
-            this.emit('error', { errorCode: 'ValWrapper_Config_Error', message: 'Region Not Found', data: config.region });
-            config.region = 'na';
+        if (this.config.region === 'data') {
+            this.emit('error', { errorCode: 'ValWrapper_Config_Error', message: 'Region Not Found', data: this.config.region });
+            this.config.region = 'na';
         }
         //create without auth
         this.cookie = new tough_cookie_1.CookieJar();
@@ -193,15 +193,17 @@ class WrapperClient extends lib_1.CustomEvent {
         this.reload();
     }
     login(username, password) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const NewAuth = yield Account_1.Account.login(username, password, String(this.config.userAgent));
+            const NewAuth = yield Account_1.Account.login(username, password, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), String((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform));
             this.fromJSONAuth(NewAuth);
             this.reload();
         });
     }
     verify(verificationCode) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), verificationCode, String(this.config.userAgent));
+            const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), verificationCode, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), String((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform));
             this.fromJSONAuth(NewAuth);
             this.reload();
         });
@@ -273,7 +275,7 @@ class WrapperClient extends lib_1.CustomEvent {
                 multifactor: false,
                 isError: false,
             };
-            const NewCookieAuth = yield CookieAuth_1.CookieAuth.reauth(CookieAuthData, String(config.userAgent));
+            const NewCookieAuth = yield CookieAuth_1.CookieAuth.reauth(CookieAuthData, String(config.userAgent), _Client_Version, (0, lib_1.toUft8)(JSON.stringify(_Client_Platfrom)));
             return WrapperClient.fromJSON(config, NewCookieAuth);
         });
     }

@@ -49,7 +49,7 @@ class CookieAuth {
      * @param {String} UserAgent User Agent
     * @returns {Promise<any>}
     */
-     public async execute(UserAgent:string):Promise<any> {
+     public async execute(UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<any> {
         const axiosClient:Axios = new AxiosClient({
             jar: this.cookie,
             withCredentials: true,
@@ -63,7 +63,7 @@ class CookieAuth {
         try{
             await axiosClient.get('https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1')
         }catch(err:any){
-            return await AuthFlow.fromUrl(this.toJSON(), err.request._currentUrl as string, UserAgent);
+            return await AuthFlow.fromUrl(this.toJSON(), err.request._currentUrl as string, UserAgent, clientVersion, clientPlatfrom);
         }
 
         return this.toJSON();
@@ -92,9 +92,9 @@ class CookieAuth {
     * @param {String} UserAgent User Agent
     * @returns {Promise<ValWrapperAuth>}
     */
-     public static async reauth(data:ValWrapperAuth, UserAgent:string):Promise<ValWrapperAuth> {
+     public static async reauth(data:ValWrapperAuth, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
         const CookieAccount:CookieAuth = new CookieAuth(data);
-        return await CookieAccount.execute(UserAgent);
+        return await CookieAccount.execute(UserAgent, clientVersion, clientPlatfrom);
     }
 }
 

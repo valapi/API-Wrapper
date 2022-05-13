@@ -18,7 +18,7 @@ declare class Multifactor {
     * @param {String} UserAgent User Agent
     * @returns {Promise<ValWrapperAuth>}
     */
-    execute(verificationCode: number, UserAgent: string): Promise<ValWrapperAuth>;
+    execute(verificationCode: number, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
     /**
      *
      * @returns {ValWrapperAuth}
@@ -30,7 +30,7 @@ declare class Multifactor {
     * @param {String} UserAgent User Agent
     * @returns {Promise<ValWrapperAuth>}
     */
-    static verify(data: ValWrapperAuth, verificationCode: number, UserAgent: string): Promise<ValWrapperAuth>;
+    static verify(data: ValWrapperAuth, verificationCode: number, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
 }
 export { Multifactor };
 //# sourceMappingURL=Multifactor.d.ts.map

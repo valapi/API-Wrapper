@@ -45,8 +45,13 @@ class AxiosClient extends CustomEvent {
                 'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
             ];
 
-            config.httpAgent = new HttpCookieAgent({ jar: config.jar, keepAlive: true });
-            config.httpsAgent = new HttpsCookieAgent({ jar: config.jar, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' });
+            if(!config.httpAgent){
+                config.httpAgent = new HttpCookieAgent({ jar: config.jar, keepAlive: true });
+            }
+
+            if(!config.httpsAgent){
+                config.httpsAgent = new HttpsCookieAgent({ jar: config.jar, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' });
+            }
         }
 
         if(!config.timeout){

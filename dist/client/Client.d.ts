@@ -15,10 +15,10 @@ import { Match as MatchService } from "../custom/Match";
 import { MMR as MMRService } from "../custom/MMR";
 import { Player as PlayerService } from "../custom/Player";
 interface ValWrapperClient {
-    cookie: CookieJar.Serialized;
+    cookie?: CookieJar.Serialized;
     access_token: string;
-    id_token: string;
-    token_type: string;
+    id_token?: string;
+    token_type?: string;
     entitlements_token: string;
     region: {
         pbe: string;
@@ -96,7 +96,7 @@ declare class WrapperClient extends CustomEvent {
     */
     setCookie(cookie: CookieJar.Serialized): void;
     static fromJSON(config: ValWrapperConfig, data: ValWrapperClient): WrapperClient;
-    static fromCookie(config: ValWrapperConfig, data: ValWrapperClient): Promise<WrapperClient>;
+    static fromCookie(config: ValWrapperConfig, data: ValWrapperAuth): Promise<WrapperClient>;
 }
 interface ValWrapperClientEvent {
     'ready': () => void;

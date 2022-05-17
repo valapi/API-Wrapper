@@ -26,7 +26,7 @@ declare class Account {
     private region;
     multifactor: boolean;
     isError: boolean;
-    constructor();
+    constructor(data: ValWrapperAuth);
     /**
      * @param {String} username Riot Account Username (not email)
      * @param {String} password Riot Account Password
@@ -45,7 +45,7 @@ declare class Account {
      * @param {String} UserAgent User Agent
      * @returns {Promise<ValWrapperAuth>}
      */
-    static login(username: string, password: string, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
+    static login(data: ValWrapperAuth, username: string, password: string, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
 }
 export { Account };
 export type { ValWrapperAuth };

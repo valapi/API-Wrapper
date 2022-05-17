@@ -146,9 +146,15 @@ class WrapperClient extends lib_1.CustomEvent {
         };
     }
     fromJSON(data) {
+        if (!data.cookie) {
+            data.cookie = new tough_cookie_1.CookieJar().toJSON();
+        }
+        if (!data.token_type) {
+            data.token_type = 'Bearer';
+        }
         this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(data.cookie));
         this.access_token = data.access_token;
-        this.id_token = data.id_token;
+        this.id_token = data.id_token || '';
         this.token_type = data.token_type;
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
@@ -195,7 +201,7 @@ class WrapperClient extends lib_1.CustomEvent {
     login(username, password) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const NewAuth = yield Account_1.Account.login(username, password, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), String((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform));
+            const NewAuth = yield Account_1.Account.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), String((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform));
             this.fromJSONAuth(NewAuth);
             this.reload();
         });
@@ -268,12 +274,12 @@ class WrapperClient extends lib_1.CustomEvent {
                 cookie: data.cookie,
                 access_token: data.access_token,
                 id_token: data.id_token,
-                expires_in: 3600,
+                expires_in: data.expires_in,
                 token_type: data.token_type,
                 entitlements_token: data.entitlements_token,
                 region: data.region,
-                multifactor: false,
-                isError: false,
+                multifactor: data.multifactor,
+                isError: data.isError,
             };
             const NewCookieAuth = yield CookieAuth_1.CookieAuth.reauth(CookieAuthData, String(config.userAgent), _Client_Version, (0, lib_1.toUft8)(JSON.stringify(_Client_Platfrom)));
             return WrapperClient.fromJSON(config, NewCookieAuth);

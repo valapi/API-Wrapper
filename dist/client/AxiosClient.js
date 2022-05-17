@@ -31,8 +31,12 @@ class AxiosClient extends lib_1.CustomEvent {
                 'TLS_AES_256_GCM_SHA384',
                 'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
             ];
-            config.httpAgent = new http_cookie_agent_1.HttpCookieAgent({ jar: config.jar, keepAlive: true });
-            config.httpsAgent = new http_cookie_agent_1.HttpsCookieAgent({ jar: config.jar, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' });
+            if (!config.httpAgent) {
+                config.httpAgent = new http_cookie_agent_1.HttpCookieAgent({ jar: config.jar, keepAlive: true });
+            }
+            if (!config.httpsAgent) {
+                config.httpsAgent = new http_cookie_agent_1.HttpsCookieAgent({ jar: config.jar, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' });
+            }
         }
         if (!config.timeout) {
             config.timeout = 60000; // 1 minute (60 * 1000)

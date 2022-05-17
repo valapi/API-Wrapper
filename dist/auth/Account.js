@@ -19,19 +19,16 @@ const AuthFlow_1 = require("./AuthFlow");
  * * Class ID: @ing3kth/valapi/ValClient/Account
  */
 class Account {
-    constructor() {
-        this.cookie = new tough_cookie_1.CookieJar();
-        this.access_token = '';
-        this.id_token = '';
-        this.expires_in = 3600;
-        this.token_type = '';
-        this.entitlements_token = '';
-        this.region = {
-            pbe: '',
-            live: '',
-        };
-        this.multifactor = false;
-        this.isError = false;
+    constructor(data) {
+        this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(data.cookie));
+        this.access_token = data.access_token;
+        this.id_token = data.id_token;
+        this.expires_in = data.expires_in;
+        this.token_type = data.token_type;
+        this.entitlements_token = data.entitlements_token;
+        this.region = data.region;
+        this.multifactor = data.multifactor;
+        this.isError = data.isError;
     }
     /**
      * @param {String} username Riot Account Username (not email)
@@ -93,9 +90,9 @@ class Account {
      * @param {String} UserAgent User Agent
      * @returns {Promise<ValWrapperAuth>}
      */
-    static login(username, password, UserAgent, clientVersion, clientPlatfrom) {
+    static login(data, username, password, UserAgent, clientVersion, clientPlatfrom) {
         return __awaiter(this, void 0, void 0, function* () {
-            const NewAccount = new Account();
+            const NewAccount = new Account(data);
             return yield NewAccount.execute(username, password, UserAgent, clientVersion, clientPlatfrom);
         });
     }

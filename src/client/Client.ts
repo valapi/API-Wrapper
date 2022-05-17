@@ -28,10 +28,10 @@ import { Player as PlayerService } from "../custom/Player";
 //interface
 
 interface ValWrapperClient {
-    cookie: CookieJar.Serialized;
+    cookie?: CookieJar.Serialized;
     access_token: string;
-    id_token: string;
-    token_type: string;
+    id_token?: string;
+    token_type?: string;
     entitlements_token: string;
     region: {
         pbe: string;
@@ -225,9 +225,17 @@ class WrapperClient extends CustomEvent {
     }
 
     public fromJSON(data: ValWrapperClient): void {
+        if(!data.cookie){
+            data.cookie = new CookieJar().toJSON();
+        }
+
+        if(!data.token_type){
+            data.token_type = 'Bearer';
+        }
+
         this.cookie = CookieJar.fromJSON(JSON.stringify(data.cookie));
         this.access_token = data.access_token;
-        this.id_token = data.id_token;
+        this.id_token = data.id_token || '';
         this.token_type = data.token_type;
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
@@ -280,7 +288,7 @@ class WrapperClient extends CustomEvent {
     }
 
     public async login(username: string, password: string): Promise<void> {
-        const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(username, password, String(this.config.userAgent), String(this.config.client?.version), String(this.config.client?.platform));
+        const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String(this.config.client?.version), String(this.config.client?.platform));
 
         this.fromJSONAuth(NewAuth);
         this.reload();
@@ -358,17 +366,17 @@ class WrapperClient extends CustomEvent {
         return NewClient;
     }
 
-    public static async fromCookie(config: ValWrapperConfig, data: ValWrapperClient): Promise<WrapperClient> {
+    public static async fromCookie(config: ValWrapperConfig, data: ValWrapperAuth): Promise<WrapperClient> {
         const CookieAuthData:ValWrapperAuth = {
             cookie: data.cookie,
             access_token: data.access_token,
             id_token: data.id_token,
-            expires_in: 3600,
+            expires_in: data.expires_in,
             token_type: data.token_type,
             entitlements_token: data.entitlements_token,
             region: data.region,
-            multifactor: false,
-            isError: false,
+            multifactor: data.multifactor,
+            isError: data.isError,
         }
 
         const NewCookieAuth = await ClientAuthCookie.reauth(CookieAuthData, String(config.userAgent), _Client_Version, toUft8(JSON.stringify(_Client_Platfrom)));

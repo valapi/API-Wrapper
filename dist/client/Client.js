@@ -201,17 +201,35 @@ class WrapperClient extends lib_1.CustomEvent {
     login(username, password) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const NewAuth = yield Account_1.Account.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), String((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform));
-            this.fromJSONAuth(NewAuth);
-            this.reload();
+            try {
+                const NewAuth = yield Account_1.Account.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), String((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform));
+                this.fromJSONAuth(NewAuth);
+                this.reload();
+            }
+            catch (error) {
+                this.emit('error', {
+                    errorCode: 'ValWrapper_Authentication_Error',
+                    message: 'Login Failed',
+                    data: error,
+                });
+            }
         });
     }
     verify(verificationCode) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), verificationCode, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), String((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform));
-            this.fromJSONAuth(NewAuth);
-            this.reload();
+            try {
+                const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), verificationCode, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), String((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform));
+                this.fromJSONAuth(NewAuth);
+                this.reload();
+            }
+            catch (error) {
+                this.emit('error', {
+                    errorCode: 'ValWrapper_Authentication_Error',
+                    message: 'Multifactor Failed',
+                    data: error,
+                });
+            }
         });
     }
     //settings

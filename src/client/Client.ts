@@ -123,7 +123,7 @@ class WrapperClient extends CustomEvent {
             this.lockRegion = false;
         }
 
-        if(this.config.region === 'data'){
+        if (this.config.region === 'data') {
             this.emit('error', { errorCode: 'ValWrapper_Config_Error', message: 'Region Not Found', data: this.config.region });
             this.config.region = 'na';
         }
@@ -154,8 +154,8 @@ class WrapperClient extends CustomEvent {
             }
         }
         this.AxiosClient = new AxiosClient(new Object({ ..._axiosConfig, ...this.config.axiosConfig }));
-        this.AxiosClient.on('error', ((data:ValorantAPIError) => { this.emit('error', data as ValorantAPIError); }));
-        this.AxiosClient.on('request', ((data:ValWrapperAxiosRequest) => { this.emit('request', data as ValWrapperAxiosRequest); }));
+        this.AxiosClient.on('error', ((data: ValorantAPIError) => { this.emit('error', data as ValorantAPIError); }));
+        this.AxiosClient.on('request', ((data: ValWrapperAxiosRequest) => { this.emit('request', data as ValWrapperAxiosRequest); }));
 
         //service
         this.Contract = new ContractService(this.AxiosClient, this.RegionServices);
@@ -191,8 +191,8 @@ class WrapperClient extends CustomEvent {
             }
         }
         this.AxiosClient = new AxiosClient(new Object({ ..._axiosConfig, ...this.config.axiosConfig }));
-        this.AxiosClient.on('error', ((data:ValorantAPIError) => { this.emit('error', data as ValorantAPIError); }));
-        this.AxiosClient.on('request', ((data:ValWrapperAxiosRequest) => { this.emit('request', data as ValWrapperAxiosRequest); }));
+        this.AxiosClient.on('error', ((data: ValorantAPIError) => { this.emit('error', data as ValorantAPIError); }));
+        this.AxiosClient.on('request', ((data: ValWrapperAxiosRequest) => { this.emit('request', data as ValWrapperAxiosRequest); }));
 
         //service
         this.Contract = new ContractService(this.AxiosClient, this.RegionServices);
@@ -225,11 +225,11 @@ class WrapperClient extends CustomEvent {
     }
 
     public fromJSON(data: ValWrapperClient): void {
-        if(!data.cookie){
+        if (!data.cookie) {
             data.cookie = new CookieJar().toJSON();
         }
 
-        if(!data.token_type){
+        if (!data.token_type) {
             data.token_type = 'Bearer';
         }
 
@@ -288,26 +288,42 @@ class WrapperClient extends CustomEvent {
     }
 
     public async login(username: string, password: string): Promise<void> {
-        const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String(this.config.client?.version), String(this.config.client?.platform));
+        try {
+            const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String(this.config.client?.version), String(this.config.client?.platform));
 
-        this.fromJSONAuth(NewAuth);
-        this.reload();
+            this.fromJSONAuth(NewAuth);
+            this.reload();
+        } catch (error) {
+            this.emit('error', {
+                errorCode: 'ValWrapper_Authentication_Error',
+                message: 'Login Failed',
+                data: error,
+            });
+        }
     }
 
     public async verify(verificationCode: number): Promise<void> {
-        const NewAuth: ValWrapperAuth = await ClientAuthMultifactor.verify(this.toJSONAuth(), verificationCode, String(this.config.userAgent), String(this.config.client?.version), String(this.config.client?.platform));
+        try {
+            const NewAuth: ValWrapperAuth = await ClientAuthMultifactor.verify(this.toJSONAuth(), verificationCode, String(this.config.userAgent), String(this.config.client?.version), String(this.config.client?.platform));
 
-        this.fromJSONAuth(NewAuth);
-        this.reload();
+            this.fromJSONAuth(NewAuth);
+            this.reload();
+        } catch (error) {
+            this.emit('error', {
+                errorCode: 'ValWrapper_Authentication_Error',
+                message: 'Multifactor Failed',
+                data: error,
+            });
+        }
     }
 
     //settings
-    
+
     /**
     * @param {String} region Region
     * @returns {void}
     */
-     public setRegion(region:keyof typeof _Region):void {
+    public setRegion(region: keyof typeof _Region): void {
         this.emit('changeSettings', { name: 'region', data: region });
 
         this.region.live = region;
@@ -318,7 +334,7 @@ class WrapperClient extends CustomEvent {
     * @param {String} clientVersion Client Version
     * @returns {void}
     */
-    public setClientVersion(clientVersion:string = _Client_Version):void {
+    public setClientVersion(clientVersion: string = _Client_Version): void {
         this.emit('changeSettings', { name: 'client_version', data: clientVersion });
 
         this.config.client = {
@@ -332,7 +348,7 @@ class WrapperClient extends CustomEvent {
     * @param {ValWrapperClientPlatfrom} clientPlatfrom Client Platfrom in json
     * @returns {void}
     */
-    public setClientPlatfrom(clientPlatfrom:ValWrapperClientPlatfrom = _Client_Platfrom):void {
+    public setClientPlatfrom(clientPlatfrom: ValWrapperClientPlatfrom = _Client_Platfrom): void {
         this.emit('changeSettings', { name: 'client_platfrom', data: clientPlatfrom });
 
         this.config.client = {
@@ -346,7 +362,7 @@ class WrapperClient extends CustomEvent {
     * @param {CookieJar.Serialized} cookie Cookie
     * @returns {void}
     */
-    public setCookie(cookie:CookieJar.Serialized):void {
+    public setCookie(cookie: CookieJar.Serialized): void {
         this.emit('changeSettings', { name: 'cookie', data: cookie });
 
         this.cookie = CookieJar.fromJSON(JSON.stringify(cookie));
@@ -367,7 +383,7 @@ class WrapperClient extends CustomEvent {
     }
 
     public static async fromCookie(config: ValWrapperConfig, data: ValWrapperAuth): Promise<WrapperClient> {
-        const CookieAuthData:ValWrapperAuth = {
+        const CookieAuthData: ValWrapperAuth = {
             cookie: data.cookie,
             access_token: data.access_token,
             id_token: data.id_token,
@@ -388,8 +404,8 @@ class WrapperClient extends CustomEvent {
 //event
 interface ValWrapperClientEvent {
     'ready': () => void,
-    'request': (data:ValWrapperAxiosRequest) => void,
-    'changeSettings': (data: { name:string, data:any }) => void,
+    'request': (data: ValWrapperAxiosRequest) => void,
+    'changeSettings': (data: { name: string, data: any }) => void,
     'error': (data: ValorantAPIError) => void;
 }
 

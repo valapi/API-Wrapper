@@ -7,9 +7,6 @@ import type { ValWrapperAuth } from './Account';
 
 //class
 
-/**
- * * Class ID: @ing3kth/valapi/ValClient/AuthFlow
- */
 class AuthFlow {
     private cookie:CookieJar;
     private access_token:string;
@@ -29,6 +26,8 @@ class AuthFlow {
 
     /**
     * @param {ValWrapperAuth} data Account toJSON data
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
     */
     constructor(data: ValWrapperAuth, clientVersion:string, clientPlatfrom:string) {
         this.cookie = CookieJar.fromJSON(JSON.stringify(data.cookie));
@@ -72,6 +71,12 @@ class AuthFlow {
         }
 
         // get asscess token
+        if(!auth_response.data.response || !auth_response.data.response.parameters || !auth_response.data.response.parameters.uri){
+            this.isError = true;
+
+            return this.toJSON();
+        }
+
         const Search_URL:URL = new URL(auth_response.data.response.parameters.uri);
 
         this.access_token = String(new URLSearchParams(Search_URL.hash).get('#access_token'));
@@ -83,7 +88,7 @@ class AuthFlow {
         const entitlements_response:ValWrapperAxios<any> = await axiosClient.post('https://entitlements.auth.riotgames.com/api/token/v1', {}, {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
-                'User-Agent': UserAgent,
+                'User-Agent': String(UserAgent),
             },
         });
 
@@ -98,7 +103,7 @@ class AuthFlow {
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
                 'X-Riot-ClientVersion': this.clientVersion,
                 'X-Riot-ClientPlatform': this.clientPlatfrom,
-                'User-Agent': UserAgent,
+                'User-Agent': String(UserAgent),
             }
         });
 
@@ -110,7 +115,8 @@ class AuthFlow {
                         pbe: 'na',
                         live: 'na',
                     }
-                }
+                },
+                fullData: null,
             }
         }
 
@@ -141,18 +147,28 @@ class AuthFlow {
      * @param {ValWrapperAuth} data Account toJSON data
      * @param {ValWrapperAxios} auth_response First Auth Response
      * @param {String} UserAgent User Agent
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
      static async execute(data:ValWrapperAuth, auth_response:ValWrapperAxios, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
         const _newAuthFlow:AuthFlow = new AuthFlow(data, clientVersion, clientPlatfrom);
-        return await _newAuthFlow.execute(auth_response, UserAgent);
+
+        try {
+            return await _newAuthFlow.execute(auth_response, UserAgent);
+        } catch (error) {
+            _newAuthFlow.isError = true;
+
+            return _newAuthFlow.toJSON();
+        }
     }
 
     /**
      * @param {ValWrapperAuth} data Account toJSON data
      * @param {String} url Url of First Auth Response
      * @param {String} UserAgent User Agent
-     * @param {String} auth_type Auth Type
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
      public static async fromUrl(data:ValWrapperAuth, url:string, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
@@ -168,9 +184,16 @@ class AuthFlow {
                     },
                 },
             },
+            fullData: null,
         };
 
-        return await _newAuthFlow.execute(auth_response, UserAgent);
+        try {
+            return await _newAuthFlow.execute(auth_response, UserAgent);
+        } catch (error) {
+            _newAuthFlow.isError = true;
+
+            return _newAuthFlow.toJSON();
+        }
     }
 }
 

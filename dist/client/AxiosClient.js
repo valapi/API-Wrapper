@@ -61,6 +61,7 @@ class AxiosClient extends lib_1.CustomEvent {
             return {
                 isError: error.isAxiosError,
                 data: error.response.data,
+                fullData: error,
             };
         }
         if (error.response && error.response.status && error.response.statusText) {
@@ -69,7 +70,8 @@ class AxiosClient extends lib_1.CustomEvent {
                 data: {
                     errorCode: error.response.status,
                     message: error.response.statusText,
-                }
+                },
+                fullData: error,
             };
         }
         return {
@@ -77,7 +79,8 @@ class AxiosClient extends lib_1.CustomEvent {
             data: {
                 errorCode: error.name,
                 message: error.message,
-            }
+            },
+            fullData: error,
         };
     }
     /**

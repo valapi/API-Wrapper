@@ -38,8 +38,10 @@ class CookieAuth {
     }
     /**
      * @param {String} UserAgent User Agent
-    * @returns {Promise<any>}
-    */
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
+     * @returns {Promise<any>}
+     */
     execute(UserAgent, clientVersion, clientPlatfrom) {
         return __awaiter(this, void 0, void 0, function* () {
             const axiosClient = new AxiosClient_1.AxiosClient({
@@ -78,14 +80,22 @@ class CookieAuth {
         };
     }
     /**
-    * @param {ValWrapperAuth} data ValAuth_Account toJSON data
-    * @param {String} UserAgent User Agent
-    * @returns {Promise<ValWrapperAuth>}
-    */
+     * @param {ValWrapperAuth} data ValAuth_Account toJSON data
+     * @param {String} UserAgent User Agent
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
+     * @returns {Promise<ValWrapperAuth>}
+     */
     static reauth(data, UserAgent, clientVersion, clientPlatfrom) {
         return __awaiter(this, void 0, void 0, function* () {
             const CookieAccount = new CookieAuth(data);
-            return yield CookieAccount.execute(UserAgent, clientVersion, clientPlatfrom);
+            try {
+                return yield CookieAccount.execute(UserAgent, clientVersion, clientPlatfrom);
+            }
+            catch (error) {
+                CookieAccount.isError = true;
+                return CookieAccount.toJSON();
+            }
         });
     }
 }

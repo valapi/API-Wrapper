@@ -15,9 +15,6 @@ const tough_cookie_1 = require("tough-cookie");
 const AxiosClient_1 = require("../client/AxiosClient");
 const AuthFlow_1 = require("./AuthFlow");
 //class
-/**
- * * Class ID: @ing3kth/valapi/ValClient/Account
- */
 class Account {
     constructor(data) {
         this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(data.cookie));
@@ -34,6 +31,8 @@ class Account {
      * @param {String} username Riot Account Username (not email)
      * @param {String} password Riot Account Password
      * @param {String} UserAgent User Agent
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
     execute(username, password, UserAgent, clientVersion, clientPlatfrom) {
@@ -42,7 +41,7 @@ class Account {
                 jar: this.cookie,
                 withCredentials: true,
                 headers: {
-                    'User-Agent': UserAgent,
+                    'User-Agent': String(UserAgent),
                 }
             });
             yield axiosClient.post('https://auth.riotgames.com/api/v1/authorization', {
@@ -54,14 +53,14 @@ class Account {
             }, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'User-Agent': UserAgent
+                    'User-Agent': String(UserAgent),
                 },
             });
             //ACCESS TOKEN
             const auth_response = yield axiosClient.put('https://auth.riotgames.com/api/v1/authorization', {
                 'type': 'auth',
-                'username': username,
-                'password': password,
+                'username': String(username),
+                'password': String(password),
                 'remember': true,
             });
             return yield AuthFlow_1.AuthFlow.execute(this.toJSON(), auth_response, UserAgent, clientVersion, clientPlatfrom);
@@ -88,12 +87,20 @@ class Account {
      * @param {String} username Riot Account Username
      * @param {String} password Riot Account Password
      * @param {String} UserAgent User Agent
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
     static login(data, username, password, UserAgent, clientVersion, clientPlatfrom) {
         return __awaiter(this, void 0, void 0, function* () {
             const NewAccount = new Account(data);
-            return yield NewAccount.execute(username, password, UserAgent, clientVersion, clientPlatfrom);
+            try {
+                return yield NewAccount.execute(username, password, UserAgent, clientVersion, clientPlatfrom);
+            }
+            catch (error) {
+                NewAccount.isError = true;
+                return NewAccount.toJSON();
+            }
         });
     }
 }

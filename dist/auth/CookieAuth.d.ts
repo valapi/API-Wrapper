@@ -18,8 +18,10 @@ declare class CookieAuth {
     constructor(data: ValWrapperAuth);
     /**
      * @param {String} UserAgent User Agent
-    * @returns {Promise<any>}
-    */
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
+     * @returns {Promise<any>}
+     */
     execute(UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<any>;
     /**
      *
@@ -27,10 +29,12 @@ declare class CookieAuth {
      */
     toJSON(): ValWrapperAuth;
     /**
-    * @param {ValWrapperAuth} data ValAuth_Account toJSON data
-    * @param {String} UserAgent User Agent
-    * @returns {Promise<ValWrapperAuth>}
-    */
+     * @param {ValWrapperAuth} data ValAuth_Account toJSON data
+     * @param {String} UserAgent User Agent
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
+     * @returns {Promise<ValWrapperAuth>}
+     */
     static reauth(data: ValWrapperAuth, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
 }
 export { CookieAuth };

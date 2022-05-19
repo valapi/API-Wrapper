@@ -43,6 +43,8 @@ class Multifactor {
     /**
     * @param {Number} verificationCode Verification Code
     * @param {String} UserAgent User Agent
+    * @param {String} clientVersion Client Version
+    * @param {String} clientPlatfrom Client Platform
     * @returns {Promise<ValWrapperAuth>}
     */
      public async execute(verificationCode:number, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
@@ -50,7 +52,7 @@ class Multifactor {
             jar: this.cookie,
             withCredentials: true,
             headers: {
-                'User-Agent': UserAgent,
+                'User-Agent': String(UserAgent),
             },
             timeout: this.expires_in * 1000,
         });
@@ -88,14 +90,23 @@ class Multifactor {
     }
 
     /**
-    * @param {ValWrapperAuth} data ValAuth_Account toJSON data
-    * @param {Number} verificationCode Verification Code
-    * @param {String} UserAgent User Agent
-    * @returns {Promise<ValWrapperAuth>}
-    */
+     * @param {ValWrapperAuth} data ValAuth_Account toJSON data
+     * @param {Number} verificationCode Verification Code
+     * @param {String} UserAgent User Agent
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
+     * @returns {Promise<ValWrapperAuth>}
+     */
      public static async verify(data:ValWrapperAuth, verificationCode:number, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
         const MultifactorAccount:Multifactor = new Multifactor(data);
-        return await MultifactorAccount.execute(verificationCode, UserAgent, clientVersion, clientPlatfrom);
+    
+        try {
+            return await MultifactorAccount.execute(verificationCode, UserAgent, clientVersion, clientPlatfrom);
+        } catch (error) {
+            MultifactorAccount.isError = true;
+
+            return MultifactorAccount.toJSON();
+        }
     }
 }
 

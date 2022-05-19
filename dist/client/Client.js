@@ -43,10 +43,15 @@ const _defaultConfig = {
         version: _Client_Version,
         platform: _Client_Platfrom,
     },
+    forceAuth: false,
     axiosConfig: {},
 };
 //class
 class WrapperClient extends lib_1.CustomEvent {
+    /**
+     * Class Constructor
+     * @param {ValWrapperConfig} config Client Config
+     */
     constructor(config = {}) {
         var _a, _b;
         super();
@@ -74,7 +79,7 @@ class WrapperClient extends lib_1.CustomEvent {
             live: String(this.config.region),
         };
         this.multifactor = false;
-        this.isError = true;
+        this.isError = false;
         // first reload
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
         const _axiosConfig = {
@@ -104,6 +109,7 @@ class WrapperClient extends lib_1.CustomEvent {
     }
     //reload
     /**
+     * Reload Class
      * @returns {void}
      */
     reload() {
@@ -135,6 +141,10 @@ class WrapperClient extends lib_1.CustomEvent {
         this.emit('ready');
     }
     //save
+    /**
+     *
+     * @returns {ValWrapperClient}
+     */
     toJSON() {
         return {
             cookie: this.cookie.toJSON(),
@@ -145,6 +155,11 @@ class WrapperClient extends lib_1.CustomEvent {
             region: this.region,
         };
     }
+    /**
+     *
+     * @param {ValWrapperClient} data Client `.toJSON()` data
+     * @returns {void}
+     */
     fromJSON(data) {
         if (!data.cookie) {
             data.cookie = new tough_cookie_1.CookieJar().toJSON();
@@ -164,6 +179,10 @@ class WrapperClient extends lib_1.CustomEvent {
         this.reload();
     }
     //auth
+    /**
+     *
+     * @returns {ValWrapperAuth}
+     */
     toJSONAuth() {
         return {
             cookie: this.cookie.toJSON(),
@@ -177,6 +196,11 @@ class WrapperClient extends lib_1.CustomEvent {
             isError: this.isError,
         };
     }
+    /**
+     *
+     * @param {ValWrapperAuth} auth Authentication Data
+     * @returns {void}
+     */
     fromJSONAuth(auth) {
         this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(auth.cookie));
         this.access_token = auth.access_token;
@@ -189,7 +213,7 @@ class WrapperClient extends lib_1.CustomEvent {
         }
         this.multifactor = auth.multifactor;
         this.isError = auth.isError;
-        if (auth.isError) {
+        if (auth.isError && !this.config.forceAuth) {
             this.emit('error', {
                 errorCode: 'ValWrapper_Authentication_Error',
                 message: 'Authentication Error',
@@ -198,38 +222,31 @@ class WrapperClient extends lib_1.CustomEvent {
         }
         this.reload();
     }
+    /**
+     * Login to Riot Account
+     * @param {String} username Username
+     * @param {String} password Password
+     * @returns {Promise<void>}
+     */
     login(username, password) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const NewAuth = yield Account_1.Account.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), String((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform));
-                this.fromJSONAuth(NewAuth);
-                this.reload();
-            }
-            catch (error) {
-                this.emit('error', {
-                    errorCode: 'ValWrapper_Authentication_Error',
-                    message: 'Login Failed',
-                    data: error,
-                });
-            }
+            const NewAuth = yield Account_1.Account.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), String((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform));
+            this.fromJSONAuth(NewAuth);
+            this.reload();
         });
     }
+    /**
+     * Multi-Factor Authentication
+     * @param {number} verificationCode Verification Code
+     * @returns {Promise<void>}
+     */
     verify(verificationCode) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), verificationCode, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), String((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform));
-                this.fromJSONAuth(NewAuth);
-                this.reload();
-            }
-            catch (error) {
-                this.emit('error', {
-                    errorCode: 'ValWrapper_Authentication_Error',
-                    message: 'Multifactor Failed',
-                    data: error,
-                });
-            }
+            const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), Number(verificationCode), String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), String((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform));
+            this.fromJSONAuth(NewAuth);
+            this.reload();
         });
     }
     //settings
@@ -278,6 +295,12 @@ class WrapperClient extends lib_1.CustomEvent {
         this.reload();
     }
     //static
+    /**
+     *
+     * @param {ValWrapperConfig} config Client Config
+     * @param {ValWrapperClient} data Client `.toJSON()` data
+     * @returns {WrapperClient}
+     */
     static fromJSON(config, data) {
         const NewClient = new WrapperClient(config);
         NewClient.fromJSON(data);
@@ -286,6 +309,12 @@ class WrapperClient extends lib_1.CustomEvent {
         NewClient.isError = false;
         return NewClient;
     }
+    /**
+     * * Not Recommend
+     * @param {ValWrapperConfig} config Client Config
+     * @param {ValWrapperAuth} data Authentication Data
+     * @returns {Promise<WrapperClient>}
+     */
     static fromCookie(config, data) {
         return __awaiter(this, void 0, void 0, function* () {
             const CookieAuthData = {

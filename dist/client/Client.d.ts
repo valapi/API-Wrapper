@@ -38,6 +38,7 @@ interface ValWrapperConfig {
         version?: string;
         platform?: ValWrapperClientPlatfrom;
     };
+    forceAuth?: boolean;
     axiosConfig?: AxiosRequestConfig;
 }
 declare class WrapperClient extends CustomEvent {
@@ -64,17 +65,51 @@ declare class WrapperClient extends CustomEvent {
     Match: MatchService;
     MMR: MMRService;
     Player: PlayerService;
-    constructor(config?: ValWrapperConfig);
     /**
+     * Class Constructor
+     * @param {ValWrapperConfig} config Client Config
+     */
+    private constructor();
+    /**
+     * Reload Class
      * @returns {void}
      */
     private reload;
+    /**
+     *
+     * @returns {ValWrapperClient}
+     */
     toJSON(): ValWrapperClient;
+    /**
+     *
+     * @param {ValWrapperClient} data Client `.toJSON()` data
+     * @returns {void}
+     */
     fromJSON(data: ValWrapperClient): void;
+    /**
+     *
+     * @returns {ValWrapperAuth}
+     */
     toJSONAuth(): ValWrapperAuth;
+    /**
+     *
+     * @param {ValWrapperAuth} auth Authentication Data
+     * @returns {void}
+     */
     fromJSONAuth(auth: ValWrapperAuth): void;
+    /**
+     * Login to Riot Account
+     * @param {String} username Username
+     * @param {String} password Password
+     * @returns {Promise<void>}
+     */
     login(username: string, password: string): Promise<void>;
-    verify(verificationCode: number): Promise<void>;
+    /**
+     * Multi-Factor Authentication
+     * @param {number} verificationCode Verification Code
+     * @returns {Promise<void>}
+     */
+    verify(verificationCode: number | string): Promise<void>;
     /**
     * @param {String} region Region
     * @returns {void}
@@ -95,7 +130,19 @@ declare class WrapperClient extends CustomEvent {
     * @returns {void}
     */
     setCookie(cookie: CookieJar.Serialized): void;
+    /**
+     *
+     * @param {ValWrapperConfig} config Client Config
+     * @param {ValWrapperClient} data Client `.toJSON()` data
+     * @returns {WrapperClient}
+     */
     static fromJSON(config: ValWrapperConfig, data: ValWrapperClient): WrapperClient;
+    /**
+     * * Not Recommend
+     * @param {ValWrapperConfig} config Client Config
+     * @param {ValWrapperAuth} data Authentication Data
+     * @returns {Promise<WrapperClient>}
+     */
     static fromCookie(config: ValWrapperConfig, data: ValWrapperAuth): Promise<WrapperClient>;
 }
 interface ValWrapperClientEvent {

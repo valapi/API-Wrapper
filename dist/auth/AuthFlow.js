@@ -14,12 +14,11 @@ exports.AuthFlow = void 0;
 const tough_cookie_1 = require("tough-cookie");
 const AxiosClient_1 = require("../client/AxiosClient");
 //class
-/**
- * * Class ID: @ing3kth/valapi/ValClient/AuthFlow
- */
 class AuthFlow {
     /**
     * @param {ValWrapperAuth} data Account toJSON data
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
     */
     constructor(data, clientVersion, clientPlatfrom) {
         this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(data.cookie));
@@ -60,6 +59,10 @@ class AuthFlow {
                 this.multifactor = false;
             }
             // get asscess token
+            if (!auth_response.data.response || !auth_response.data.response.parameters || !auth_response.data.response.parameters.uri) {
+                this.isError = true;
+                return this.toJSON();
+            }
             const Search_URL = new URL(auth_response.data.response.parameters.uri);
             this.access_token = String(new URLSearchParams(Search_URL.hash).get('#access_token'));
             this.id_token = String(new URLSearchParams(Search_URL.hash).get('id_token'));
@@ -69,7 +72,7 @@ class AuthFlow {
             const entitlements_response = yield axiosClient.post('https://entitlements.auth.riotgames.com/api/token/v1', {}, {
                 headers: {
                     'Authorization': `${this.token_type} ${this.access_token}`,
-                    'User-Agent': UserAgent,
+                    'User-Agent': String(UserAgent),
                 },
             });
             this.entitlements_token = entitlements_response.data.entitlements_token;
@@ -82,7 +85,7 @@ class AuthFlow {
                     'X-Riot-Entitlements-JWT': this.entitlements_token,
                     'X-Riot-ClientVersion': this.clientVersion,
                     'X-Riot-ClientPlatform': this.clientPlatfrom,
-                    'User-Agent': UserAgent,
+                    'User-Agent': String(UserAgent),
                 }
             });
             if (region_response.isError || !((_a = region_response.data.affinities) === null || _a === void 0 ? void 0 : _a.pbe) || !((_b = region_response.data.affinities) === null || _b === void 0 ? void 0 : _b.live)) {
@@ -93,7 +96,8 @@ class AuthFlow {
                             pbe: 'na',
                             live: 'na',
                         }
-                    }
+                    },
+                    fullData: null,
                 };
             }
             this.region.pbe = (_c = region_response.data.affinities) === null || _c === void 0 ? void 0 : _c.pbe;
@@ -122,19 +126,28 @@ class AuthFlow {
      * @param {ValWrapperAuth} data Account toJSON data
      * @param {ValWrapperAxios} auth_response First Auth Response
      * @param {String} UserAgent User Agent
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
     static execute(data, auth_response, UserAgent, clientVersion, clientPlatfrom) {
         return __awaiter(this, void 0, void 0, function* () {
             const _newAuthFlow = new AuthFlow(data, clientVersion, clientPlatfrom);
-            return yield _newAuthFlow.execute(auth_response, UserAgent);
+            try {
+                return yield _newAuthFlow.execute(auth_response, UserAgent);
+            }
+            catch (error) {
+                _newAuthFlow.isError = true;
+                return _newAuthFlow.toJSON();
+            }
         });
     }
     /**
      * @param {ValWrapperAuth} data Account toJSON data
      * @param {String} url Url of First Auth Response
      * @param {String} UserAgent User Agent
-     * @param {String} auth_type Auth Type
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
     static fromUrl(data, url, UserAgent, clientVersion, clientPlatfrom) {
@@ -150,8 +163,15 @@ class AuthFlow {
                         },
                     },
                 },
+                fullData: null,
             };
-            return yield _newAuthFlow.execute(auth_response, UserAgent);
+            try {
+                return yield _newAuthFlow.execute(auth_response, UserAgent);
+            }
+            catch (error) {
+                _newAuthFlow.isError = true;
+                return _newAuthFlow.toJSON();
+            }
         });
     }
 }

@@ -23,9 +23,6 @@ interface ValWrapperAuth {
 
 //class
 
-/**
- * * Class ID: @ing3kth/valapi/ValClient/Account
- */
 class Account {
     private cookie:CookieJar;
     private access_token:string;
@@ -56,6 +53,8 @@ class Account {
      * @param {String} username Riot Account Username (not email)
      * @param {String} password Riot Account Password
      * @param {String} UserAgent User Agent
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
      public async execute(username:string, password:string, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
@@ -63,7 +62,7 @@ class Account {
             jar: this.cookie,
             withCredentials: true,
             headers: {
-                'User-Agent': UserAgent,
+                'User-Agent': String(UserAgent),
             }
         });
 
@@ -76,15 +75,15 @@ class Account {
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                'User-Agent': UserAgent
+                'User-Agent': String(UserAgent),
             },
         });
 
         //ACCESS TOKEN
         const auth_response:ValWrapperAxios<any> = await axiosClient.put('https://auth.riotgames.com/api/v1/authorization', {
             'type': 'auth',
-            'username': username,
-            'password': password,
+            'username': String(username),
+            'password': String(password),
             'remember': true,
         });
 
@@ -113,12 +112,20 @@ class Account {
      * @param {String} username Riot Account Username
      * @param {String} password Riot Account Password
      * @param {String} UserAgent User Agent
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
      public static async login(data:ValWrapperAuth, username:string, password:string, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
         const NewAccount:Account = new Account(data);
 
-        return await NewAccount.execute(username, password, UserAgent, clientVersion, clientPlatfrom);
+        try {
+            return await NewAccount.execute(username, password, UserAgent, clientVersion, clientPlatfrom);
+        } catch (error) {
+            NewAccount.isError = true;
+
+            return NewAccount.toJSON();
+        }
     }
 }
 

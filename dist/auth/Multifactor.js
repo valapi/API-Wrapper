@@ -36,6 +36,8 @@ class Multifactor {
     /**
     * @param {Number} verificationCode Verification Code
     * @param {String} UserAgent User Agent
+    * @param {String} clientVersion Client Version
+    * @param {String} clientPlatfrom Client Platform
     * @returns {Promise<ValWrapperAuth>}
     */
     execute(verificationCode, UserAgent, clientVersion, clientPlatfrom) {
@@ -44,7 +46,7 @@ class Multifactor {
                 jar: this.cookie,
                 withCredentials: true,
                 headers: {
-                    'User-Agent': UserAgent,
+                    'User-Agent': String(UserAgent),
                 },
                 timeout: this.expires_in * 1000,
             });
@@ -78,15 +80,23 @@ class Multifactor {
         };
     }
     /**
-    * @param {ValWrapperAuth} data ValAuth_Account toJSON data
-    * @param {Number} verificationCode Verification Code
-    * @param {String} UserAgent User Agent
-    * @returns {Promise<ValWrapperAuth>}
-    */
+     * @param {ValWrapperAuth} data ValAuth_Account toJSON data
+     * @param {Number} verificationCode Verification Code
+     * @param {String} UserAgent User Agent
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
+     * @returns {Promise<ValWrapperAuth>}
+     */
     static verify(data, verificationCode, UserAgent, clientVersion, clientPlatfrom) {
         return __awaiter(this, void 0, void 0, function* () {
             const MultifactorAccount = new Multifactor(data);
-            return yield MultifactorAccount.execute(verificationCode, UserAgent, clientVersion, clientPlatfrom);
+            try {
+                return yield MultifactorAccount.execute(verificationCode, UserAgent, clientVersion, clientPlatfrom);
+            }
+            catch (error) {
+                MultifactorAccount.isError = true;
+                return MultifactorAccount.toJSON();
+            }
         });
     }
 }

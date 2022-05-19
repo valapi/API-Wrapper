@@ -53,6 +53,7 @@ interface ValWrapperConfig {
         version?: string;
         platform?: ValWrapperClientPlatfrom;
     };
+    forceAuth?: boolean;
     axiosConfig?: AxiosRequestConfig,
 }
 
@@ -71,6 +72,7 @@ const _defaultConfig: ValWrapperConfig = {
         version: _Client_Version,
         platform: _Client_Platfrom,
     },
+    forceAuth: false,
     axiosConfig: {},
 }
 
@@ -112,7 +114,11 @@ class WrapperClient extends CustomEvent {
     public MMR: MMRService;
     public Player: PlayerService;
 
-    constructor(config: ValWrapperConfig = {}) {
+    /**
+     * Class Constructor
+     * @param {ValWrapperConfig} config Client Config
+     */
+    private constructor(config: ValWrapperConfig = {}) {
         super();
         //config
         this.config = new Object({ ..._defaultConfig, ...config });
@@ -140,7 +146,7 @@ class WrapperClient extends CustomEvent {
             live: String(this.config.region),
         };
         this.multifactor = false;
-        this.isError = true;
+        this.isError = false;
 
         // first reload
         this.RegionServices = new WrapperRegion(this.region.live as keyof typeof _Region).toJSON();
@@ -177,6 +183,7 @@ class WrapperClient extends CustomEvent {
     //reload
 
     /**
+     * Reload Class
      * @returns {void}
      */
     private reload(): void {
@@ -213,6 +220,10 @@ class WrapperClient extends CustomEvent {
 
     //save
 
+    /**
+     * 
+     * @returns {ValWrapperClient}
+     */
     public toJSON(): ValWrapperClient {
         return {
             cookie: this.cookie.toJSON(),
@@ -224,6 +235,11 @@ class WrapperClient extends CustomEvent {
         };
     }
 
+    /**
+     * 
+     * @param {ValWrapperClient} data Client `.toJSON()` data
+     * @returns {void}
+     */
     public fromJSON(data: ValWrapperClient): void {
         if (!data.cookie) {
             data.cookie = new CookieJar().toJSON();
@@ -249,6 +265,10 @@ class WrapperClient extends CustomEvent {
 
     //auth
 
+    /**
+     * 
+     * @returns {ValWrapperAuth}
+     */
     public toJSONAuth(): ValWrapperAuth {
         return {
             cookie: this.cookie.toJSON(),
@@ -263,6 +283,11 @@ class WrapperClient extends CustomEvent {
         };
     }
 
+    /**
+     * 
+     * @param {ValWrapperAuth} auth Authentication Data
+     * @returns {void}
+     */
     public fromJSONAuth(auth: ValWrapperAuth): void {
         this.cookie = CookieJar.fromJSON(JSON.stringify(auth.cookie));
         this.access_token = auth.access_token;
@@ -276,7 +301,7 @@ class WrapperClient extends CustomEvent {
         this.multifactor = auth.multifactor;
         this.isError = auth.isError;
 
-        if (auth.isError) {
+        if (auth.isError && !this.config.forceAuth) {
             this.emit('error', {
                 errorCode: 'ValWrapper_Authentication_Error',
                 message: 'Authentication Error',
@@ -287,34 +312,29 @@ class WrapperClient extends CustomEvent {
         this.reload();
     }
 
+    /**
+     * Login to Riot Account
+     * @param {String} username Username
+     * @param {String} password Password
+     * @returns {Promise<void>}
+     */
     public async login(username: string, password: string): Promise<void> {
-        try {
-            const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String(this.config.client?.version), String(this.config.client?.platform));
+        const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String(this.config.client?.version), String(this.config.client?.platform));
 
-            this.fromJSONAuth(NewAuth);
-            this.reload();
-        } catch (error) {
-            this.emit('error', {
-                errorCode: 'ValWrapper_Authentication_Error',
-                message: 'Login Failed',
-                data: error,
-            });
-        }
+        this.fromJSONAuth(NewAuth);
+        this.reload();
     }
 
-    public async verify(verificationCode: number): Promise<void> {
-        try {
-            const NewAuth: ValWrapperAuth = await ClientAuthMultifactor.verify(this.toJSONAuth(), verificationCode, String(this.config.userAgent), String(this.config.client?.version), String(this.config.client?.platform));
+    /**
+     * Multi-Factor Authentication
+     * @param {number} verificationCode Verification Code
+     * @returns {Promise<void>}
+     */
+    public async verify(verificationCode: number | string): Promise<void> {
+        const NewAuth: ValWrapperAuth = await ClientAuthMultifactor.verify(this.toJSONAuth(), Number(verificationCode), String(this.config.userAgent), String(this.config.client?.version), String(this.config.client?.platform));
 
-            this.fromJSONAuth(NewAuth);
-            this.reload();
-        } catch (error) {
-            this.emit('error', {
-                errorCode: 'ValWrapper_Authentication_Error',
-                message: 'Multifactor Failed',
-                data: error,
-            });
-        }
+        this.fromJSONAuth(NewAuth);
+        this.reload();
     }
 
     //settings
@@ -371,6 +391,12 @@ class WrapperClient extends CustomEvent {
 
     //static
 
+    /**
+     * 
+     * @param {ValWrapperConfig} config Client Config
+     * @param {ValWrapperClient} data Client `.toJSON()` data
+     * @returns {WrapperClient}
+     */
     public static fromJSON(config: ValWrapperConfig, data: ValWrapperClient): WrapperClient {
         const NewClient: WrapperClient = new WrapperClient(config);
         NewClient.fromJSON(data);
@@ -382,6 +408,12 @@ class WrapperClient extends CustomEvent {
         return NewClient;
     }
 
+    /**
+     * * Not Recommend
+     * @param {ValWrapperConfig} config Client Config
+     * @param {ValWrapperAuth} data Authentication Data
+     * @returns {Promise<WrapperClient>}
+     */
     public static async fromCookie(config: ValWrapperConfig, data: ValWrapperAuth): Promise<WrapperClient> {
         const CookieAuthData: ValWrapperAuth = {
             cookie: data.cookie,

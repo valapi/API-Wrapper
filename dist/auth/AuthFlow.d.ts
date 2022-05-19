@@ -1,8 +1,5 @@
 import { type ValWrapperAxios } from '../client/AxiosClient';
 import type { ValWrapperAuth } from './Account';
-/**
- * * Class ID: @ing3kth/valapi/ValClient/AuthFlow
- */
 declare class AuthFlow {
     private cookie;
     private access_token;
@@ -17,6 +14,8 @@ declare class AuthFlow {
     private clientPlatfrom;
     /**
     * @param {ValWrapperAuth} data Account toJSON data
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
     */
     constructor(data: ValWrapperAuth, clientVersion: string, clientPlatfrom: string);
     /**
@@ -34,6 +33,8 @@ declare class AuthFlow {
      * @param {ValWrapperAuth} data Account toJSON data
      * @param {ValWrapperAxios} auth_response First Auth Response
      * @param {String} UserAgent User Agent
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
     static execute(data: ValWrapperAuth, auth_response: ValWrapperAxios, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
@@ -41,7 +42,8 @@ declare class AuthFlow {
      * @param {ValWrapperAuth} data Account toJSON data
      * @param {String} url Url of First Auth Response
      * @param {String} UserAgent User Agent
-     * @param {String} auth_type Auth Type
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
     static fromUrl(data: ValWrapperAuth, url: string, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;

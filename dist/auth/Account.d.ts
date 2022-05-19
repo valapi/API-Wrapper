@@ -13,9 +13,6 @@ interface ValWrapperAuth {
     multifactor: boolean;
     isError: boolean;
 }
-/**
- * * Class ID: @ing3kth/valapi/ValClient/Account
- */
 declare class Account {
     private cookie;
     private access_token;
@@ -31,6 +28,8 @@ declare class Account {
      * @param {String} username Riot Account Username (not email)
      * @param {String} password Riot Account Password
      * @param {String} UserAgent User Agent
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
     execute(username: string, password: string, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
@@ -43,6 +42,8 @@ declare class Account {
      * @param {String} username Riot Account Username
      * @param {String} password Riot Account Password
      * @param {String} UserAgent User Agent
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
     static login(data: ValWrapperAuth, username: string, password: string, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;

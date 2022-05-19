@@ -47,8 +47,10 @@ class CookieAuth {
 
     /**
      * @param {String} UserAgent User Agent
-    * @returns {Promise<any>}
-    */
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
+     * @returns {Promise<any>}
+     */
      public async execute(UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<any> {
         const axiosClient:Axios = new AxiosClient({
             jar: this.cookie,
@@ -88,13 +90,22 @@ class CookieAuth {
     }
 
     /**
-    * @param {ValWrapperAuth} data ValAuth_Account toJSON data
-    * @param {String} UserAgent User Agent
-    * @returns {Promise<ValWrapperAuth>}
-    */
+     * @param {ValWrapperAuth} data ValAuth_Account toJSON data
+     * @param {String} UserAgent User Agent
+     * @param {String} clientVersion Client Version
+     * @param {String} clientPlatfrom Client Platform
+     * @returns {Promise<ValWrapperAuth>}
+     */
      public static async reauth(data:ValWrapperAuth, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
         const CookieAccount:CookieAuth = new CookieAuth(data);
-        return await CookieAccount.execute(UserAgent, clientVersion, clientPlatfrom);
+        
+        try {
+            return await CookieAccount.execute(UserAgent, clientVersion, clientPlatfrom);
+        } catch (error) {
+            CookieAccount.isError = true;
+
+            return CookieAccount.toJSON();
+        }
     }
 }
 

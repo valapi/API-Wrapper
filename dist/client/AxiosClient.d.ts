@@ -9,6 +9,7 @@ declare module 'axios' {
 interface ValWrapperAxios<ValWrapperAxiosReturn = any> {
     isError: boolean;
     data: ValWrapperAxiosReturn;
+    fullData?: any;
 }
 declare type ValWrapperAxiosMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 interface ValWrapperAxiosRequest {

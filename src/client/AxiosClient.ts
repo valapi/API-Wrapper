@@ -1,7 +1,7 @@
 //import
 import { CustomEvent, type ValorantAPIError } from "@valapi/lib";
 
-import axios, { type Axios, type AxiosRequestConfig, type AxiosError } from 'axios';
+import axios, { type Axios, type AxiosRequestConfig, type AxiosError, type AxiosResponse } from 'axios';
 import type { CookieJar } from 'tough-cookie';
 
 import { HttpsCookieAgent, HttpCookieAgent } from 'http-cookie-agent';
@@ -17,6 +17,7 @@ declare module 'axios' {
 interface ValWrapperAxios<ValWrapperAxiosReturn = any> {
     isError: boolean;
     data: ValWrapperAxiosReturn;
+    fullData?: any;
 }
 
 type ValWrapperAxiosMethod = 'get' | 'post' | 'put' | 'patch' | 'delete' ;
@@ -80,6 +81,7 @@ class AxiosClient extends CustomEvent {
             return {
                 isError: error.isAxiosError,
                 data: error.response.data,
+                fullData: error,
             }
         }
 
@@ -89,7 +91,8 @@ class AxiosClient extends CustomEvent {
                 data: {
                     errorCode: error.response.status,
                     message: error.response.statusText,
-                }
+                },
+                fullData: error,
             }
         }
 
@@ -98,7 +101,8 @@ class AxiosClient extends CustomEvent {
             data: {
                 errorCode: error.name,
                 message: error.message,
-            }
+            },
+            fullData: error,
         }
      }
 
@@ -123,7 +127,7 @@ class AxiosClient extends CustomEvent {
         const _request:any = await this.axiosClient.get(url, config).catch((error:AxiosError):any => {
             return this.errorHandler(error);
             
-        }).then((response:any) => {
+        }).then((response:AxiosResponse) => {
             if(_error){
                 return response;
             } else {
@@ -160,7 +164,7 @@ class AxiosClient extends CustomEvent {
         const _request:any = await this.axiosClient.post(url, body, config).catch((error:AxiosError):any => {
             return this.errorHandler(error);
             
-        }).then((response:any) => {
+        }).then((response:AxiosResponse) => {
             if(_error){
                 return response;
             } else {
@@ -197,7 +201,7 @@ class AxiosClient extends CustomEvent {
         const _request:any = await this.axiosClient.put(url, body, config).catch((error:AxiosError):any => {
             return this.errorHandler(error);
             
-        }).then((response:any) => {
+        }).then((response:AxiosResponse) => {
             if(_error){
                 return response;
             } else {
@@ -234,7 +238,7 @@ class AxiosClient extends CustomEvent {
         const _request:any = await this.axiosClient.patch(url, body, config).catch((error:AxiosError):any => {
             return this.errorHandler(error);
             
-        }).then((response:any) => {
+        }).then((response:AxiosResponse) => {
             if(_error){
                 return response;
             } else {
@@ -270,7 +274,7 @@ class AxiosClient extends CustomEvent {
         const _request:any = await this.axiosClient.post(url, config).catch((error:AxiosError):any => {
             return this.errorHandler(error);
             
-        }).then((response:any) => {
+        }).then((response:AxiosResponse) => {
             if(_error){
                 return response;
             } else {

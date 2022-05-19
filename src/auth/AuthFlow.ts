@@ -118,11 +118,11 @@ class AuthFlow {
                     }
                 },
                 fullData: null,
-            }
+            };
         }
 
-        this.region.pbe = region_response.data.affinities?.pbe;
-        this.region.live = region_response.data.affinities?.live;
+        this.region.pbe = region_response.data.affinities?.pbe || 'na';
+        this.region.live = region_response.data.affinities?.live || 'na';
         return this.toJSON();
     }
 

@@ -6,6 +6,7 @@
 
 - Bug fix 
     - after auth will always error
+    - region not link with config
 - Add a bit more Error Handling
 - new config `forceAuth`
     - not throw error if auth failed

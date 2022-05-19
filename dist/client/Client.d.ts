@@ -131,14 +131,15 @@ declare class WrapperClient extends CustomEvent {
      */
     setCookie(cookie: CookieJar.Serialized): void;
     /**
-     *
+     * * Something went wrong? try to not use static methods.
      * @param {ValWrapperConfig} config Client Config
      * @param {ValWrapperClient} data Client `.toJSON()` data
      * @returns {WrapperClient}
      */
     static fromJSON(config: ValWrapperConfig, data: ValWrapperClient): WrapperClient;
     /**
-     * * Not Recommend
+     * * Not Recommend to use
+     * * After run this method, you must use `.setRegion()` to set region.
      * @param {ValWrapperConfig} config Client Config
      * @param {ValWrapperAuth} data Authentication Data
      * @returns {Promise<WrapperClient>}

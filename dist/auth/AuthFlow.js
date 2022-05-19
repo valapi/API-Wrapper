@@ -101,8 +101,8 @@ class AuthFlow {
                     fullData: null,
                 };
             }
-            this.region.pbe = (_c = region_response.data.affinities) === null || _c === void 0 ? void 0 : _c.pbe;
-            this.region.live = (_d = region_response.data.affinities) === null || _d === void 0 ? void 0 : _d.live;
+            this.region.pbe = ((_c = region_response.data.affinities) === null || _c === void 0 ? void 0 : _c.pbe) || 'na';
+            this.region.live = ((_d = region_response.data.affinities) === null || _d === void 0 ? void 0 : _d.live) || 'na';
             return this.toJSON();
         });
     }

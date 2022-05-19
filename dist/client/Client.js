@@ -57,7 +57,7 @@ class WrapperClient extends lib_1.CustomEvent {
         super();
         //config
         this.config = new Object(Object.assign(Object.assign({}, _defaultConfig), config));
-        if (this.config.region) {
+        if (config.region) {
             this.lockRegion = true;
         }
         else {
@@ -65,6 +65,9 @@ class WrapperClient extends lib_1.CustomEvent {
         }
         if (this.config.region === 'data') {
             this.emit('error', { errorCode: 'ValWrapper_Config_Error', message: 'Region Not Found', data: this.config.region });
+            this.config.region = 'na';
+        }
+        else if (!this.config.region) {
             this.config.region = 'na';
         }
         //create without auth
@@ -76,11 +79,14 @@ class WrapperClient extends lib_1.CustomEvent {
         this.entitlements_token = '';
         this.region = {
             pbe: 'na',
-            live: String(this.config.region),
+            live: this.config.region,
         };
         this.multifactor = false;
         this.isError = false;
         // first reload
+        if (this.lockRegion === false && this.config.region) {
+            this.region.live = this.config.region;
+        }
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
         const _axiosConfig = {
             headers: {
@@ -114,6 +120,9 @@ class WrapperClient extends lib_1.CustomEvent {
      */
     reload() {
         var _a, _b;
+        if (this.lockRegion === false && this.config.region) {
+            this.region.live = this.config.region;
+        }
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
         const _axiosConfig = {
             headers: {
@@ -173,9 +182,6 @@ class WrapperClient extends lib_1.CustomEvent {
         this.token_type = data.token_type;
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
-        if (this.region.live) {
-            this.lockRegion = true;
-        }
         this.reload();
     }
     //auth
@@ -205,14 +211,15 @@ class WrapperClient extends lib_1.CustomEvent {
         this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(auth.cookie));
         this.access_token = auth.access_token;
         this.id_token = auth.id_token;
-        this.expires_in = auth.expires_in;
+        this.expires_in = auth.expires_in || Number(3600);
         this.token_type = auth.token_type;
         this.entitlements_token = auth.entitlements_token;
-        if (!this.lockRegion) {
-            this.region = auth.region;
+        this.region = auth.region;
+        if (!this.region.live) {
+            this.region.live = 'na';
         }
-        this.multifactor = auth.multifactor;
-        this.isError = auth.isError;
+        this.multifactor = auth.multifactor || Boolean(false);
+        this.isError = auth.isError || Boolean(false);
         if (auth.isError && !this.config.forceAuth) {
             this.emit('error', {
                 errorCode: 'ValWrapper_Authentication_Error',
@@ -256,6 +263,7 @@ class WrapperClient extends lib_1.CustomEvent {
      */
     setRegion(region) {
         this.emit('changeSettings', { name: 'region', data: region });
+        this.config.region = region;
         this.region.live = region;
         this.reload();
     }
@@ -296,7 +304,7 @@ class WrapperClient extends lib_1.CustomEvent {
     }
     //static
     /**
-     *
+     * * Something went wrong? try to not use static methods.
      * @param {ValWrapperConfig} config Client Config
      * @param {ValWrapperClient} data Client `.toJSON()` data
      * @returns {WrapperClient}
@@ -304,13 +312,17 @@ class WrapperClient extends lib_1.CustomEvent {
     static fromJSON(config, data) {
         const NewClient = new WrapperClient(config);
         NewClient.fromJSON(data);
-        NewClient.expires_in = 3600;
-        NewClient.multifactor = false;
-        NewClient.isError = false;
+        if (config.region) {
+            NewClient.setRegion(config.region);
+        }
+        else if (data.region.live) {
+            NewClient.setRegion(data.region.live);
+        }
         return NewClient;
     }
     /**
-     * * Not Recommend
+     * * Not Recommend to use
+     * * After run this method, you must use `.setRegion()` to set region.
      * @param {ValWrapperConfig} config Client Config
      * @param {ValWrapperAuth} data Authentication Data
      * @returns {Promise<WrapperClient>}
@@ -328,8 +340,11 @@ class WrapperClient extends lib_1.CustomEvent {
                 multifactor: data.multifactor,
                 isError: data.isError,
             };
-            const NewCookieAuth = yield CookieAuth_1.CookieAuth.reauth(CookieAuthData, String(config.userAgent), _Client_Version, (0, lib_1.toUft8)(JSON.stringify(_Client_Platfrom)));
-            return WrapperClient.fromJSON(config, NewCookieAuth);
+            const NewCookieAuth = yield CookieAuth_1.CookieAuth.reauth(CookieAuthData, config.userAgent || String(_defaultConfig.userAgent), _Client_Version, (0, lib_1.toUft8)(JSON.stringify(_Client_Platfrom)));
+            //client
+            const NewClient = new WrapperClient(config);
+            NewClient.fromJSONAuth(NewCookieAuth);
+            return NewClient;
         });
     }
 }

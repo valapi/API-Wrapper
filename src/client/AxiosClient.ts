@@ -30,14 +30,17 @@ interface ValWrapperAxiosRequest {
 }
 
 //class
+
 class AxiosClient extends CustomEvent {
     public axiosClient: Axios;
 
     /**
-    * @param {AxiosRequestConfig} config Config
-    */
-    constructor(config: AxiosRequestConfig = {}) {
+     * Class Constructor
+     * @param {AxiosRequestConfig} config Config
+     */
+    public constructor(config: AxiosRequestConfig = {}) {
         super();
+        
         if(config.jar){
             const ciphers = [
                 'TLS_CHACHA20_POLY1305_SHA256',
@@ -66,7 +69,7 @@ class AxiosClient extends CustomEvent {
     /**
      * 
      * @param {AxiosError} error Axios Error
-     * @returns 
+     * @returns {ValWrapperAxios}
      */
      private errorHandler(error:AxiosError):ValWrapperAxios<any> {
         //event
@@ -109,7 +112,7 @@ class AxiosClient extends CustomEvent {
     /**
     * @param {String} url URL
     * @param {AxiosRequestConfig} config Axios Config
-    * @returns {Promise<ValWrapperAxios<any>>}
+    * @returns {Promise<ValWrapperAxios>}
     */
      public async get(url:string, config:AxiosRequestConfig = {}):Promise<ValWrapperAxios<any>> {
         //setup
@@ -146,7 +149,7 @@ class AxiosClient extends CustomEvent {
     * @param {String} url URL
     * @param {Object} body Body
     * @param {AxiosRequestConfig} config Axios Config
-    * @returns {Promise<ValWrapperAxios<any>>}
+    * @returns {Promise<ValWrapperAxios>}
     */
      public async post(url:string, body:object = {}, config:AxiosRequestConfig = {}):Promise<ValWrapperAxios<any>> {
         //setup
@@ -183,7 +186,7 @@ class AxiosClient extends CustomEvent {
     * @param {String} url URL
     * @param {Object} body Body
     * @param {AxiosRequestConfig} config Axios Config
-    * @returns {Promise<ValWrapperAxios<any>>}
+    * @returns {Promise<ValWrapperAxios>}
     */
      public async put(url:string, body:object = {}, config:AxiosRequestConfig = {}):Promise<ValWrapperAxios<any>> {
         //setup
@@ -220,7 +223,7 @@ class AxiosClient extends CustomEvent {
     * @param {String} url URL
     * @param {Object} body Body
     * @param {AxiosRequestConfig} config Axios Config
-    * @returns {Promise<ValWrapperAxios<any>>}
+    * @returns {Promise<ValWrapperAxios>}
     */
      public async patch(url:string, body:object = {}, config:AxiosRequestConfig = {}):Promise<ValWrapperAxios<any>> {
         //setup
@@ -256,7 +259,7 @@ class AxiosClient extends CustomEvent {
     /**
     * @param {String} url URL
     * @param {AxiosRequestConfig} config Axios Config
-    * @returns {Promise<ValWrapperAxios<any>>}
+    * @returns {Promise<ValWrapperAxios>}
     */
      public async delete(url:string, config:AxiosRequestConfig = {}):Promise<ValWrapperAxios<any>> {
         //setup

@@ -5,35 +5,36 @@ declare class MMR {
     protected AxiosClient: AxiosClient;
     protected Region: ValorantAPIRegion;
     /**
-    * @param {AxiosClient} AxiosClient Services Data
-    * @param {ValorantAPIRegion} Region Services Data
-    */
+     * Class Constructor
+     * @param {AxiosClient} AxiosClient Services Data
+     * @param {ValorantAPIRegion} Region Services Data
+     */
     constructor(AxiosClient: AxiosClient, Region: ValorantAPIRegion);
     /**
-    * @param {String} puuid Player UUID
-    * @param {String} queueId Queue
-    * @param {Number} startIndex Start Index
-    * @param {Number} endIndex End Index
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @param {String} queueId Queue
+     * @param {Number} startIndex Start Index
+     * @param {Number} endIndex End Index
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     FetchCompetitiveUpdates(puuid: string, queueId?: keyof typeof QueueId, startIndex?: number, endIndex?: number): Promise<ValWrapperAxios<any>>;
     /**
-    * @param {String} seasonId Season ID
-    * @param {Number} startIndex Start Index
-    * @param {Number} size Size
-    * @param {String} serachUsername Search Username
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} seasonId Season ID
+     * @param {Number} startIndex Start Index
+     * @param {Number} size Size
+     * @param {String} serachUsername Search Username
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     FetchLeaderboard(seasonId: string, startIndex?: number, size?: number, serachUsername?: string): Promise<ValWrapperAxios<any>>;
     /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     FetchPlayer(puuid: string): Promise<ValWrapperAxios<any>>;
     /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     HideActRankBadge(puuid: string): Promise<ValWrapperAxios<any>>;
 }
 export { MMR };

@@ -8,10 +8,11 @@ class Client {
     protected Region:ValorantAPIRegion;
 
     /**
-    * @param {AxiosClient} AxiosClient Services Data
-    * @param {ValorantAPIRegion} Region Services Data
-    */
-    constructor(AxiosClient:AxiosClient, Region:ValorantAPIRegion) {
+     * Class Constructor
+     * @param {AxiosClient} AxiosClient Services Data
+     * @param {ValorantAPIRegion} Region Services Data
+     */
+    public constructor(AxiosClient:AxiosClient, Region:ValorantAPIRegion) {
         this.AxiosClient = AxiosClient;
         this.Region = Region;
     }

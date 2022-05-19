@@ -16,6 +16,10 @@ const AxiosClient_1 = require("../client/AxiosClient");
 const AuthFlow_1 = require("./AuthFlow");
 //class
 class Account {
+    /**
+     * Class Constructor
+     * @param {ValWrapperAuth} data Authentication Data
+     */
     constructor(data) {
         this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(data.cookie));
         this.access_token = data.access_token;

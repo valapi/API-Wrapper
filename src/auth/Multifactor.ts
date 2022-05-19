@@ -7,6 +7,7 @@ import { AuthFlow } from "./AuthFlow";
 import type { ValWrapperAuth } from './Account';
 
 //class
+
 class Multifactor {
     private cookie:CookieJar;
     private access_token:string;
@@ -22,9 +23,10 @@ class Multifactor {
     public isError:boolean;
     
     /**
-    * @param {ValWrapperAuth} data Account toJSON data
-    */
-    constructor(data: ValWrapperAuth) {
+     * Class Constructor
+     * @param {ValWrapperAuth} data Account toJSON data
+     */
+    public constructor(data: ValWrapperAuth) {
         if(!data.multifactor){
             throw new Error('This Account is not have a Multifactor');
         }

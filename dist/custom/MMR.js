@@ -13,20 +13,21 @@ exports.MMR = void 0;
 //service
 class MMR {
     /**
-    * @param {AxiosClient} AxiosClient Services Data
-    * @param {ValorantAPIRegion} Region Services Data
-    */
+     * Class Constructor
+     * @param {AxiosClient} AxiosClient Services Data
+     * @param {ValorantAPIRegion} Region Services Data
+     */
     constructor(AxiosClient, Region) {
         this.AxiosClient = AxiosClient;
         this.Region = Region;
     }
     /**
-    * @param {String} puuid Player UUID
-    * @param {String} queueId Queue
-    * @param {Number} startIndex Start Index
-    * @param {Number} endIndex End Index
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @param {String} queueId Queue
+     * @param {Number} startIndex Start Index
+     * @param {Number} endIndex End Index
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     FetchCompetitiveUpdates(puuid, queueId, startIndex = 0, endIndex = 10) {
         return __awaiter(this, void 0, void 0, function* () {
             let _url = this.Region.url.playerData + `/mmr/v1/players/${puuid}/competitiveupdates?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
@@ -44,12 +45,12 @@ class MMR {
         });
     }
     /**
-    * @param {String} seasonId Season ID
-    * @param {Number} startIndex Start Index
-    * @param {Number} size Size
-    * @param {String} serachUsername Search Username
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} seasonId Season ID
+     * @param {Number} startIndex Start Index
+     * @param {Number} size Size
+     * @param {String} serachUsername Search Username
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     FetchLeaderboard(seasonId, startIndex = 0, size = 510, serachUsername) {
         return __awaiter(this, void 0, void 0, function* () {
             let _url = this.Region.url.playerData + `/mmr/v1/leaderboards/affinity/${this.Region.data.api}/queue/competitive/season/${seasonId}?startIndex=${startIndex}&size=${size}`;
@@ -60,9 +61,9 @@ class MMR {
         });
     }
     /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     FetchPlayer(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.get(this.Region.url.playerData + `/mmr/v1/players/${puuid}`);
@@ -70,9 +71,9 @@ class MMR {
     }
     // NOT IN DOCS //
     /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     HideActRankBadge(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.post(this.Region.url.playerData + `/mmr/v1/players/${puuid}/hideactrankbadge`);

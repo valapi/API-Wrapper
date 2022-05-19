@@ -10,8 +10,9 @@ declare class Multifactor {
     multifactor: boolean;
     isError: boolean;
     /**
-    * @param {ValWrapperAuth} data Account toJSON data
-    */
+     * Class Constructor
+     * @param {ValWrapperAuth} data Account toJSON data
+     */
     constructor(data: ValWrapperAuth);
     /**
     * @param {Number} verificationCode Verification Code

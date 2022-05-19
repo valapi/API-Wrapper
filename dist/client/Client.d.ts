@@ -66,10 +66,10 @@ declare class WrapperClient extends CustomEvent {
     MMR: MMRService;
     Player: PlayerService;
     /**
-     * Class Constructor
+     * Create a new Valorant API Wrapper Client
      * @param {ValWrapperConfig} config Client Config
      */
-    private constructor();
+    constructor(config?: ValWrapperConfig);
     /**
      * Reload Class
      * @returns {void}
@@ -111,24 +111,24 @@ declare class WrapperClient extends CustomEvent {
      */
     verify(verificationCode: number | string): Promise<void>;
     /**
-    * @param {String} region Region
-    * @returns {void}
-    */
+     * @param {String} region Region
+     * @returns {void}
+     */
     setRegion(region: keyof typeof _Region): void;
     /**
-    * @param {String} clientVersion Client Version
-    * @returns {void}
-    */
+     * @param {String} clientVersion Client Version
+     * @returns {void}
+     */
     setClientVersion(clientVersion?: string): void;
     /**
-    * @param {ValWrapperClientPlatfrom} clientPlatfrom Client Platfrom in json
-    * @returns {void}
-    */
+     * @param {ValWrapperClientPlatfrom} clientPlatfrom Client Platfrom in json
+     * @returns {void}
+     */
     setClientPlatfrom(clientPlatfrom?: ValWrapperClientPlatfrom): void;
     /**
-    * @param {CookieJar.Serialized} cookie Cookie
-    * @returns {void}
-    */
+     * @param {CookieJar.Serialized} cookie Cookie
+     * @returns {void}
+     */
     setCookie(cookie: CookieJar.Serialized): void;
     /**
      *

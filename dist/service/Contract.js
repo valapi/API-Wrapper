@@ -13,16 +13,17 @@ exports.Contract = void 0;
 //service
 class Contract {
     /**
-    * @param {AxiosClient} AxiosClient Services Data
-    * @param {ValorantAPIRegion} Region Services Data
-    */
+     * Class Constructor
+     * @param {AxiosClient} AxiosClient Services Data
+     * @param {ValorantAPIRegion} Region Services Data
+     */
     constructor(AxiosClient, Region) {
         this.AxiosClient = AxiosClient;
         this.Region = Region;
     }
     /**
      * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     */
     DefinitionsFetch() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.get(this.Region.url.playerData + `/contract-definitions/v3/item-upgrades`);
@@ -30,26 +31,26 @@ class Contract {
     }
     /**
      * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     */
     FetchActiveStory() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.get(this.Region.url.playerData + `/contract-definitions/v2/definitions/story`);
         });
     }
     /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     Fetch(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.get(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}`);
         });
     }
     /**
-    * @param {String} puuid Player UUID
-    * @param {String} contractId Contract ID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @param {String} contractId Contract ID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     Activate(puuid, contractId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.post(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}/special/${contractId}`);

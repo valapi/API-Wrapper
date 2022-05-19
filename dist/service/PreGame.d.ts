@@ -9,47 +9,48 @@ declare class PreGame {
     */
     constructor(AxiosClient: AxiosClient, Region: ValorantAPIRegion);
     /**
-    * @param {String} matchId Match ID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * Class Constructor
+     * @param {String} matchId Match ID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     FetchChatToken(matchId: string): Promise<ValWrapperAxios<any>>;
     /**
-    * @param {String} matchId Match ID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} matchId Match ID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     FetchVoiceToken(matchId: string): Promise<ValWrapperAxios<any>>;
     /**
-    * @param {String} matchId Match ID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} matchId Match ID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     GetMatch(matchId: string): Promise<ValWrapperAxios<any>>;
     /**
-    * @param {String} matchId Match ID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} matchId Match ID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     GetMatchLoadouts(matchId: string): Promise<ValWrapperAxios<any>>;
     /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     GetPlayer(puuid: string): Promise<ValWrapperAxios<any>>;
     /**
-    * @param {String} matchId Match ID
-    * @param {String} agentId Character ID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} matchId Match ID
+     * @param {String} agentId Character ID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     LockCharacter(matchId: string, agentId: string): Promise<ValWrapperAxios<any>>;
     /**
      * * Careful to use, Riot will immediately shut down your Project.
-    * @param {String} matchId Match ID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} matchId Match ID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     QuitMatch(matchId: string): Promise<ValWrapperAxios<any>>;
     /**
-    * @param {String} matchId Match ID
-    * @param {String} agentId Character ID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} matchId Match ID
+     * @param {String} agentId Character ID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     SelectCharacter(matchId: string, agentId: string): Promise<ValWrapperAxios<any>>;
 }
 export { PreGame };

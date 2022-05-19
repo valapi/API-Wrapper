@@ -36,8 +36,12 @@ class Account {
     }
     public multifactor:boolean;
     public isError:boolean;
-
-    constructor(data: ValWrapperAuth) {
+    
+    /**
+     * Class Constructor
+     * @param {ValWrapperAuth} data Authentication Data 
+     */
+    public constructor(data: ValWrapperAuth) {
         this.cookie = CookieJar.fromJSON(JSON.stringify(data.cookie));
         this.access_token = data.access_token;
         this.id_token = data.id_token;

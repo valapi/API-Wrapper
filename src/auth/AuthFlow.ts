@@ -25,11 +25,12 @@ class AuthFlow {
     private clientPlatfrom:string
 
     /**
-    * @param {ValWrapperAuth} data Account toJSON data
+     * Class Constructor
+     * @param {ValWrapperAuth} data Account toJSON data
      * @param {String} clientVersion Client Version
      * @param {String} clientPlatfrom Client Platform
-    */
-    constructor(data: ValWrapperAuth, clientVersion:string, clientPlatfrom:string) {
+     */
+    public constructor(data: ValWrapperAuth, clientVersion:string, clientPlatfrom:string) {
         this.cookie = CookieJar.fromJSON(JSON.stringify(data.cookie));
         this.access_token = data.access_token;
         this.id_token = data.id_token;

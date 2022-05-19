@@ -27,9 +27,10 @@ class CookieAuth {
     public isError:boolean;
     
     /**
-    * @param {ValWrapperAuth} data Account toJSON data
-    */
-    constructor(data: ValWrapperAuth) {
+     * Class Constructor
+     * @param {ValWrapperAuth} data Account toJSON data
+     */
+    public constructor(data: ValWrapperAuth) {
         if(data.multifactor){
             throw new Error('This Account is have a Multifactor');
         }

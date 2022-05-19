@@ -49,7 +49,7 @@ const _defaultConfig = {
 //class
 class WrapperClient extends lib_1.CustomEvent {
     /**
-     * Class Constructor
+     * Create a new Valorant API Wrapper Client
      * @param {ValWrapperConfig} config Client Config
      */
     constructor(config = {}) {
@@ -251,18 +251,18 @@ class WrapperClient extends lib_1.CustomEvent {
     }
     //settings
     /**
-    * @param {String} region Region
-    * @returns {void}
-    */
+     * @param {String} region Region
+     * @returns {void}
+     */
     setRegion(region) {
         this.emit('changeSettings', { name: 'region', data: region });
         this.region.live = region;
         this.reload();
     }
     /**
-    * @param {String} clientVersion Client Version
-    * @returns {void}
-    */
+     * @param {String} clientVersion Client Version
+     * @returns {void}
+     */
     setClientVersion(clientVersion = _Client_Version) {
         var _a;
         this.emit('changeSettings', { name: 'client_version', data: clientVersion });
@@ -273,9 +273,9 @@ class WrapperClient extends lib_1.CustomEvent {
         this.reload();
     }
     /**
-    * @param {ValWrapperClientPlatfrom} clientPlatfrom Client Platfrom in json
-    * @returns {void}
-    */
+     * @param {ValWrapperClientPlatfrom} clientPlatfrom Client Platfrom in json
+     * @returns {void}
+     */
     setClientPlatfrom(clientPlatfrom = _Client_Platfrom) {
         var _a;
         this.emit('changeSettings', { name: 'client_platfrom', data: clientPlatfrom });
@@ -286,9 +286,9 @@ class WrapperClient extends lib_1.CustomEvent {
         this.reload();
     }
     /**
-    * @param {CookieJar.Serialized} cookie Cookie
-    * @returns {void}
-    */
+     * @param {CookieJar.Serialized} cookie Cookie
+     * @returns {void}
+     */
     setCookie(cookie) {
         this.emit('changeSettings', { name: 'cookie', data: cookie });
         this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(cookie));

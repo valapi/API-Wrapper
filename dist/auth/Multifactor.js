@@ -17,8 +17,9 @@ const AuthFlow_1 = require("./AuthFlow");
 //class
 class Multifactor {
     /**
-    * @param {ValWrapperAuth} data Account toJSON data
-    */
+     * Class Constructor
+     * @param {ValWrapperAuth} data Account toJSON data
+     */
     constructor(data) {
         if (!data.multifactor) {
             throw new Error('This Account is not have a Multifactor');

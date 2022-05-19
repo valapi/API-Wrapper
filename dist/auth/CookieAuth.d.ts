@@ -13,8 +13,9 @@ declare class CookieAuth {
     multifactor: boolean;
     isError: boolean;
     /**
-    * @param {ValWrapperAuth} data Account toJSON data
-    */
+     * Class Constructor
+     * @param {ValWrapperAuth} data Account toJSON data
+     */
     constructor(data: ValWrapperAuth);
     /**
      * @param {String} UserAgent User Agent

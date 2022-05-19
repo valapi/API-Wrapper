@@ -23,6 +23,10 @@ declare class Account {
     private region;
     multifactor: boolean;
     isError: boolean;
+    /**
+     * Class Constructor
+     * @param {ValWrapperAuth} data Authentication Data
+     */
     constructor(data: ValWrapperAuth);
     /**
      * @param {String} username Riot Account Username (not email)

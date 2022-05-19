@@ -13,18 +13,19 @@ exports.Store = void 0;
 //service
 class Store {
     /**
-    * @param {AxiosClient} AxiosClient Services Data
-    * @param {ValorantAPIRegion} Region Services Data
-    */
+     * Class Constructor
+     * @param {AxiosClient} AxiosClient Services Data
+     * @param {ValorantAPIRegion} Region Services Data
+     */
     constructor(AxiosClient, Region) {
         this.AxiosClient = AxiosClient;
         this.Region = Region;
     }
     /**
-    * @param {String} puuid Player UUID
-    * @param {String} itemTypeId Item Type
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @param {String} itemTypeId Item Type
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     GetEntitlements(puuid, itemTypeId) {
         return __awaiter(this, void 0, void 0, function* () {
             if (itemTypeId === 'data') {
@@ -39,25 +40,25 @@ class Store {
     }
     /**
      * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     */
     GetOffers() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.get(this.Region.url.playerData + `/store/v1/offers/`);
         });
     }
     /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     GetStorefront(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.get(this.Region.url.playerData + `/store/v2/storefront/${puuid}`);
         });
     }
     /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     GetWallet(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.get(this.Region.url.playerData + `/store/v1/wallet/${puuid}`);
@@ -66,9 +67,9 @@ class Store {
     // NOT IN DOCS //
     /**
      * * NOT TESTED
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     RevealNightMarketOffers(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.post(this.Region.url.playerData + `/store/v2/storefront/${puuid}/nightmarket/offers`);

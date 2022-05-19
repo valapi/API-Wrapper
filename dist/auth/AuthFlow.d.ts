@@ -13,10 +13,11 @@ declare class AuthFlow {
     private clientVersion;
     private clientPlatfrom;
     /**
-    * @param {ValWrapperAuth} data Account toJSON data
+     * Class Constructor
+     * @param {ValWrapperAuth} data Account toJSON data
      * @param {String} clientVersion Client Version
      * @param {String} clientPlatfrom Client Platform
-    */
+     */
     constructor(data: ValWrapperAuth, clientVersion: string, clientPlatfrom: string);
     /**
      * @param {IAxiosClient} auth_response First Auth Response

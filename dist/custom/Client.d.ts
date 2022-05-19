@@ -4,9 +4,10 @@ declare class Client {
     protected AxiosClient: AxiosClient;
     protected Region: ValorantAPIRegion;
     /**
-    * @param {AxiosClient} AxiosClient Services Data
-    * @param {ValorantAPIRegion} Region Services Data
-    */
+     * Class Constructor
+     * @param {AxiosClient} AxiosClient Services Data
+     * @param {ValorantAPIRegion} Region Services Data
+     */
     constructor(AxiosClient: AxiosClient, Region: ValorantAPIRegion);
     /**
      * @returns {Promise<ValWrapperAxios<any>>}

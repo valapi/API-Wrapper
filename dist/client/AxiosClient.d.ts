@@ -21,46 +21,47 @@ interface ValWrapperAxiosRequest {
 declare class AxiosClient extends CustomEvent {
     axiosClient: Axios;
     /**
-    * @param {AxiosRequestConfig} config Config
-    */
+     * Class Constructor
+     * @param {AxiosRequestConfig} config Config
+     */
     constructor(config?: AxiosRequestConfig);
     /**
      *
      * @param {AxiosError} error Axios Error
-     * @returns
+     * @returns {ValWrapperAxios}
      */
     private errorHandler;
     /**
     * @param {String} url URL
     * @param {AxiosRequestConfig} config Axios Config
-    * @returns {Promise<ValWrapperAxios<any>>}
+    * @returns {Promise<ValWrapperAxios>}
     */
     get(url: string, config?: AxiosRequestConfig): Promise<ValWrapperAxios<any>>;
     /**
     * @param {String} url URL
     * @param {Object} body Body
     * @param {AxiosRequestConfig} config Axios Config
-    * @returns {Promise<ValWrapperAxios<any>>}
+    * @returns {Promise<ValWrapperAxios>}
     */
     post(url: string, body?: object, config?: AxiosRequestConfig): Promise<ValWrapperAxios<any>>;
     /**
     * @param {String} url URL
     * @param {Object} body Body
     * @param {AxiosRequestConfig} config Axios Config
-    * @returns {Promise<ValWrapperAxios<any>>}
+    * @returns {Promise<ValWrapperAxios>}
     */
     put(url: string, body?: object, config?: AxiosRequestConfig): Promise<ValWrapperAxios<any>>;
     /**
     * @param {String} url URL
     * @param {Object} body Body
     * @param {AxiosRequestConfig} config Axios Config
-    * @returns {Promise<ValWrapperAxios<any>>}
+    * @returns {Promise<ValWrapperAxios>}
     */
     patch(url: string, body?: object, config?: AxiosRequestConfig): Promise<ValWrapperAxios<any>>;
     /**
     * @param {String} url URL
     * @param {AxiosRequestConfig} config Axios Config
-    * @returns {Promise<ValWrapperAxios<any>>}
+    * @returns {Promise<ValWrapperAxios>}
     */
     delete(url: string, config?: AxiosRequestConfig): Promise<ValWrapperAxios<any>>;
 }

@@ -20,8 +20,9 @@ const http_cookie_agent_1 = require("http-cookie-agent");
 //class
 class AxiosClient extends lib_1.CustomEvent {
     /**
-    * @param {AxiosRequestConfig} config Config
-    */
+     * Class Constructor
+     * @param {AxiosRequestConfig} config Config
+     */
     constructor(config = {}) {
         super();
         if (config.jar) {
@@ -47,7 +48,7 @@ class AxiosClient extends lib_1.CustomEvent {
     /**
      *
      * @param {AxiosError} error Axios Error
-     * @returns
+     * @returns {ValWrapperAxios}
      */
     errorHandler(error) {
         //event
@@ -86,7 +87,7 @@ class AxiosClient extends lib_1.CustomEvent {
     /**
     * @param {String} url URL
     * @param {AxiosRequestConfig} config Axios Config
-    * @returns {Promise<ValWrapperAxios<any>>}
+    * @returns {Promise<ValWrapperAxios>}
     */
     get(url, config = {}) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -121,7 +122,7 @@ class AxiosClient extends lib_1.CustomEvent {
     * @param {String} url URL
     * @param {Object} body Body
     * @param {AxiosRequestConfig} config Axios Config
-    * @returns {Promise<ValWrapperAxios<any>>}
+    * @returns {Promise<ValWrapperAxios>}
     */
     post(url, body = {}, config = {}) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -156,7 +157,7 @@ class AxiosClient extends lib_1.CustomEvent {
     * @param {String} url URL
     * @param {Object} body Body
     * @param {AxiosRequestConfig} config Axios Config
-    * @returns {Promise<ValWrapperAxios<any>>}
+    * @returns {Promise<ValWrapperAxios>}
     */
     put(url, body = {}, config = {}) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -191,7 +192,7 @@ class AxiosClient extends lib_1.CustomEvent {
     * @param {String} url URL
     * @param {Object} body Body
     * @param {AxiosRequestConfig} config Axios Config
-    * @returns {Promise<ValWrapperAxios<any>>}
+    * @returns {Promise<ValWrapperAxios>}
     */
     patch(url, body = {}, config = {}) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -225,7 +226,7 @@ class AxiosClient extends lib_1.CustomEvent {
     /**
     * @param {String} url URL
     * @param {AxiosRequestConfig} config Axios Config
-    * @returns {Promise<ValWrapperAxios<any>>}
+    * @returns {Promise<ValWrapperAxios>}
     */
     delete(url, config = {}) {
         return __awaiter(this, void 0, void 0, function* () {

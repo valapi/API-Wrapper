@@ -13,9 +13,10 @@ exports.Player = void 0;
 //service
 class Player {
     /**
-    * @param {AxiosClient} AxiosClient Services Data
-    * @param {ValorantAPIRegion} Region Services Data
-    */
+     * Class Constructor
+     * @param {AxiosClient} AxiosClient Services Data
+     * @param {ValorantAPIRegion} Region Services Data
+     */
     constructor(AxiosClient, Region, UserAgent) {
         this.AxiosClient = AxiosClient;
         this.Region = Region;
@@ -23,9 +24,9 @@ class Player {
     }
     //Mike - Username From ID
     /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     GetUsername(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.put(this.Region.url.playerData + `/name-service/v2/players`, [
@@ -36,7 +37,7 @@ class Player {
     //Riot Auth
     /**
      * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     */
     GetUserInfo() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.post(`https://auth.riotgames.com/userinfo`, {
@@ -48,27 +49,27 @@ class Player {
     }
     //PVP Endpoints
     /**
-    * @param {String} puuid PlayerUUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid PlayerUUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     AccountXP(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.get(this.Region.url.playerData + `/account-xp/v1/players/${puuid}`);
         });
     }
     /**
-    * @param {String} puuid PlayerUUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid PlayerUUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     Loadout(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.get(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
         });
     }
     /**
-    * @param {String} puuid PlayerUUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid PlayerUUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
     LoadoutUpdate(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.put(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
@@ -76,7 +77,7 @@ class Player {
     }
     /**
      * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     */
     FetchPlayerRestrictions() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.AxiosClient.get(this.Region.url.playerData + `/restrictions/v3/penalties`);

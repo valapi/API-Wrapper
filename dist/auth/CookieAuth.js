@@ -20,8 +20,9 @@ const AuthFlow_1 = require("./AuthFlow");
  */
 class CookieAuth {
     /**
-    * @param {ValWrapperAuth} data Account toJSON data
-    */
+     * Class Constructor
+     * @param {ValWrapperAuth} data Account toJSON data
+     */
     constructor(data) {
         if (data.multifactor) {
             throw new Error('This Account is have a Multifactor');

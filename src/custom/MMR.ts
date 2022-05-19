@@ -10,21 +10,22 @@ class MMR {
     protected Region:ValorantAPIRegion;
 
     /**
-    * @param {AxiosClient} AxiosClient Services Data
-    * @param {ValorantAPIRegion} Region Services Data
-    */
-    constructor(AxiosClient:AxiosClient, Region:ValorantAPIRegion) {
+     * Class Constructor
+     * @param {AxiosClient} AxiosClient Services Data
+     * @param {ValorantAPIRegion} Region Services Data
+     */
+    public constructor(AxiosClient:AxiosClient, Region:ValorantAPIRegion) {
         this.AxiosClient = AxiosClient;
         this.Region = Region;
     }
 
     /**
-    * @param {String} puuid Player UUID
-    * @param {String} queueId Queue
-    * @param {Number} startIndex Start Index
-    * @param {Number} endIndex End Index
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @param {String} queueId Queue
+     * @param {Number} startIndex Start Index
+     * @param {Number} endIndex End Index
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
      public async FetchCompetitiveUpdates(puuid:string, queueId?:keyof typeof QueueId, startIndex:number = 0, endIndex:number = 10):Promise<ValWrapperAxios<any>> {
         let _url = this.Region.url.playerData + `/mmr/v1/players/${puuid}/competitiveupdates?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
 
@@ -44,12 +45,12 @@ class MMR {
     }
 
     /**
-    * @param {String} seasonId Season ID
-    * @param {Number} startIndex Start Index
-    * @param {Number} size Size
-    * @param {String} serachUsername Search Username
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} seasonId Season ID
+     * @param {Number} startIndex Start Index
+     * @param {Number} size Size
+     * @param {String} serachUsername Search Username
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
      public async FetchLeaderboard(seasonId:string, startIndex:number = 0, size:number = 510, serachUsername?:string):Promise<ValWrapperAxios<any>> {
         let _url = this.Region.url.playerData + `/mmr/v1/leaderboards/affinity/${this.Region.data.api}/queue/competitive/season/${seasonId}?startIndex=${startIndex}&size=${size}`;
 
@@ -61,9 +62,9 @@ class MMR {
     }
 
     /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
      public async FetchPlayer(puuid:string):Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.get(this.Region.url.playerData + `/mmr/v1/players/${puuid}`);
     }
@@ -71,9 +72,9 @@ class MMR {
     // NOT IN DOCS //
 
     /**
-    * @param {String} puuid Player UUID
-    * @returns {Promise<ValWrapperAxios<any>>}
-    */
+     * @param {String} puuid Player UUID
+     * @returns {Promise<ValWrapperAxios<any>>}
+     */
      public async HideActRankBadge(puuid:string):Promise<ValWrapperAxios<any>> {
         return await this.AxiosClient.post(this.Region.url.playerData + `/mmr/v1/players/${puuid}/hideactrankbadge`);
     }

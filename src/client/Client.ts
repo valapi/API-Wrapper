@@ -77,7 +77,9 @@ const _defaultConfig: ValWrapperConfig = {
 }
 
 //class
+
 class WrapperClient extends CustomEvent {
+    
     //auth
     private cookie: CookieJar;
     private access_token: string;
@@ -115,11 +117,12 @@ class WrapperClient extends CustomEvent {
     public Player: PlayerService;
 
     /**
-     * Class Constructor
+     * Create a new Valorant API Wrapper Client
      * @param {ValWrapperConfig} config Client Config
      */
-    private constructor(config: ValWrapperConfig = {}) {
+    public constructor(config: ValWrapperConfig = {}) {
         super();
+
         //config
         this.config = new Object({ ..._defaultConfig, ...config });
 
@@ -340,9 +343,9 @@ class WrapperClient extends CustomEvent {
     //settings
 
     /**
-    * @param {String} region Region
-    * @returns {void}
-    */
+     * @param {String} region Region
+     * @returns {void}
+     */
     public setRegion(region: keyof typeof _Region): void {
         this.emit('changeSettings', { name: 'region', data: region });
 
@@ -351,9 +354,9 @@ class WrapperClient extends CustomEvent {
     }
 
     /**
-    * @param {String} clientVersion Client Version
-    * @returns {void}
-    */
+     * @param {String} clientVersion Client Version
+     * @returns {void}
+     */
     public setClientVersion(clientVersion: string = _Client_Version): void {
         this.emit('changeSettings', { name: 'client_version', data: clientVersion });
 
@@ -365,9 +368,9 @@ class WrapperClient extends CustomEvent {
     }
 
     /**
-    * @param {ValWrapperClientPlatfrom} clientPlatfrom Client Platfrom in json
-    * @returns {void}
-    */
+     * @param {ValWrapperClientPlatfrom} clientPlatfrom Client Platfrom in json
+     * @returns {void}
+     */
     public setClientPlatfrom(clientPlatfrom: ValWrapperClientPlatfrom = _Client_Platfrom): void {
         this.emit('changeSettings', { name: 'client_platfrom', data: clientPlatfrom });
 
@@ -379,9 +382,9 @@ class WrapperClient extends CustomEvent {
     }
 
     /**
-    * @param {CookieJar.Serialized} cookie Cookie
-    * @returns {void}
-    */
+     * @param {CookieJar.Serialized} cookie Cookie
+     * @returns {void}
+     */
     public setCookie(cookie: CookieJar.Serialized): void {
         this.emit('changeSettings', { name: 'cookie', data: cookie });
 

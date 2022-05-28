@@ -1,38 +1,38 @@
 //import
-import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
-import type { ValorantAPIRegion } from "@valapi/lib";
+import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
+import type { ValorantApiRegion } from "@valapi/lib";
 
 //service
 
 class Session {
-    protected AxiosClient:AxiosClient;
-    protected Region:ValorantAPIRegion;
+    protected RequestClient:ValRequestClient;
+    protected Region:ValorantApiRegion;
 
     /**
      * Class Constructor
-     * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
-    public constructor(AxiosClient:AxiosClient, Region:ValorantAPIRegion) {
-        this.AxiosClient = AxiosClient;
+    public constructor(ValRequestClient:ValRequestClient, Region:ValorantApiRegion) {
+        this.RequestClient = ValRequestClient;
         this.Region = Region;
     }
 
     /**
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async Get(puuid:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}`);
+     public async Get(puuid:string):Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}`);
     }
     
     /**
      * * Careful to use, Riot will immediately shut down your Project.
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async ReConnect(puuid:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}/reconnect`);
+     public async ReConnect(puuid:string):Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}/reconnect`);
     }
 }
 

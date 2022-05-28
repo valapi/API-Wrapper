@@ -1,52 +1,52 @@
 //import
-import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
-import type { ValorantAPIRegion } from "@valapi/lib";
+import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
+import type { ValorantApiRegion } from "@valapi/lib";
 
 //service
 
 class Contract {
-    protected AxiosClient:AxiosClient;
-    protected Region:ValorantAPIRegion;
+    protected RequestClient:ValRequestClient;
+    protected Region:ValorantApiRegion;
 
     /**
      * Class Constructor
-     * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
-    public constructor(AxiosClient:AxiosClient, Region:ValorantAPIRegion) {
-        this.AxiosClient = AxiosClient;
+    public constructor(ValRequestClient:ValRequestClient, Region:ValorantApiRegion) {
+        this.RequestClient = ValRequestClient;
         this.Region = Region;
     }
 
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async DefinitionsFetch():Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.playerData + `/contract-definitions/v3/item-upgrades`);
+     public async DefinitionsFetch():Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.get(this.Region.url.playerData + `/contract-definitions/v3/item-upgrades`);
     }
 
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async FetchActiveStory():Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.playerData + `/contract-definitions/v2/definitions/story`);
+     public async FetchActiveStory():Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.get(this.Region.url.playerData + `/contract-definitions/v2/definitions/story`);
     }
 
     /**
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async Fetch(puuid:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}`);
+     public async Fetch(puuid:string):Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.get(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}`);
     }
 
     /**
      * @param {String} puuid Player UUID
      * @param {String} contractId Contract ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async Activate(puuid:string, contractId:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.post(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}/special/${contractId}`);
+     public async Activate(puuid:string, contractId:string):Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.post(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}/special/${contractId}`);
     }
 }
 

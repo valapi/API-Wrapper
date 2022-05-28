@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthFlow = void 0;
 //import
 const tough_cookie_1 = require("tough-cookie");
-const AxiosClient_1 = require("../client/AxiosClient");
 //class
 class AuthFlow {
     /**
@@ -35,22 +34,17 @@ class AuthFlow {
         this.clientPlatfrom = clientPlatfrom;
     }
     /**
-     * @param {IAxiosClient} auth_response First Auth Response
+     * @param {IValRequestClient} auth_response First Auth Response
      * @param {String} UserAgent User Agent
      * @returns {Promise<ValWrapperAuth>}
      */
-    execute(auth_response, UserAgent) {
-        var _a, _b, _c, _d;
+    execute(auth_response, UserAgent, RequestClient) {
+        var _a, _b, _c, _d, _e, _f, _g;
         return __awaiter(this, void 0, void 0, function* () {
             if (auth_response.isError) {
                 this.isError = true;
                 return this.toJSON();
             }
-            const axiosClient = new AxiosClient_1.AxiosClient({
-                jar: this.cookie,
-                withCredentials: true,
-                timeout: this.expires_in * 1000,
-            });
             //multifactor
             if (auth_response.data.type && auth_response.data.type == 'multifactor') {
                 this.multifactor = true;
@@ -70,7 +64,7 @@ class AuthFlow {
             this.expires_in = Number(new URLSearchParams(Search_URL.hash).get('expires_in'));
             this.token_type = String(new URLSearchParams(Search_URL.hash).get('token_type'));
             //ENTITLEMENTS
-            const entitlements_response = yield axiosClient.post('https://entitlements.auth.riotgames.com/api/token/v1', {}, {
+            const entitlements_response = yield RequestClient.post('https://entitlements.auth.riotgames.com/api/token/v1', {}, {
                 headers: {
                     'Authorization': `${this.token_type} ${this.access_token}`,
                     'User-Agent': String(UserAgent),
@@ -78,7 +72,7 @@ class AuthFlow {
             });
             this.entitlements_token = entitlements_response.data.entitlements_token;
             //REGION
-            let region_response = yield axiosClient.put('https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant', {
+            let region_response = yield RequestClient.put('https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant', {
                 "id_token": this.id_token,
             }, {
                 headers: {
@@ -98,11 +92,13 @@ class AuthFlow {
                             live: 'na',
                         }
                     },
-                    fullData: null,
                 };
             }
             this.region.pbe = ((_c = region_response.data.affinities) === null || _c === void 0 ? void 0 : _c.pbe) || 'na';
             this.region.live = ((_d = region_response.data.affinities) === null || _d === void 0 ? void 0 : _d.live) || 'na';
+            this.cookie = new tough_cookie_1.CookieJar((_e = RequestClient.theAxios.defaults.httpsAgent.jar) === null || _e === void 0 ? void 0 : _e.store, {
+                rejectPublicSuffixes: ((_g = (_f = RequestClient.theAxios.defaults.httpsAgent.options) === null || _f === void 0 ? void 0 : _f.jar) === null || _g === void 0 ? void 0 : _g.rejectPublicSuffixes) || undefined,
+            });
             return this.toJSON();
         });
     }
@@ -125,17 +121,17 @@ class AuthFlow {
     }
     /**
      * @param {ValWrapperAuth} data Account toJSON data
-     * @param {ValWrapperAxios} auth_response First Auth Response
+     * @param {ValorantApiRequestResponse} auth_response First Auth Response
      * @param {String} UserAgent User Agent
      * @param {String} clientVersion Client Version
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-    static execute(data, auth_response, UserAgent, clientVersion, clientPlatfrom) {
+    static execute(data, auth_response, UserAgent, clientVersion, clientPlatfrom, RequestClient) {
         return __awaiter(this, void 0, void 0, function* () {
             const _newAuthFlow = new AuthFlow(data, clientVersion, clientPlatfrom);
             try {
-                return yield _newAuthFlow.execute(auth_response, UserAgent);
+                return yield _newAuthFlow.execute(auth_response, UserAgent, RequestClient);
             }
             catch (error) {
                 _newAuthFlow.isError = true;
@@ -151,7 +147,7 @@ class AuthFlow {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-    static fromUrl(data, url, UserAgent, clientVersion, clientPlatfrom) {
+    static fromUrl(data, url, UserAgent, clientVersion, clientPlatfrom, RequestClient) {
         return __awaiter(this, void 0, void 0, function* () {
             const _newAuthFlow = new AuthFlow(data, clientVersion, clientPlatfrom);
             const auth_response = {
@@ -164,10 +160,9 @@ class AuthFlow {
                         },
                     },
                 },
-                fullData: null,
             };
             try {
-                return yield _newAuthFlow.execute(auth_response, UserAgent);
+                return yield _newAuthFlow.execute(auth_response, UserAgent, RequestClient);
             }
             catch (error) {
                 _newAuthFlow.isError = true;

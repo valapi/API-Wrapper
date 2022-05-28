@@ -1,4 +1,5 @@
 import { CookieJar } from 'tough-cookie';
+import type { ValRequestClient } from '@valapi/lib';
 interface ValWrapperAuth {
     cookie: CookieJar.Serialized;
     access_token: string;
@@ -36,13 +37,14 @@ declare class Account {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-    execute(username: string, password: string, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
+    execute(username: string, password: string, UserAgent: string, clientVersion: string, clientPlatfrom: string, RequestClient: ValRequestClient): Promise<ValWrapperAuth>;
     /**
      *
      * @returns {ValWrapperAuth}
      */
     toJSON(): ValWrapperAuth;
     /**
+     * @param {ValWrapperAuth} data Authentication Data
      * @param {String} username Riot Account Username
      * @param {String} password Riot Account Password
      * @param {String} UserAgent User Agent
@@ -50,7 +52,7 @@ declare class Account {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-    static login(data: ValWrapperAuth, username: string, password: string, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
+    static login(data: ValWrapperAuth, username: string, password: string, UserAgent: string, clientVersion: string, clientPlatfrom: string, RequestClient: ValRequestClient): Promise<ValWrapperAuth>;
 }
 export { Account };
 export type { ValWrapperAuth };

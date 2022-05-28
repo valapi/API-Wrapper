@@ -14,67 +14,67 @@ exports.CurrentGame = void 0;
 class CurrentGame {
     /**
      * Class Constructor
-     * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
-    constructor(AxiosClient, Region) {
-        this.AxiosClient = AxiosClient;
+    constructor(ValRequestClient, Region) {
+        this.RequestClient = ValRequestClient;
         this.Region = Region;
     }
     /**
      * @param {String} matchId Match ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchAllChatMUCToken(matchId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/allchatmuctoken`);
+            return yield this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/allchatmuctoken`);
         });
     }
     /**
      * @param {String} matchId Match ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchMatch(matchId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}`);
+            return yield this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}`);
         });
     }
     /**
      * @param {String} matchId Match ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchMatchLoadouts(matchId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/loadouts`);
+            return yield this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/loadouts`);
         });
     }
     /**
      * @param {String} puuid PlayerUUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchPlayer(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.partyService + `/core-game/v1/players/${puuid}`);
+            return yield this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/players/${puuid}`);
         });
     }
     /**
      * @param {String} matchId Match ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchTeamChatMUCToken(matchId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/teamchatmuctoken`);
+            return yield this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/teamchatmuctoken`);
         });
     }
     /**
      * * Careful to use, Riot will immediately shut down your Project.
      * @param {String} puuid Player UUID
      * @param {String} matchId Match ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     DisassociatePlayer(puuid, matchId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.post(this.Region.url.partyService + `/core-game/v1/players/${puuid}/disassociate/${matchId}`);
+            return yield this.RequestClient.post(this.Region.url.partyService + `/core-game/v1/players/${puuid}/disassociate/${matchId}`);
         });
     }
 }

@@ -1,12 +1,14 @@
 //import
-import { CustomEvent, toUft8, type ValorantAPIError } from "@valapi/lib";
+import { ValEvent, toUft8, type ValorantApiError } from "@valapi/lib";
 import { CookieJar } from "tough-cookie";
 import type { AxiosRequestConfig } from "axios";
 
-import { ValRegion as WrapperRegion, type ValorantAPIRegion } from "@valapi/lib";
+import {
+    ValRegion as ValRegion, type ValorantApiRegion,
+    ValRequestClient, type ValorantApiRequestData,
+} from "@valapi/lib";
 import { Region as _Region } from "@valapi/lib";
-
-import { AxiosClient, type ValWrapperAxiosRequest } from "./AxiosClient";
+import { HttpsCookieAgent } from "http-cookie-agent";
 
 import { Account as ClientAuthAccount, type ValWrapperAuth } from "../auth/Account";
 import { Multifactor as ClientAuthMultifactor } from "../auth/Multifactor";
@@ -48,7 +50,7 @@ interface ValWrapperClientPlatfrom {
 
 interface ValWrapperConfig {
     userAgent?: string;
-    region?: keyof typeof _Region;
+    region?: keyof typeof _Region.from;
     client?: {
         version?: string;
         platform?: ValWrapperClientPlatfrom;
@@ -78,7 +80,7 @@ const _defaultConfig: ValWrapperConfig = {
 
 //class
 
-class WrapperClient extends CustomEvent {
+class WrapperClient extends ValEvent {
     
     //auth
     private cookie: CookieJar;
@@ -100,8 +102,8 @@ class WrapperClient extends CustomEvent {
     protected lockRegion: boolean;
 
     //reload
-    private RegionServices: ValorantAPIRegion;
-    private AxiosClient: AxiosClient;
+    private RegionServices: ValorantApiRegion;
+    private RequestClient: ValRequestClient;
 
     //service
     public Contract: ContractService;
@@ -132,10 +134,7 @@ class WrapperClient extends CustomEvent {
             this.lockRegion = false;
         }
 
-        if (this.config.region === 'data') {
-            this.emit('error', { errorCode: 'ValWrapper_Config_Error', message: 'Region Not Found', data: this.config.region });
-            this.config.region = 'na';
-        } else if (!this.config.region) {
+        if (!this.config.region) {
             this.config.region = 'na';
         }
 
@@ -154,36 +153,44 @@ class WrapperClient extends CustomEvent {
         this.isError = false;
 
         // first reload
-        if(this.lockRegion === false && this.config.region){
+        if(this.lockRegion === true && this.config.region){
             this.region.live = this.config.region;
         }
+            
+        this.RegionServices = new ValRegion(this.region.live as keyof typeof _Region.from).toJSON();
 
-        this.RegionServices = new WrapperRegion(this.region.live as keyof typeof _Region).toJSON();
-
+        //request client
+        const ciphers = [
+            'TLS_CHACHA20_POLY1305_SHA256',
+            'TLS_AES_128_GCM_SHA256',
+            'TLS_AES_256_GCM_SHA384',
+            'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
+        ];
         const _axiosConfig: AxiosRequestConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
                 'X-Riot-ClientVersion': String(this.config.client?.version),
                 'X-Riot-ClientPlatform': toUft8(JSON.stringify(this.config.client?.platform)),
-            }
-        }
-        this.AxiosClient = new AxiosClient(new Object({ ..._axiosConfig, ...this.config.axiosConfig }));
-        this.AxiosClient.on('error', ((data: ValorantAPIError) => { this.emit('error', data as ValorantAPIError); }));
-        this.AxiosClient.on('request', ((data: ValWrapperAxiosRequest) => { this.emit('request', data as ValWrapperAxiosRequest); }));
+            },
+            httpsAgent: new HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
+        };
+        this.RequestClient = new ValRequestClient(new Object({ ..._axiosConfig, ...this.config.axiosConfig }));
+        this.RequestClient.on('error', ((data: ValorantApiError) => { this.emit('error', data as ValorantApiError); }));
+        this.RequestClient.on('request', ((data: ValorantApiRequestData) => { this.emit('request', data as ValorantApiRequestData); }));
 
         //service
-        this.Contract = new ContractService(this.AxiosClient, this.RegionServices);
-        this.CurrentGame = new CurrentGameService(this.AxiosClient, this.RegionServices);
-        this.Party = new PartyService(this.AxiosClient, this.RegionServices);
-        this.Pregame = new PreGameService(this.AxiosClient, this.RegionServices);
-        this.Session = new SessionService(this.AxiosClient, this.RegionServices);
-        this.Store = new StoreService(this.AxiosClient, this.RegionServices);
+        this.Contract = new ContractService(this.RequestClient, this.RegionServices);
+        this.CurrentGame = new CurrentGameService(this.RequestClient, this.RegionServices);
+        this.Party = new PartyService(this.RequestClient, this.RegionServices);
+        this.Pregame = new PreGameService(this.RequestClient, this.RegionServices);
+        this.Session = new SessionService(this.RequestClient, this.RegionServices);
+        this.Store = new StoreService(this.RequestClient, this.RegionServices);
 
-        this.Client = new ClientService(this.AxiosClient, this.RegionServices);
-        this.Match = new MatchService(this.AxiosClient, this.RegionServices);
-        this.MMR = new MMRService(this.AxiosClient, this.RegionServices);
-        this.Player = new PlayerService(this.AxiosClient, this.RegionServices, String(this.config.userAgent));
+        this.Client = new ClientService(this.RequestClient, this.RegionServices);
+        this.Match = new MatchService(this.RequestClient, this.RegionServices);
+        this.MMR = new MMRService(this.RequestClient, this.RegionServices);
+        this.Player = new PlayerService(this.RequestClient, this.RegionServices, String(this.config.userAgent));
 
         //event
         this.emit('ready');
@@ -196,36 +203,44 @@ class WrapperClient extends CustomEvent {
      * @returns {void}
      */
     private reload(): void {
-        if(this.lockRegion === false && this.config.region){
+        if(this.lockRegion === true && this.config.region){
             this.region.live = this.config.region;
         }
             
-        this.RegionServices = new WrapperRegion(this.region.live as keyof typeof _Region).toJSON();
+        this.RegionServices = new ValRegion(this.region.live as keyof typeof _Region.from).toJSON();
 
+        //request client
+        const ciphers = [
+            'TLS_CHACHA20_POLY1305_SHA256',
+            'TLS_AES_128_GCM_SHA256',
+            'TLS_AES_256_GCM_SHA384',
+            'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
+        ];
         const _axiosConfig: AxiosRequestConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
                 'X-Riot-ClientVersion': String(this.config.client?.version),
                 'X-Riot-ClientPlatform': toUft8(JSON.stringify(this.config.client?.platform)),
-            }
-        }
-        this.AxiosClient = new AxiosClient(new Object({ ..._axiosConfig, ...this.config.axiosConfig }));
-        this.AxiosClient.on('error', ((data: ValorantAPIError) => { this.emit('error', data as ValorantAPIError); }));
-        this.AxiosClient.on('request', ((data: ValWrapperAxiosRequest) => { this.emit('request', data as ValWrapperAxiosRequest); }));
+            },
+            httpsAgent: new HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
+        };
+        this.RequestClient = new ValRequestClient(new Object({ ..._axiosConfig, ...this.config.axiosConfig }));
+        this.RequestClient.on('error', ((data: ValorantApiError) => { this.emit('error', data as ValorantApiError); }));
+        this.RequestClient.on('request', ((data: ValorantApiRequestData) => { this.emit('request', data as ValorantApiRequestData); }));
 
         //service
-        this.Contract = new ContractService(this.AxiosClient, this.RegionServices);
-        this.CurrentGame = new CurrentGameService(this.AxiosClient, this.RegionServices);
-        this.Party = new PartyService(this.AxiosClient, this.RegionServices);
-        this.Pregame = new PreGameService(this.AxiosClient, this.RegionServices);
-        this.Session = new SessionService(this.AxiosClient, this.RegionServices);
-        this.Store = new StoreService(this.AxiosClient, this.RegionServices);
+        this.Contract = new ContractService(this.RequestClient, this.RegionServices);
+        this.CurrentGame = new CurrentGameService(this.RequestClient, this.RegionServices);
+        this.Party = new PartyService(this.RequestClient, this.RegionServices);
+        this.Pregame = new PreGameService(this.RequestClient, this.RegionServices);
+        this.Session = new SessionService(this.RequestClient, this.RegionServices);
+        this.Store = new StoreService(this.RequestClient, this.RegionServices);
 
-        this.Client = new ClientService(this.AxiosClient, this.RegionServices);
-        this.Match = new MatchService(this.AxiosClient, this.RegionServices);
-        this.MMR = new MMRService(this.AxiosClient, this.RegionServices);
-        this.Player = new PlayerService(this.AxiosClient, this.RegionServices, String(this.config.userAgent));
+        this.Client = new ClientService(this.RequestClient, this.RegionServices);
+        this.Match = new MatchService(this.RequestClient, this.RegionServices);
+        this.MMR = new MMRService(this.RequestClient, this.RegionServices);
+        this.Player = new PlayerService(this.RequestClient, this.RegionServices, String(this.config.userAgent));
 
         //event
         this.emit('ready');
@@ -325,13 +340,22 @@ class WrapperClient extends CustomEvent {
     }
 
     /**
+     * * Not Recommend to use
+     * @returns {Promise<void>}
+     */
+     public async fromCookie(): Promise<void> {
+        const NewCookieAuth = await ClientAuthCookie.reauth(this.toJSONAuth(), this.config.userAgent || String(this.config.userAgent), String(this.config.client?.version), toUft8(JSON.stringify(this.config.client?.platform)), this.RequestClient);
+        this.fromJSONAuth(NewCookieAuth);
+    }
+
+    /**
      * Login to Riot Account
      * @param {String} username Username
      * @param {String} password Password
      * @returns {Promise<void>}
      */
     public async login(username: string, password: string): Promise<void> {
-        const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String(this.config.client?.version), String(this.config.client?.platform));
+        const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String(this.config.client?.version), toUft8(JSON.stringify(this.config.client?.platform)), this.RequestClient);
 
         this.fromJSONAuth(NewAuth);
         this.reload();
@@ -343,7 +367,7 @@ class WrapperClient extends CustomEvent {
      * @returns {Promise<void>}
      */
     public async verify(verificationCode: number | string): Promise<void> {
-        const NewAuth: ValWrapperAuth = await ClientAuthMultifactor.verify(this.toJSONAuth(), Number(verificationCode), String(this.config.userAgent), String(this.config.client?.version), String(this.config.client?.platform));
+        const NewAuth: ValWrapperAuth = await ClientAuthMultifactor.verify(this.toJSONAuth(), Number(verificationCode), String(this.config.userAgent), String(this.config.client?.version), toUft8(JSON.stringify(this.config.client?.platform)), this.RequestClient);
 
         this.fromJSONAuth(NewAuth);
         this.reload();
@@ -355,7 +379,7 @@ class WrapperClient extends CustomEvent {
      * @param {String} region Region
      * @returns {void}
      */
-    public setRegion(region: keyof typeof _Region): void {
+    public setRegion(region: keyof typeof _Region.from): void {
         this.emit('changeSettings', { name: 'region', data: region });
 
         this.config.region = region;
@@ -417,37 +441,8 @@ class WrapperClient extends CustomEvent {
         if(config.region) {
             NewClient.setRegion(config.region);
         } else if (data.region.live) {
-            NewClient.setRegion(data.region.live as keyof typeof _Region);
+            NewClient.setRegion(data.region.live as keyof typeof _Region.from);
         }
-
-        return NewClient;
-    }
-
-    /**
-     * * Not Recommend to use
-     * * After run this method, you must use `.setRegion()` to set region.
-     * @param {ValWrapperConfig} config Client Config
-     * @param {ValWrapperAuth} data Authentication Data
-     * @returns {Promise<WrapperClient>}
-     */
-    public static async fromCookie(config: ValWrapperConfig, data: ValWrapperAuth): Promise<WrapperClient> {
-        const CookieAuthData: ValWrapperAuth = {
-            cookie: data.cookie,
-            access_token: data.access_token,
-            id_token: data.id_token,
-            expires_in: data.expires_in,
-            token_type: data.token_type,
-            entitlements_token: data.entitlements_token,
-            region: data.region,
-            multifactor: data.multifactor,
-            isError: data.isError,
-        }
-
-        const NewCookieAuth = await ClientAuthCookie.reauth(CookieAuthData, config.userAgent || String(_defaultConfig.userAgent), _Client_Version, toUft8(JSON.stringify(_Client_Platfrom)));
-
-        //client
-        const NewClient: WrapperClient = new WrapperClient(config);
-        NewClient.fromJSONAuth(NewCookieAuth);
 
         return NewClient;
     }
@@ -456,9 +451,9 @@ class WrapperClient extends CustomEvent {
 //event
 interface ValWrapperClientEvent {
     'ready': () => void,
-    'request': (data: ValWrapperAxiosRequest) => void,
+    'request': (data: ValorantApiRequestData) => void,
     'changeSettings': (data: { name: string, data: any }) => void,
-    'error': (data: ValorantAPIError) => void;
+    'error': (data: ValorantApiError) => void;
 }
 
 declare interface WrapperClient {

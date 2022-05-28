@@ -1,57 +1,57 @@
-import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
-import type { ValorantAPIRegion } from "@valapi/lib";
+import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
+import type { ValorantApiRegion } from "@valapi/lib";
 declare class PreGame {
-    protected AxiosClient: AxiosClient;
-    protected Region: ValorantAPIRegion;
+    protected RequestClient: ValRequestClient;
+    protected Region: ValorantApiRegion;
     /**
-    * @param {AxiosClient} AxiosClient Services Data
-    * @param {ValorantAPIRegion} Region Services Data
+    * @param {ValRequestClient} ValRequestClient Services Data
+    * @param {ValorantApiRegion} Region Services Data
     */
-    constructor(AxiosClient: AxiosClient, Region: ValorantAPIRegion);
+    constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion);
     /**
      * Class Constructor
      * @param {String} matchId Match ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    FetchChatToken(matchId: string): Promise<ValWrapperAxios<any>>;
+    FetchChatToken(matchId: string): Promise<ValorantApiRequestResponse<any>>;
     /**
      * @param {String} matchId Match ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    FetchVoiceToken(matchId: string): Promise<ValWrapperAxios<any>>;
+    FetchVoiceToken(matchId: string): Promise<ValorantApiRequestResponse<any>>;
     /**
      * @param {String} matchId Match ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    GetMatch(matchId: string): Promise<ValWrapperAxios<any>>;
+    GetMatch(matchId: string): Promise<ValorantApiRequestResponse<any>>;
     /**
      * @param {String} matchId Match ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    GetMatchLoadouts(matchId: string): Promise<ValWrapperAxios<any>>;
+    GetMatchLoadouts(matchId: string): Promise<ValorantApiRequestResponse<any>>;
     /**
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    GetPlayer(puuid: string): Promise<ValWrapperAxios<any>>;
+    GetPlayer(puuid: string): Promise<ValorantApiRequestResponse<any>>;
     /**
      * @param {String} matchId Match ID
      * @param {String} agentId Character ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    LockCharacter(matchId: string, agentId: string): Promise<ValWrapperAxios<any>>;
+    LockCharacter(matchId: string, agentId: string): Promise<ValorantApiRequestResponse<any>>;
     /**
      * * Careful to use, Riot will immediately shut down your Project.
      * @param {String} matchId Match ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    QuitMatch(matchId: string): Promise<ValWrapperAxios<any>>;
+    QuitMatch(matchId: string): Promise<ValorantApiRequestResponse<any>>;
     /**
      * @param {String} matchId Match ID
      * @param {String} agentId Character ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    SelectCharacter(matchId: string, agentId: string): Promise<ValWrapperAxios<any>>;
+    SelectCharacter(matchId: string, agentId: string): Promise<ValorantApiRequestResponse<any>>;
 }
 export { PreGame };
 //# sourceMappingURL=PreGame.d.ts.map

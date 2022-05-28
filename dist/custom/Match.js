@@ -15,21 +15,21 @@ class Match {
     /**
      * Class Constructor
      * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
     constructor(AxiosClient, Region) {
-        this.AxiosClient = AxiosClient;
+        this.RequestClient = AxiosClient;
         this.Region = Region;
     }
     //PVP Endpoints
     /**
      * Get contract definitions
      * @param {String} matchId Match ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchMatchDetails(matchId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/match-details/v1/matches/${matchId}`);
+            return yield this.RequestClient.get(this.Region.url.playerData + `/match-details/v1/matches/${matchId}`);
         });
     }
     /**
@@ -37,22 +37,15 @@ class Match {
      * @param {String} queueId Queue
      * @param {Number} startIndex Start Index
      * @param {Number} endIndex End Index
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchMatchHistory(puuid, queueId, startIndex = 0, endIndex = 10) {
         return __awaiter(this, void 0, void 0, function* () {
             let _url = this.Region.url.playerData + `/match-history/v1/history/${puuid}?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
-            if (queueId === 'data') {
-                this.AxiosClient.emit('error', {
-                    errorCode: 'ValWrapper_Request_Error',
-                    message: 'Queue ID cannot be "data"',
-                    data: queueId,
-                });
-            }
             if (queueId) {
                 _url += `&queue=${queueId}`;
             }
-            return yield this.AxiosClient.get(_url);
+            return yield this.RequestClient.get(_url);
         });
     }
 }

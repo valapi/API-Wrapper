@@ -1,7 +1,7 @@
 //import
 import { CookieJar } from 'tough-cookie';
+import type { ValRequestClient, ValorantApiRequestResponse } from '@valapi/lib';
 
-import { AxiosClient, type ValWrapperAxios } from '../client/AxiosClient';
 import { AuthFlow } from "./AuthFlow";
 
 //interface
@@ -61,16 +61,8 @@ class Account {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-     public async execute(username:string, password:string, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
-        const axiosClient:AxiosClient = new AxiosClient({
-            jar: this.cookie,
-            withCredentials: true,
-            headers: {
-                'User-Agent': String(UserAgent),
-            }
-        });
-
-        await axiosClient.post('https://auth.riotgames.com/api/v1/authorization', {
+     public async execute(username:string, password:string, UserAgent:string, clientVersion:string, clientPlatfrom:string, RequestClient:ValRequestClient):Promise<ValWrapperAuth> {
+        await RequestClient.post('https://auth.riotgames.com/api/v1/authorization', {
             "client_id": "play-valorant-web-prod",
             "nonce": "1",
             "redirect_uri": "https://playvalorant.com/opt_in",
@@ -84,14 +76,17 @@ class Account {
         });
 
         //ACCESS TOKEN
-        const auth_response:ValWrapperAxios<any> = await axiosClient.put('https://auth.riotgames.com/api/v1/authorization', {
+        const auth_response:ValorantApiRequestResponse<any> = await RequestClient.put('https://auth.riotgames.com/api/v1/authorization', {
             'type': 'auth',
             'username': String(username),
             'password': String(password),
             'remember': true,
         });
 
-        return await AuthFlow.execute(this.toJSON(), auth_response, UserAgent, clientVersion, clientPlatfrom);
+        this.cookie = new CookieJar(RequestClient.theAxios.defaults.httpsAgent.jar?.store, {
+            rejectPublicSuffixes: RequestClient.theAxios.defaults.httpsAgent.options?.jar?.rejectPublicSuffixes || undefined,
+        });
+        return await AuthFlow.execute(this.toJSON(), auth_response, UserAgent, clientVersion, clientPlatfrom, RequestClient);
     }
 
     /**
@@ -113,6 +108,7 @@ class Account {
     }
 
     /**
+     * @param {ValWrapperAuth} data Authentication Data
      * @param {String} username Riot Account Username
      * @param {String} password Riot Account Password
      * @param {String} UserAgent User Agent
@@ -120,11 +116,11 @@ class Account {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-     public static async login(data:ValWrapperAuth, username:string, password:string, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
+     public static async login(data:ValWrapperAuth, username:string, password:string, UserAgent:string, clientVersion:string, clientPlatfrom:string, RequestClient:ValRequestClient):Promise<ValWrapperAuth> {
         const NewAccount:Account = new Account(data);
 
         try {
-            return await NewAccount.execute(username, password, UserAgent, clientVersion, clientPlatfrom);
+            return await NewAccount.execute(username, password, UserAgent, clientVersion, clientPlatfrom, RequestClient);
         } catch (error) {
             NewAccount.isError = true;
 

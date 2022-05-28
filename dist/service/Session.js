@@ -14,30 +14,30 @@ exports.Session = void 0;
 class Session {
     /**
      * Class Constructor
-     * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
-    constructor(AxiosClient, Region) {
-        this.AxiosClient = AxiosClient;
+    constructor(ValRequestClient, Region) {
+        this.RequestClient = ValRequestClient;
         this.Region = Region;
     }
     /**
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     Get(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}`);
+            return yield this.RequestClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}`);
         });
     }
     /**
      * * Careful to use, Riot will immediately shut down your Project.
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     ReConnect(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}/reconnect`);
+            return yield this.RequestClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}/reconnect`);
         });
     }
 }

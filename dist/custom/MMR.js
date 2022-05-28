@@ -15,10 +15,10 @@ class MMR {
     /**
      * Class Constructor
      * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
     constructor(AxiosClient, Region) {
-        this.AxiosClient = AxiosClient;
+        this.RequestClient = AxiosClient;
         this.Region = Region;
     }
     /**
@@ -26,22 +26,15 @@ class MMR {
      * @param {String} queueId Queue
      * @param {Number} startIndex Start Index
      * @param {Number} endIndex End Index
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchCompetitiveUpdates(puuid, queueId, startIndex = 0, endIndex = 10) {
         return __awaiter(this, void 0, void 0, function* () {
             let _url = this.Region.url.playerData + `/mmr/v1/players/${puuid}/competitiveupdates?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
-            if (queueId === 'data') {
-                this.AxiosClient.emit('error', {
-                    errorCode: 'ValWrapper_Request_Error',
-                    message: 'Queue ID cannot be "data"',
-                    data: queueId,
-                });
-            }
             if (queueId) {
                 _url += `&queue=${queueId}`;
             }
-            return yield this.AxiosClient.get(_url);
+            return yield this.RequestClient.get(_url);
         });
     }
     /**
@@ -49,7 +42,7 @@ class MMR {
      * @param {Number} startIndex Start Index
      * @param {Number} size Size
      * @param {String} serachUsername Search Username
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchLeaderboard(seasonId, startIndex = 0, size = 510, serachUsername) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -57,26 +50,26 @@ class MMR {
             if (serachUsername) {
                 _url += `&query=${serachUsername}`;
             }
-            return yield this.AxiosClient.get(_url);
+            return yield this.RequestClient.get(_url);
         });
     }
     /**
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchPlayer(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/mmr/v1/players/${puuid}`);
+            return yield this.RequestClient.get(this.Region.url.playerData + `/mmr/v1/players/${puuid}`);
         });
     }
     // NOT IN DOCS //
     /**
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     HideActRankBadge(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.post(this.Region.url.playerData + `/mmr/v1/players/${puuid}/hideactrankbadge`);
+            return yield this.RequestClient.post(this.Region.url.playerData + `/mmr/v1/players/${puuid}/hideactrankbadge`);
         });
     }
 }

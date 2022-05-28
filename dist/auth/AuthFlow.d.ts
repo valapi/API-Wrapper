@@ -1,4 +1,4 @@
-import { type ValWrapperAxios } from '../client/AxiosClient';
+import type { ValRequestClient, ValorantApiRequestResponse } from '@valapi/lib';
 import type { ValWrapperAuth } from './Account';
 declare class AuthFlow {
     private cookie;
@@ -20,11 +20,11 @@ declare class AuthFlow {
      */
     constructor(data: ValWrapperAuth, clientVersion: string, clientPlatfrom: string);
     /**
-     * @param {IAxiosClient} auth_response First Auth Response
+     * @param {IValRequestClient} auth_response First Auth Response
      * @param {String} UserAgent User Agent
      * @returns {Promise<ValWrapperAuth>}
      */
-    execute(auth_response: ValWrapperAxios, UserAgent: string): Promise<ValWrapperAuth>;
+    execute(auth_response: ValorantApiRequestResponse, UserAgent: string, RequestClient: ValRequestClient): Promise<ValWrapperAuth>;
     /**
      *
      * @returns {ValWrapperAuth}
@@ -32,13 +32,13 @@ declare class AuthFlow {
     toJSON(): ValWrapperAuth;
     /**
      * @param {ValWrapperAuth} data Account toJSON data
-     * @param {ValWrapperAxios} auth_response First Auth Response
+     * @param {ValorantApiRequestResponse} auth_response First Auth Response
      * @param {String} UserAgent User Agent
      * @param {String} clientVersion Client Version
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-    static execute(data: ValWrapperAuth, auth_response: ValWrapperAxios, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
+    static execute(data: ValWrapperAuth, auth_response: ValorantApiRequestResponse, UserAgent: string, clientVersion: string, clientPlatfrom: string, RequestClient: ValRequestClient): Promise<ValWrapperAuth>;
     /**
      * @param {ValWrapperAuth} data Account toJSON data
      * @param {String} url Url of First Auth Response
@@ -47,7 +47,7 @@ declare class AuthFlow {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-    static fromUrl(data: ValWrapperAuth, url: string, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
+    static fromUrl(data: ValWrapperAuth, url: string, UserAgent: string, clientVersion: string, clientPlatfrom: string, RequestClient: ValRequestClient): Promise<ValWrapperAuth>;
 }
 export { AuthFlow };
 //# sourceMappingURL=AuthFlow.d.ts.map

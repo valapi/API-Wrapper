@@ -15,32 +15,32 @@ class Player {
     /**
      * Class Constructor
      * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
     constructor(AxiosClient, Region, UserAgent) {
-        this.AxiosClient = AxiosClient;
+        this.RequestClient = AxiosClient;
         this.Region = Region;
         this.UserAgent = UserAgent;
     }
     //Mike - Username From ID
     /**
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetUsername(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.put(this.Region.url.playerData + `/name-service/v2/players`, [
+            return yield this.RequestClient.put(this.Region.url.playerData + `/name-service/v2/players`, [
                 `${puuid}`
             ]);
         });
     }
     //Riot Auth
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetUserInfo() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.post(`https://auth.riotgames.com/userinfo`, {
+            return yield this.RequestClient.post(`https://auth.riotgames.com/userinfo`, {
                 headers: {
                     'User-Agent': this.UserAgent,
                 },
@@ -50,48 +50,48 @@ class Player {
     //PVP Endpoints
     /**
      * @param {String} puuid PlayerUUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     AccountXP(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/account-xp/v1/players/${puuid}`);
+            return yield this.RequestClient.get(this.Region.url.playerData + `/account-xp/v1/players/${puuid}`);
         });
     }
     /**
      * @param {String} puuid PlayerUUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     Loadout(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
+            return yield this.RequestClient.get(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
         });
     }
     /**
      * @param {String} puuid PlayerUUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     LoadoutUpdate(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.put(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
+            return yield this.RequestClient.put(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
         });
     }
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchPlayerRestrictions() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/restrictions/v3/penalties`);
+            return yield this.RequestClient.get(this.Region.url.playerData + `/restrictions/v3/penalties`);
         });
     }
     // NOT IN DOCS //
     /**
      * * IDK what this is
      * @param {String} puuid PlayerUUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     MassRewards(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.post(this.Region.url.playerData + `/mass-rewards/v1/players/${puuid}/reconcile`);
+            return yield this.RequestClient.post(this.Region.url.playerData + `/mass-rewards/v1/players/${puuid}/reconcile`);
         });
     }
 }

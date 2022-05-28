@@ -1,36 +1,36 @@
 //import
-import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
-import type { ValorantAPIRegion } from "@valapi/lib";
+import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
+import type { ValorantApiRegion } from "@valapi/lib";
 
 //service
 class Client {
-    protected AxiosClient:AxiosClient;
-    protected Region:ValorantAPIRegion;
+    protected RequestClient:ValRequestClient;
+    protected Region:ValorantApiRegion;
 
     /**
      * Class Constructor
      * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
-    public constructor(AxiosClient:AxiosClient, Region:ValorantAPIRegion) {
-        this.AxiosClient = AxiosClient;
+    public constructor(AxiosClient:ValRequestClient, Region:ValorantApiRegion) {
+        this.RequestClient = AxiosClient;
         this.Region = Region;
     }
 
     //PVP Endpoints
 
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async FetchContent():Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.sharedData + `/content-service/v3/content`);
+     public async FetchContent():Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.get(this.Region.url.sharedData + `/content-service/v3/content`);
     }
 
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async FetchConfig():Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.sharedData + `/v1/config/${this.Region.data.api}`);
+     public async FetchConfig():Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.get(this.Region.url.sharedData + `/v1/config/${this.Region.data.api}`);
     }
 }
 

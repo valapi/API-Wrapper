@@ -15,27 +15,27 @@ class Client {
     /**
      * Class Constructor
      * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
     constructor(AxiosClient, Region) {
-        this.AxiosClient = AxiosClient;
+        this.RequestClient = AxiosClient;
         this.Region = Region;
     }
     //PVP Endpoints
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchContent() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.sharedData + `/content-service/v3/content`);
+            return yield this.RequestClient.get(this.Region.url.sharedData + `/content-service/v3/content`);
         });
     }
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchConfig() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.sharedData + `/v1/config/${this.Region.data.api}`);
+            return yield this.RequestClient.get(this.Region.url.sharedData + `/v1/config/${this.Region.data.api}`);
         });
     }
 }

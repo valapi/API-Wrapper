@@ -1,21 +1,21 @@
 //import
-import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
-import type { ValorantAPIRegion } from "@valapi/lib";
+import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
+import type { ValorantApiRegion } from "@valapi/lib";
 
 import { QueueId } from "@valapi/lib";
 
 //service
 class Match {
-    protected AxiosClient:AxiosClient;
-    protected Region:ValorantAPIRegion;
+    protected RequestClient:ValRequestClient;
+    protected Region:ValorantApiRegion;
 
     /**
      * Class Constructor
      * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
-    public constructor(AxiosClient:AxiosClient, Region:ValorantAPIRegion) {
-        this.AxiosClient = AxiosClient;
+    public constructor(AxiosClient:ValRequestClient, Region:ValorantApiRegion) {
+        this.RequestClient = AxiosClient;
         this.Region = Region;
     }
 
@@ -24,10 +24,10 @@ class Match {
     /**
      * Get contract definitions
      * @param {String} matchId Match ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async FetchMatchDetails(matchId:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.playerData + `/match-details/v1/matches/${matchId}`);
+     public async FetchMatchDetails(matchId:string):Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.get(this.Region.url.playerData + `/match-details/v1/matches/${matchId}`);
     }
 
     /**
@@ -35,24 +35,16 @@ class Match {
      * @param {String} queueId Queue
      * @param {Number} startIndex Start Index
      * @param {Number} endIndex End Index
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async FetchMatchHistory(puuid:string, queueId?:keyof typeof QueueId, startIndex:number = 0, endIndex:number = 10):Promise<ValWrapperAxios<any>> {
+     public async FetchMatchHistory(puuid:string, queueId?:keyof typeof QueueId.from, startIndex:number = 0, endIndex:number = 10):Promise<ValorantApiRequestResponse<any>> {
         let _url = this.Region.url.playerData + `/match-history/v1/history/${puuid}?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}` ;
-
-        if(queueId === 'data'){
-            this.AxiosClient.emit('error', {
-                errorCode: 'ValWrapper_Request_Error',
-                message: 'Queue ID cannot be "data"',
-                data: queueId,
-            })
-        }
 
         if(queueId) {
             _url += `&queue=${queueId}`;
         }
 
-        return await this.AxiosClient.get(_url);
+        return await this.RequestClient.get(_url);
     }
 }
 

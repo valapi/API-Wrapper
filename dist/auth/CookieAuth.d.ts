@@ -1,4 +1,5 @@
-import { ValWrapperAuth } from './Account';
+import type { ValRequestClient } from '@valapi/lib';
+import type { ValWrapperAuth } from './Account';
 /**
  * * Not Recommend
  */
@@ -23,7 +24,7 @@ declare class CookieAuth {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<any>}
      */
-    execute(UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<any>;
+    execute(UserAgent: string, clientVersion: string, clientPlatfrom: string, RequestClient: ValRequestClient): Promise<any>;
     /**
      *
      * @returns {ValWrapperAuth}
@@ -36,7 +37,7 @@ declare class CookieAuth {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-    static reauth(data: ValWrapperAuth, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
+    static reauth(data: ValWrapperAuth, UserAgent: string, clientVersion: string, clientPlatfrom: string, RequestClient: ValRequestClient): Promise<ValWrapperAuth>;
 }
 export { CookieAuth };
 //# sourceMappingURL=CookieAuth.d.ts.map

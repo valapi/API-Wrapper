@@ -1,8 +1,8 @@
-import { CustomEvent, type ValorantAPIError } from "@valapi/lib";
+import { ValEvent, type ValorantApiError } from "@valapi/lib";
 import { CookieJar } from "tough-cookie";
 import type { AxiosRequestConfig } from "axios";
+import { type ValorantApiRequestData } from "@valapi/lib";
 import { Region as _Region } from "@valapi/lib";
-import { type ValWrapperAxiosRequest } from "./AxiosClient";
 import { type ValWrapperAuth } from "../auth/Account";
 import { Contract as ContractService } from "../service/Contract";
 import { CurrentGame as CurrentGameService } from "../service/CurrentGame";
@@ -33,7 +33,7 @@ interface ValWrapperClientPlatfrom {
 }
 interface ValWrapperConfig {
     userAgent?: string;
-    region?: keyof typeof _Region;
+    region?: keyof typeof _Region.from;
     client?: {
         version?: string;
         platform?: ValWrapperClientPlatfrom;
@@ -41,7 +41,7 @@ interface ValWrapperConfig {
     forceAuth?: boolean;
     axiosConfig?: AxiosRequestConfig;
 }
-declare class WrapperClient extends CustomEvent {
+declare class WrapperClient extends ValEvent {
     private cookie;
     private access_token;
     private id_token;
@@ -54,7 +54,7 @@ declare class WrapperClient extends CustomEvent {
     protected config: ValWrapperConfig;
     protected lockRegion: boolean;
     private RegionServices;
-    private AxiosClient;
+    private RequestClient;
     Contract: ContractService;
     CurrentGame: CurrentGameService;
     Party: PartyService;
@@ -98,6 +98,11 @@ declare class WrapperClient extends CustomEvent {
      */
     fromJSONAuth(auth: ValWrapperAuth): void;
     /**
+     * * Not Recommend to use
+     * @returns {Promise<void>}
+     */
+    fromCookie(): Promise<void>;
+    /**
      * Login to Riot Account
      * @param {String} username Username
      * @param {String} password Password
@@ -114,7 +119,7 @@ declare class WrapperClient extends CustomEvent {
      * @param {String} region Region
      * @returns {void}
      */
-    setRegion(region: keyof typeof _Region): void;
+    setRegion(region: keyof typeof _Region.from): void;
     /**
      * @param {String} clientVersion Client Version
      * @returns {void}
@@ -137,23 +142,15 @@ declare class WrapperClient extends CustomEvent {
      * @returns {WrapperClient}
      */
     static fromJSON(config: ValWrapperConfig, data: ValWrapperClient): WrapperClient;
-    /**
-     * * Not Recommend to use
-     * * After run this method, you must use `.setRegion()` to set region.
-     * @param {ValWrapperConfig} config Client Config
-     * @param {ValWrapperAuth} data Authentication Data
-     * @returns {Promise<WrapperClient>}
-     */
-    static fromCookie(config: ValWrapperConfig, data: ValWrapperAuth): Promise<WrapperClient>;
 }
 interface ValWrapperClientEvent {
     'ready': () => void;
-    'request': (data: ValWrapperAxiosRequest) => void;
+    'request': (data: ValorantApiRequestData) => void;
     'changeSettings': (data: {
         name: string;
         data: any;
     }) => void;
-    'error': (data: ValorantAPIError) => void;
+    'error': (data: ValorantApiError) => void;
 }
 declare interface WrapperClient {
     emit<EventName extends keyof ValWrapperClientEvent>(name: EventName, ...args: Parameters<ValWrapperClientEvent[EventName]>): void;

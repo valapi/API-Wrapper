@@ -14,46 +14,46 @@ exports.Contract = void 0;
 class Contract {
     /**
      * Class Constructor
-     * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
-    constructor(AxiosClient, Region) {
-        this.AxiosClient = AxiosClient;
+    constructor(ValRequestClient, Region) {
+        this.RequestClient = ValRequestClient;
         this.Region = Region;
     }
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     DefinitionsFetch() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/contract-definitions/v3/item-upgrades`);
+            return yield this.RequestClient.get(this.Region.url.playerData + `/contract-definitions/v3/item-upgrades`);
         });
     }
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchActiveStory() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/contract-definitions/v2/definitions/story`);
+            return yield this.RequestClient.get(this.Region.url.playerData + `/contract-definitions/v2/definitions/story`);
         });
     }
     /**
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     Fetch(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}`);
+            return yield this.RequestClient.get(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}`);
         });
     }
     /**
      * @param {String} puuid Player UUID
      * @param {String} contractId Contract ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     Activate(puuid, contractId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.post(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}/special/${contractId}`);
+            return yield this.RequestClient.post(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}/special/${contractId}`);
         });
     }
 }

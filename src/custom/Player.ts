@@ -1,21 +1,21 @@
 //import
-import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
-import type { ValorantAPIRegion } from "@valapi/lib";
+import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
+import type { ValorantApiRegion } from "@valapi/lib";
 
 //service
 class Player {
-    protected AxiosClient:AxiosClient;
-    protected Region:ValorantAPIRegion;
+    protected RequestClient:ValRequestClient;
+    protected Region:ValorantApiRegion;
 
     private UserAgent:string;
 
     /**
      * Class Constructor
      * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
-    public constructor(AxiosClient:AxiosClient, Region:ValorantAPIRegion, UserAgent:string) {
-        this.AxiosClient = AxiosClient;
+    public constructor(AxiosClient:ValRequestClient, Region:ValorantApiRegion, UserAgent:string) {
+        this.RequestClient = AxiosClient;
         this.Region = Region;
 
         this.UserAgent = UserAgent;
@@ -25,10 +25,10 @@ class Player {
     
     /**
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async GetUsername(puuid:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.put(this.Region.url.playerData + `/name-service/v2/players`, [
+     public async GetUsername(puuid:string):Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.put(this.Region.url.playerData + `/name-service/v2/players`, [
             `${puuid}`
         ]);
     }
@@ -36,10 +36,10 @@ class Player {
     //Riot Auth
 
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async GetUserInfo():Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.post(`https://auth.riotgames.com/userinfo`, {
+     public async GetUserInfo():Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.post(`https://auth.riotgames.com/userinfo`, {
             headers: {
                 'User-Agent': this.UserAgent,
             },
@@ -50,33 +50,33 @@ class Player {
 
     /**
      * @param {String} puuid PlayerUUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async AccountXP(puuid:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.playerData + `/account-xp/v1/players/${puuid}`);
+     public async AccountXP(puuid:string):Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.get(this.Region.url.playerData + `/account-xp/v1/players/${puuid}`);
     }
 
     /**
      * @param {String} puuid PlayerUUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async Loadout(puuid:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
+     public async Loadout(puuid:string):Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.get(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
     }
 
     /**
      * @param {String} puuid PlayerUUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async LoadoutUpdate(puuid:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.put(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
+     public async LoadoutUpdate(puuid:string):Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.put(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
     }
 
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async FetchPlayerRestrictions():Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.playerData + `/restrictions/v3/penalties`);
+     public async FetchPlayerRestrictions():Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.get(this.Region.url.playerData + `/restrictions/v3/penalties`);
     }
 
     // NOT IN DOCS //
@@ -84,10 +84,10 @@ class Player {
     /**
      * * IDK what this is
      * @param {String} puuid PlayerUUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async MassRewards(puuid:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.post(this.Region.url.playerData + `/mass-rewards/v1/players/${puuid}/reconcile`);
+     public async MassRewards(puuid:string):Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.post(this.Region.url.playerData + `/mass-rewards/v1/players/${puuid}/reconcile`);
     }
 }
 

@@ -1,7 +1,6 @@
 //import
 import { CookieJar } from 'tough-cookie';
-
-import { AxiosClient, type ValWrapperAxios } from '../client/AxiosClient';
+import type { ValRequestClient, ValorantApiRequestResponse } from '@valapi/lib';
 
 import type { ValWrapperAuth } from './Account';
 
@@ -46,21 +45,15 @@ class AuthFlow {
     }
 
     /**
-     * @param {IAxiosClient} auth_response First Auth Response
+     * @param {IValRequestClient} auth_response First Auth Response
      * @param {String} UserAgent User Agent
      * @returns {Promise<ValWrapperAuth>}
      */
-     public async execute(auth_response:ValWrapperAxios, UserAgent:string):Promise<ValWrapperAuth> {
+     public async execute(auth_response:ValorantApiRequestResponse, UserAgent:string, RequestClient:ValRequestClient):Promise<ValWrapperAuth> {
         if(auth_response.isError){
             this.isError = true;
             return this.toJSON();
         }
-
-        const axiosClient:AxiosClient = new AxiosClient({
-            jar: this.cookie,
-            withCredentials: true,
-            timeout: this.expires_in * 1000,
-        });
 
         //multifactor
         if (auth_response.data.type && auth_response.data.type == 'multifactor') {
@@ -86,7 +79,7 @@ class AuthFlow {
         this.token_type = String(new URLSearchParams(Search_URL.hash).get('token_type'));
 
         //ENTITLEMENTS
-        const entitlements_response:ValWrapperAxios<any> = await axiosClient.post('https://entitlements.auth.riotgames.com/api/token/v1', {}, {
+        const entitlements_response:ValorantApiRequestResponse<any> = await RequestClient.post('https://entitlements.auth.riotgames.com/api/token/v1', {}, {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'User-Agent': String(UserAgent),
@@ -96,7 +89,7 @@ class AuthFlow {
         this.entitlements_token = entitlements_response.data.entitlements_token;
 
         //REGION
-        let region_response:ValWrapperAxios<any> = await axiosClient.put('https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant', {
+        let region_response:ValorantApiRequestResponse<any> = await RequestClient.put('https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant', {
             "id_token": this.id_token,
         }, {
             headers: {
@@ -117,12 +110,15 @@ class AuthFlow {
                         live: 'na',
                     }
                 },
-                fullData: null,
             };
         }
 
         this.region.pbe = region_response.data.affinities?.pbe || 'na';
         this.region.live = region_response.data.affinities?.live || 'na';
+
+        this.cookie = new CookieJar(RequestClient.theAxios.defaults.httpsAgent.jar?.store, {
+            rejectPublicSuffixes: RequestClient.theAxios.defaults.httpsAgent.options?.jar?.rejectPublicSuffixes || undefined,
+        });
         return this.toJSON();
     }
 
@@ -146,17 +142,17 @@ class AuthFlow {
 
     /**
      * @param {ValWrapperAuth} data Account toJSON data
-     * @param {ValWrapperAxios} auth_response First Auth Response
+     * @param {ValorantApiRequestResponse} auth_response First Auth Response
      * @param {String} UserAgent User Agent
      * @param {String} clientVersion Client Version
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-     static async execute(data:ValWrapperAuth, auth_response:ValWrapperAxios, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
+     static async execute(data:ValWrapperAuth, auth_response:ValorantApiRequestResponse, UserAgent:string, clientVersion:string, clientPlatfrom:string, RequestClient:ValRequestClient):Promise<ValWrapperAuth> {
         const _newAuthFlow:AuthFlow = new AuthFlow(data, clientVersion, clientPlatfrom);
 
         try {
-            return await _newAuthFlow.execute(auth_response, UserAgent);
+            return await _newAuthFlow.execute(auth_response, UserAgent, RequestClient);
         } catch (error) {
             _newAuthFlow.isError = true;
 
@@ -172,10 +168,10 @@ class AuthFlow {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-     public static async fromUrl(data:ValWrapperAuth, url:string, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
+     public static async fromUrl(data:ValWrapperAuth, url:string, UserAgent:string, clientVersion:string, clientPlatfrom:string, RequestClient:ValRequestClient):Promise<ValWrapperAuth> {
         const _newAuthFlow:AuthFlow = new AuthFlow(data, clientVersion, clientPlatfrom);
 
-        const auth_response:ValWrapperAxios<{ type: string, response: { parameters: { uri: string } } }> = {
+        const auth_response:ValorantApiRequestResponse<{ type: string, response: { parameters: { uri: string } } }> = {
             isError: false,
             data: {
                 type: 'auth',
@@ -185,11 +181,10 @@ class AuthFlow {
                     },
                 },
             },
-            fullData: null,
         };
 
         try {
-            return await _newAuthFlow.execute(auth_response, UserAgent);
+            return await _newAuthFlow.execute(auth_response, UserAgent, RequestClient);
         } catch (error) {
             _newAuthFlow.isError = true;
 

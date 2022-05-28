@@ -1,3 +1,4 @@
+import type { ValRequestClient } from '@valapi/lib';
 import type { ValWrapperAuth } from './Account';
 declare class Multifactor {
     private cookie;
@@ -21,7 +22,7 @@ declare class Multifactor {
     * @param {String} clientPlatfrom Client Platform
     * @returns {Promise<ValWrapperAuth>}
     */
-    execute(verificationCode: number, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
+    execute(verificationCode: number, UserAgent: string, clientVersion: string, clientPlatfrom: string, RequestClient: ValRequestClient): Promise<ValWrapperAuth>;
     /**
      *
      * @returns {ValWrapperAuth}
@@ -35,7 +36,7 @@ declare class Multifactor {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-    static verify(data: ValWrapperAuth, verificationCode: number, UserAgent: string, clientVersion: string, clientPlatfrom: string): Promise<ValWrapperAuth>;
+    static verify(data: ValWrapperAuth, verificationCode: number, UserAgent: string, clientVersion: string, clientPlatfrom: string, RequestClient: ValRequestClient): Promise<ValWrapperAuth>;
 }
 export { Multifactor };
 //# sourceMappingURL=Multifactor.d.ts.map

@@ -1,29 +1,29 @@
-import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
-import type { ValorantAPIRegion } from "@valapi/lib";
+import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
+import type { ValorantApiRegion } from "@valapi/lib";
 import { QueueId } from "@valapi/lib";
 declare class Match {
-    protected AxiosClient: AxiosClient;
-    protected Region: ValorantAPIRegion;
+    protected RequestClient: ValRequestClient;
+    protected Region: ValorantApiRegion;
     /**
      * Class Constructor
      * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
-    constructor(AxiosClient: AxiosClient, Region: ValorantAPIRegion);
+    constructor(AxiosClient: ValRequestClient, Region: ValorantApiRegion);
     /**
      * Get contract definitions
      * @param {String} matchId Match ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    FetchMatchDetails(matchId: string): Promise<ValWrapperAxios<any>>;
+    FetchMatchDetails(matchId: string): Promise<ValorantApiRequestResponse<any>>;
     /**
      * @param {String} puuid Player UUID
      * @param {String} queueId Queue
      * @param {Number} startIndex Start Index
      * @param {Number} endIndex End Index
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    FetchMatchHistory(puuid: string, queueId?: keyof typeof QueueId, startIndex?: number, endIndex?: number): Promise<ValWrapperAxios<any>>;
+    FetchMatchHistory(puuid: string, queueId?: keyof typeof QueueId.from, startIndex?: number, endIndex?: number): Promise<ValorantApiRequestResponse<any>>;
 }
 export { Match };
 //# sourceMappingURL=Match.d.ts.map

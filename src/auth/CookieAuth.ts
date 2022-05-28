@@ -1,11 +1,9 @@
 //import
 import { CookieJar } from 'tough-cookie';
+import type { ValRequestClient } from '@valapi/lib';
 
-import { AxiosClient } from '../client/AxiosClient';
+import type { ValWrapperAuth } from './Account';
 import { AuthFlow } from "./AuthFlow";
-
-import { ValWrapperAuth } from './Account';
-import type { Axios } from 'axios';
 
 //class
 
@@ -52,23 +50,17 @@ class CookieAuth {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<any>}
      */
-     public async execute(UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<any> {
-        const axiosClient:Axios = new AxiosClient({
-            jar: this.cookie,
-            withCredentials: true,
-            headers: {
-                'User-Agent': UserAgent,
-            },
-            maxRedirects: 1,
-        }).axiosClient;
-
+     public async execute(UserAgent:string, clientVersion:string, clientPlatfrom:string, RequestClient:ValRequestClient):Promise<any> {
         //Cookie Reauth
         try{
-            await axiosClient.get('https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1')
+            await RequestClient.get('https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1')
         }catch(err:any){
-            return await AuthFlow.fromUrl(this.toJSON(), err.request._currentUrl as string, UserAgent, clientVersion, clientPlatfrom);
+            return await AuthFlow.fromUrl(this.toJSON(), err.request._currentUrl as string, UserAgent, clientVersion, clientPlatfrom, RequestClient);
         }
 
+        this.cookie = new CookieJar(RequestClient.theAxios.defaults.httpsAgent.jar?.store, {
+            rejectPublicSuffixes: RequestClient.theAxios.defaults.httpsAgent.options?.jar?.rejectPublicSuffixes || undefined,
+        });
         return this.toJSON();
     }
 
@@ -97,11 +89,11 @@ class CookieAuth {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-     public static async reauth(data:ValWrapperAuth, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
+     public static async reauth(data:ValWrapperAuth, UserAgent:string, clientVersion:string, clientPlatfrom:string, RequestClient:ValRequestClient):Promise<ValWrapperAuth> {
         const CookieAccount:CookieAuth = new CookieAuth(data);
         
         try {
-            return await CookieAccount.execute(UserAgent, clientVersion, clientPlatfrom);
+            return await CookieAccount.execute(UserAgent, clientVersion, clientPlatfrom, RequestClient);
         } catch (error) {
             CookieAccount.isError = true;
 

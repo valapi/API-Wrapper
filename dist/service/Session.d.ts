@@ -1,25 +1,25 @@
-import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
-import type { ValorantAPIRegion } from "@valapi/lib";
+import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
+import type { ValorantApiRegion } from "@valapi/lib";
 declare class Session {
-    protected AxiosClient: AxiosClient;
-    protected Region: ValorantAPIRegion;
+    protected RequestClient: ValRequestClient;
+    protected Region: ValorantApiRegion;
     /**
      * Class Constructor
-     * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
-    constructor(AxiosClient: AxiosClient, Region: ValorantAPIRegion);
+    constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion);
     /**
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    Get(puuid: string): Promise<ValWrapperAxios<any>>;
+    Get(puuid: string): Promise<ValorantApiRequestResponse<any>>;
     /**
      * * Careful to use, Riot will immediately shut down your Project.
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    ReConnect(puuid: string): Promise<ValWrapperAxios<any>>;
+    ReConnect(puuid: string): Promise<ValorantApiRequestResponse<any>>;
 }
 export { Session };
 //# sourceMappingURL=Session.d.ts.map

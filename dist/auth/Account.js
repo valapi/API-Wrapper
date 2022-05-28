@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Account = void 0;
 //import
 const tough_cookie_1 = require("tough-cookie");
-const AxiosClient_1 = require("../client/AxiosClient");
 const AuthFlow_1 = require("./AuthFlow");
 //class
 class Account {
@@ -39,16 +38,10 @@ class Account {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-    execute(username, password, UserAgent, clientVersion, clientPlatfrom) {
+    execute(username, password, UserAgent, clientVersion, clientPlatfrom, RequestClient) {
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
-            const axiosClient = new AxiosClient_1.AxiosClient({
-                jar: this.cookie,
-                withCredentials: true,
-                headers: {
-                    'User-Agent': String(UserAgent),
-                }
-            });
-            yield axiosClient.post('https://auth.riotgames.com/api/v1/authorization', {
+            yield RequestClient.post('https://auth.riotgames.com/api/v1/authorization', {
                 "client_id": "play-valorant-web-prod",
                 "nonce": "1",
                 "redirect_uri": "https://playvalorant.com/opt_in",
@@ -61,13 +54,16 @@ class Account {
                 },
             });
             //ACCESS TOKEN
-            const auth_response = yield axiosClient.put('https://auth.riotgames.com/api/v1/authorization', {
+            const auth_response = yield RequestClient.put('https://auth.riotgames.com/api/v1/authorization', {
                 'type': 'auth',
                 'username': String(username),
                 'password': String(password),
                 'remember': true,
             });
-            return yield AuthFlow_1.AuthFlow.execute(this.toJSON(), auth_response, UserAgent, clientVersion, clientPlatfrom);
+            this.cookie = new tough_cookie_1.CookieJar((_a = RequestClient.theAxios.defaults.httpsAgent.jar) === null || _a === void 0 ? void 0 : _a.store, {
+                rejectPublicSuffixes: ((_c = (_b = RequestClient.theAxios.defaults.httpsAgent.options) === null || _b === void 0 ? void 0 : _b.jar) === null || _c === void 0 ? void 0 : _c.rejectPublicSuffixes) || undefined,
+            });
+            return yield AuthFlow_1.AuthFlow.execute(this.toJSON(), auth_response, UserAgent, clientVersion, clientPlatfrom, RequestClient);
         });
     }
     /**
@@ -88,6 +84,7 @@ class Account {
         };
     }
     /**
+     * @param {ValWrapperAuth} data Authentication Data
      * @param {String} username Riot Account Username
      * @param {String} password Riot Account Password
      * @param {String} UserAgent User Agent
@@ -95,11 +92,11 @@ class Account {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-    static login(data, username, password, UserAgent, clientVersion, clientPlatfrom) {
+    static login(data, username, password, UserAgent, clientVersion, clientPlatfrom, RequestClient) {
         return __awaiter(this, void 0, void 0, function* () {
             const NewAccount = new Account(data);
             try {
-                return yield NewAccount.execute(username, password, UserAgent, clientVersion, clientPlatfrom);
+                return yield NewAccount.execute(username, password, UserAgent, clientVersion, clientPlatfrom, RequestClient);
             }
             catch (error) {
                 NewAccount.isError = true;

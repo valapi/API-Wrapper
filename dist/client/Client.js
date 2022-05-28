@@ -14,7 +14,7 @@ exports.WrapperClient = void 0;
 const lib_1 = require("@valapi/lib");
 const tough_cookie_1 = require("tough-cookie");
 const lib_2 = require("@valapi/lib");
-const AxiosClient_1 = require("./AxiosClient");
+const http_cookie_agent_1 = require("http-cookie-agent");
 const Account_1 = require("../auth/Account");
 const Multifactor_1 = require("../auth/Multifactor");
 const CookieAuth_1 = require("../auth/CookieAuth");
@@ -47,7 +47,7 @@ const _defaultConfig = {
     axiosConfig: {},
 };
 //class
-class WrapperClient extends lib_1.CustomEvent {
+class WrapperClient extends lib_1.ValEvent {
     /**
      * Create a new Valorant API Wrapper Client
      * @param {ValWrapperConfig} config Client Config
@@ -63,11 +63,7 @@ class WrapperClient extends lib_1.CustomEvent {
         else {
             this.lockRegion = false;
         }
-        if (this.config.region === 'data') {
-            this.emit('error', { errorCode: 'ValWrapper_Config_Error', message: 'Region Not Found', data: this.config.region });
-            this.config.region = 'na';
-        }
-        else if (!this.config.region) {
+        if (!this.config.region) {
             this.config.region = 'na';
         }
         //create without auth
@@ -84,32 +80,40 @@ class WrapperClient extends lib_1.CustomEvent {
         this.multifactor = false;
         this.isError = false;
         // first reload
-        if (this.lockRegion === false && this.config.region) {
+        if (this.lockRegion === true && this.config.region) {
             this.region.live = this.config.region;
         }
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
+        //request client
+        const ciphers = [
+            'TLS_CHACHA20_POLY1305_SHA256',
+            'TLS_AES_128_GCM_SHA256',
+            'TLS_AES_256_GCM_SHA384',
+            'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
+        ];
         const _axiosConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
                 'X-Riot-ClientVersion': String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
                 'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
-            }
+            },
+            httpsAgent: new http_cookie_agent_1.HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
         };
-        this.AxiosClient = new AxiosClient_1.AxiosClient(new Object(Object.assign(Object.assign({}, _axiosConfig), this.config.axiosConfig)));
-        this.AxiosClient.on('error', ((data) => { this.emit('error', data); }));
-        this.AxiosClient.on('request', ((data) => { this.emit('request', data); }));
+        this.RequestClient = new lib_2.ValRequestClient(new Object(Object.assign(Object.assign({}, _axiosConfig), this.config.axiosConfig)));
+        this.RequestClient.on('error', ((data) => { this.emit('error', data); }));
+        this.RequestClient.on('request', ((data) => { this.emit('request', data); }));
         //service
-        this.Contract = new Contract_1.Contract(this.AxiosClient, this.RegionServices);
-        this.CurrentGame = new CurrentGame_1.CurrentGame(this.AxiosClient, this.RegionServices);
-        this.Party = new Party_1.Party(this.AxiosClient, this.RegionServices);
-        this.Pregame = new PreGame_1.PreGame(this.AxiosClient, this.RegionServices);
-        this.Session = new Session_1.Session(this.AxiosClient, this.RegionServices);
-        this.Store = new Store_1.Store(this.AxiosClient, this.RegionServices);
-        this.Client = new Client_1.Client(this.AxiosClient, this.RegionServices);
-        this.Match = new Match_1.Match(this.AxiosClient, this.RegionServices);
-        this.MMR = new MMR_1.MMR(this.AxiosClient, this.RegionServices);
-        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices, String(this.config.userAgent));
+        this.Contract = new Contract_1.Contract(this.RequestClient, this.RegionServices);
+        this.CurrentGame = new CurrentGame_1.CurrentGame(this.RequestClient, this.RegionServices);
+        this.Party = new Party_1.Party(this.RequestClient, this.RegionServices);
+        this.Pregame = new PreGame_1.PreGame(this.RequestClient, this.RegionServices);
+        this.Session = new Session_1.Session(this.RequestClient, this.RegionServices);
+        this.Store = new Store_1.Store(this.RequestClient, this.RegionServices);
+        this.Client = new Client_1.Client(this.RequestClient, this.RegionServices);
+        this.Match = new Match_1.Match(this.RequestClient, this.RegionServices);
+        this.MMR = new MMR_1.MMR(this.RequestClient, this.RegionServices);
+        this.Player = new Player_1.Player(this.RequestClient, this.RegionServices, String(this.config.userAgent));
         //event
         this.emit('ready');
     }
@@ -120,32 +124,40 @@ class WrapperClient extends lib_1.CustomEvent {
      */
     reload() {
         var _a, _b;
-        if (this.lockRegion === false && this.config.region) {
+        if (this.lockRegion === true && this.config.region) {
             this.region.live = this.config.region;
         }
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
+        //request client
+        const ciphers = [
+            'TLS_CHACHA20_POLY1305_SHA256',
+            'TLS_AES_128_GCM_SHA256',
+            'TLS_AES_256_GCM_SHA384',
+            'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
+        ];
         const _axiosConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
                 'X-Riot-ClientVersion': String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
                 'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
-            }
+            },
+            httpsAgent: new http_cookie_agent_1.HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
         };
-        this.AxiosClient = new AxiosClient_1.AxiosClient(new Object(Object.assign(Object.assign({}, _axiosConfig), this.config.axiosConfig)));
-        this.AxiosClient.on('error', ((data) => { this.emit('error', data); }));
-        this.AxiosClient.on('request', ((data) => { this.emit('request', data); }));
+        this.RequestClient = new lib_2.ValRequestClient(new Object(Object.assign(Object.assign({}, _axiosConfig), this.config.axiosConfig)));
+        this.RequestClient.on('error', ((data) => { this.emit('error', data); }));
+        this.RequestClient.on('request', ((data) => { this.emit('request', data); }));
         //service
-        this.Contract = new Contract_1.Contract(this.AxiosClient, this.RegionServices);
-        this.CurrentGame = new CurrentGame_1.CurrentGame(this.AxiosClient, this.RegionServices);
-        this.Party = new Party_1.Party(this.AxiosClient, this.RegionServices);
-        this.Pregame = new PreGame_1.PreGame(this.AxiosClient, this.RegionServices);
-        this.Session = new Session_1.Session(this.AxiosClient, this.RegionServices);
-        this.Store = new Store_1.Store(this.AxiosClient, this.RegionServices);
-        this.Client = new Client_1.Client(this.AxiosClient, this.RegionServices);
-        this.Match = new Match_1.Match(this.AxiosClient, this.RegionServices);
-        this.MMR = new MMR_1.MMR(this.AxiosClient, this.RegionServices);
-        this.Player = new Player_1.Player(this.AxiosClient, this.RegionServices, String(this.config.userAgent));
+        this.Contract = new Contract_1.Contract(this.RequestClient, this.RegionServices);
+        this.CurrentGame = new CurrentGame_1.CurrentGame(this.RequestClient, this.RegionServices);
+        this.Party = new Party_1.Party(this.RequestClient, this.RegionServices);
+        this.Pregame = new PreGame_1.PreGame(this.RequestClient, this.RegionServices);
+        this.Session = new Session_1.Session(this.RequestClient, this.RegionServices);
+        this.Store = new Store_1.Store(this.RequestClient, this.RegionServices);
+        this.Client = new Client_1.Client(this.RequestClient, this.RegionServices);
+        this.Match = new Match_1.Match(this.RequestClient, this.RegionServices);
+        this.MMR = new MMR_1.MMR(this.RequestClient, this.RegionServices);
+        this.Player = new Player_1.Player(this.RequestClient, this.RegionServices, String(this.config.userAgent));
         //event
         this.emit('ready');
     }
@@ -230,6 +242,17 @@ class WrapperClient extends lib_1.CustomEvent {
         this.reload();
     }
     /**
+     * * Not Recommend to use
+     * @returns {Promise<void>}
+     */
+    fromCookie() {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
+            const NewCookieAuth = yield CookieAuth_1.CookieAuth.reauth(this.toJSONAuth(), this.config.userAgent || String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)), this.RequestClient);
+            this.fromJSONAuth(NewCookieAuth);
+        });
+    }
+    /**
      * Login to Riot Account
      * @param {String} username Username
      * @param {String} password Password
@@ -238,7 +261,7 @@ class WrapperClient extends lib_1.CustomEvent {
     login(username, password) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const NewAuth = yield Account_1.Account.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), String((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform));
+            const NewAuth = yield Account_1.Account.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)), this.RequestClient);
             this.fromJSONAuth(NewAuth);
             this.reload();
         });
@@ -251,7 +274,7 @@ class WrapperClient extends lib_1.CustomEvent {
     verify(verificationCode) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), Number(verificationCode), String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), String((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform));
+            const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), Number(verificationCode), String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)), this.RequestClient);
             this.fromJSONAuth(NewAuth);
             this.reload();
         });
@@ -319,33 +342,6 @@ class WrapperClient extends lib_1.CustomEvent {
             NewClient.setRegion(data.region.live);
         }
         return NewClient;
-    }
-    /**
-     * * Not Recommend to use
-     * * After run this method, you must use `.setRegion()` to set region.
-     * @param {ValWrapperConfig} config Client Config
-     * @param {ValWrapperAuth} data Authentication Data
-     * @returns {Promise<WrapperClient>}
-     */
-    static fromCookie(config, data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const CookieAuthData = {
-                cookie: data.cookie,
-                access_token: data.access_token,
-                id_token: data.id_token,
-                expires_in: data.expires_in,
-                token_type: data.token_type,
-                entitlements_token: data.entitlements_token,
-                region: data.region,
-                multifactor: data.multifactor,
-                isError: data.isError,
-            };
-            const NewCookieAuth = yield CookieAuth_1.CookieAuth.reauth(CookieAuthData, config.userAgent || String(_defaultConfig.userAgent), _Client_Version, (0, lib_1.toUft8)(JSON.stringify(_Client_Platfrom)));
-            //client
-            const NewClient = new WrapperClient(config);
-            NewClient.fromJSONAuth(NewCookieAuth);
-            return NewClient;
-        });
     }
 }
 exports.WrapperClient = WrapperClient;

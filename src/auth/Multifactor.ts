@@ -1,10 +1,9 @@
 //import
 import { CookieJar } from 'tough-cookie';
-
-import { AxiosClient, type ValWrapperAxios } from '../client/AxiosClient';
-import { AuthFlow } from "./AuthFlow";
+import type { ValRequestClient, ValorantApiRequestResponse } from '@valapi/lib';
 
 import type { ValWrapperAuth } from './Account';
+import { AuthFlow } from "./AuthFlow";
 
 //class
 
@@ -49,18 +48,9 @@ class Multifactor {
     * @param {String} clientPlatfrom Client Platform
     * @returns {Promise<ValWrapperAuth>}
     */
-     public async execute(verificationCode:number, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
-        const axiosClient:AxiosClient = new AxiosClient({
-            jar: this.cookie,
-            withCredentials: true,
-            headers: {
-                'User-Agent': String(UserAgent),
-            },
-            timeout: this.expires_in * 1000,
-        });
-
+     public async execute(verificationCode:number, UserAgent:string, clientVersion:string, clientPlatfrom:string, RequestClient:ValRequestClient):Promise<ValWrapperAuth> {
         //ACCESS TOKEN
-        const auth_response:ValWrapperAxios<any> = await axiosClient.put('https://auth.riotgames.com/api/v1/authorization', {
+        const auth_response:ValorantApiRequestResponse<any> = await RequestClient.put('https://auth.riotgames.com/api/v1/authorization', {
             "type": "multifactor",
             "code": String(verificationCode),
             "rememberDevice": true
@@ -70,7 +60,10 @@ class Multifactor {
             this.multifactor = false;
         }
 
-        return await AuthFlow.execute(this.toJSON(), auth_response, UserAgent, clientVersion, clientPlatfrom);
+        this.cookie = new CookieJar(RequestClient.theAxios.defaults.httpsAgent.jar?.store, {
+            rejectPublicSuffixes: RequestClient.theAxios.defaults.httpsAgent.options?.jar?.rejectPublicSuffixes || undefined,
+        });
+        return await AuthFlow.execute(this.toJSON(), auth_response, UserAgent, clientVersion, clientPlatfrom, RequestClient);
     }
 
     /**
@@ -99,11 +92,11 @@ class Multifactor {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-     public static async verify(data:ValWrapperAuth, verificationCode:number, UserAgent:string, clientVersion:string, clientPlatfrom:string):Promise<ValWrapperAuth> {
+     public static async verify(data:ValWrapperAuth, verificationCode:number, UserAgent:string, clientVersion:string, clientPlatfrom:string, RequestClient:ValRequestClient):Promise<ValWrapperAuth> {
         const MultifactorAccount:Multifactor = new Multifactor(data);
     
         try {
-            return await MultifactorAccount.execute(verificationCode, UserAgent, clientVersion, clientPlatfrom);
+            return await MultifactorAccount.execute(verificationCode, UserAgent, clientVersion, clientPlatfrom, RequestClient);
         } catch (error) {
             MultifactorAccount.isError = true;
 

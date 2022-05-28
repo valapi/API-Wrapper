@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CookieAuth = void 0;
 //import
 const tough_cookie_1 = require("tough-cookie");
-const AxiosClient_1 = require("../client/AxiosClient");
 const AuthFlow_1 = require("./AuthFlow");
 //class
 /**
@@ -43,23 +42,19 @@ class CookieAuth {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<any>}
      */
-    execute(UserAgent, clientVersion, clientPlatfrom) {
+    execute(UserAgent, clientVersion, clientPlatfrom, RequestClient) {
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
-            const axiosClient = new AxiosClient_1.AxiosClient({
-                jar: this.cookie,
-                withCredentials: true,
-                headers: {
-                    'User-Agent': UserAgent,
-                },
-                maxRedirects: 1,
-            }).axiosClient;
             //Cookie Reauth
             try {
-                yield axiosClient.get('https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1');
+                yield RequestClient.get('https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1');
             }
             catch (err) {
-                return yield AuthFlow_1.AuthFlow.fromUrl(this.toJSON(), err.request._currentUrl, UserAgent, clientVersion, clientPlatfrom);
+                return yield AuthFlow_1.AuthFlow.fromUrl(this.toJSON(), err.request._currentUrl, UserAgent, clientVersion, clientPlatfrom, RequestClient);
             }
+            this.cookie = new tough_cookie_1.CookieJar((_a = RequestClient.theAxios.defaults.httpsAgent.jar) === null || _a === void 0 ? void 0 : _a.store, {
+                rejectPublicSuffixes: ((_c = (_b = RequestClient.theAxios.defaults.httpsAgent.options) === null || _b === void 0 ? void 0 : _b.jar) === null || _c === void 0 ? void 0 : _c.rejectPublicSuffixes) || undefined,
+            });
             return this.toJSON();
         });
     }
@@ -87,11 +82,11 @@ class CookieAuth {
      * @param {String} clientPlatfrom Client Platform
      * @returns {Promise<ValWrapperAuth>}
      */
-    static reauth(data, UserAgent, clientVersion, clientPlatfrom) {
+    static reauth(data, UserAgent, clientVersion, clientPlatfrom, RequestClient) {
         return __awaiter(this, void 0, void 0, function* () {
             const CookieAccount = new CookieAuth(data);
             try {
-                return yield CookieAccount.execute(UserAgent, clientVersion, clientPlatfrom);
+                return yield CookieAccount.execute(UserAgent, clientVersion, clientPlatfrom, RequestClient);
             }
             catch (error) {
                 CookieAccount.isError = true;

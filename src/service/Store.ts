@@ -1,63 +1,55 @@
 //import
-import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
-import type { ValorantAPIRegion } from "@valapi/lib";
+import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
+import type { ValorantApiRegion } from "@valapi/lib";
 
 import { ItemTypeId } from "@valapi/lib";
 
 //service
 
 class Store {
-    protected AxiosClient:AxiosClient;
-    protected Region:ValorantAPIRegion;
+    protected RequestClient:ValRequestClient;
+    protected Region:ValorantApiRegion;
 
     /**
      * Class Constructor
-     * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
-    public constructor(AxiosClient:AxiosClient, Region:ValorantAPIRegion) {
-        this.AxiosClient = AxiosClient;
+    public constructor(ValRequestClient:ValRequestClient, Region:ValorantApiRegion) {
+        this.RequestClient = ValRequestClient;
         this.Region = Region;
     }
 
     /**
      * @param {String} puuid Player UUID
      * @param {String} itemTypeId Item Type
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async GetEntitlements(puuid:string, itemTypeId:keyof typeof ItemTypeId):Promise<ValWrapperAxios<any>> {
-        if(itemTypeId === 'data'){
-            this.AxiosClient.emit('error', {
-                errorCode: 'ValWrapper_Request_Error',
-                message: 'Item Type ID cannot be "data"',
-                data: itemTypeId,
-            })
-        }
-
-        return await this.AxiosClient.get(this.Region.url.playerData + `/store/v1/entitlements/${puuid}/${itemTypeId}`);
+     public async GetEntitlements(puuid:string, itemTypeId:keyof typeof ItemTypeId.from):Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.get(this.Region.url.playerData + `/store/v1/entitlements/${puuid}/${itemTypeId}`);
     }
 
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async GetOffers():Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.playerData + `/store/v1/offers/`);
+     public async GetOffers():Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.get(this.Region.url.playerData + `/store/v1/offers/`);
     }
 
     /**
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async GetStorefront(puuid:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.playerData + `/store/v2/storefront/${puuid}`);
+     public async GetStorefront(puuid:string):Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.get(this.Region.url.playerData + `/store/v2/storefront/${puuid}`);
     }
 
     /**
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async GetWallet(puuid:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.get(this.Region.url.playerData + `/store/v1/wallet/${puuid}`);
+     public async GetWallet(puuid:string):Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.get(this.Region.url.playerData + `/store/v1/wallet/${puuid}`);
     }
 
     // NOT IN DOCS //
@@ -65,10 +57,10 @@ class Store {
     /**
      * * NOT TESTED
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-     public async RevealNightMarketOffers(puuid:string):Promise<ValWrapperAxios<any>> {
-        return await this.AxiosClient.post(this.Region.url.playerData + `/store/v2/storefront/${puuid}/nightmarket/offers`);
+     public async RevealNightMarketOffers(puuid:string):Promise<ValorantApiRequestResponse<any>> {
+        return await this.RequestClient.post(this.Region.url.playerData + `/store/v2/storefront/${puuid}/nightmarket/offers`);
     }
 }
 

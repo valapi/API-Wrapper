@@ -14,65 +14,58 @@ exports.Store = void 0;
 class Store {
     /**
      * Class Constructor
-     * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
-    constructor(AxiosClient, Region) {
-        this.AxiosClient = AxiosClient;
+    constructor(ValRequestClient, Region) {
+        this.RequestClient = ValRequestClient;
         this.Region = Region;
     }
     /**
      * @param {String} puuid Player UUID
      * @param {String} itemTypeId Item Type
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetEntitlements(puuid, itemTypeId) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (itemTypeId === 'data') {
-                this.AxiosClient.emit('error', {
-                    errorCode: 'ValWrapper_Request_Error',
-                    message: 'Item Type ID cannot be "data"',
-                    data: itemTypeId,
-                });
-            }
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/store/v1/entitlements/${puuid}/${itemTypeId}`);
+            return yield this.RequestClient.get(this.Region.url.playerData + `/store/v1/entitlements/${puuid}/${itemTypeId}`);
         });
     }
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetOffers() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/store/v1/offers/`);
+            return yield this.RequestClient.get(this.Region.url.playerData + `/store/v1/offers/`);
         });
     }
     /**
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetStorefront(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/store/v2/storefront/${puuid}`);
+            return yield this.RequestClient.get(this.Region.url.playerData + `/store/v2/storefront/${puuid}`);
         });
     }
     /**
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetWallet(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.get(this.Region.url.playerData + `/store/v1/wallet/${puuid}`);
+            return yield this.RequestClient.get(this.Region.url.playerData + `/store/v1/wallet/${puuid}`);
         });
     }
     // NOT IN DOCS //
     /**
      * * NOT TESTED
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     RevealNightMarketOffers(puuid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.AxiosClient.post(this.Region.url.playerData + `/store/v2/storefront/${puuid}/nightmarket/offers`);
+            return yield this.RequestClient.post(this.Region.url.playerData + `/store/v2/storefront/${puuid}/nightmarket/offers`);
         });
     }
 }

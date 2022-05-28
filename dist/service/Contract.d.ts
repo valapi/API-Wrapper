@@ -1,33 +1,33 @@
-import type { AxiosClient, ValWrapperAxios } from "../client/AxiosClient";
-import type { ValorantAPIRegion } from "@valapi/lib";
+import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
+import type { ValorantApiRegion } from "@valapi/lib";
 declare class Contract {
-    protected AxiosClient: AxiosClient;
-    protected Region: ValorantAPIRegion;
+    protected RequestClient: ValRequestClient;
+    protected Region: ValorantApiRegion;
     /**
      * Class Constructor
-     * @param {AxiosClient} AxiosClient Services Data
-     * @param {ValorantAPIRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Services Data
+     * @param {ValorantApiRegion} Region Services Data
      */
-    constructor(AxiosClient: AxiosClient, Region: ValorantAPIRegion);
+    constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion);
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    DefinitionsFetch(): Promise<ValWrapperAxios<any>>;
+    DefinitionsFetch(): Promise<ValorantApiRequestResponse<any>>;
     /**
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    FetchActiveStory(): Promise<ValWrapperAxios<any>>;
+    FetchActiveStory(): Promise<ValorantApiRequestResponse<any>>;
     /**
      * @param {String} puuid Player UUID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    Fetch(puuid: string): Promise<ValWrapperAxios<any>>;
+    Fetch(puuid: string): Promise<ValorantApiRequestResponse<any>>;
     /**
      * @param {String} puuid Player UUID
      * @param {String} contractId Contract ID
-     * @returns {Promise<ValWrapperAxios<any>>}
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    Activate(puuid: string, contractId: string): Promise<ValWrapperAxios<any>>;
+    Activate(puuid: string, contractId: string): Promise<ValorantApiRequestResponse<any>>;
 }
 export { Contract };
 //# sourceMappingURL=Contract.d.ts.map

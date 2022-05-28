@@ -91,7 +91,7 @@ class WrapperClient extends lib_1.ValEvent {
             'TLS_AES_256_GCM_SHA384',
             'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
         ];
-        const _axiosConfig = {
+        const _normalAxiosConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
@@ -100,7 +100,8 @@ class WrapperClient extends lib_1.ValEvent {
             },
             httpsAgent: new http_cookie_agent_1.HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
         };
-        this.RequestClient = new lib_2.ValRequestClient(new Object(Object.assign(Object.assign({}, _axiosConfig), this.config.axiosConfig)));
+        this.axiosConfig = new Object(Object.assign(Object.assign({}, _normalAxiosConfig), this.config.axiosConfig));
+        this.RequestClient = new lib_2.ValRequestClient(this.axiosConfig);
         this.RequestClient.on('error', ((data) => { this.emit('error', data); }));
         this.RequestClient.on('request', ((data) => { this.emit('request', data); }));
         //service
@@ -135,7 +136,7 @@ class WrapperClient extends lib_1.ValEvent {
             'TLS_AES_256_GCM_SHA384',
             'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
         ];
-        const _axiosConfig = {
+        const _normalAxiosConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
@@ -144,7 +145,8 @@ class WrapperClient extends lib_1.ValEvent {
             },
             httpsAgent: new http_cookie_agent_1.HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
         };
-        this.RequestClient = new lib_2.ValRequestClient(new Object(Object.assign(Object.assign({}, _axiosConfig), this.config.axiosConfig)));
+        this.axiosConfig = new Object(Object.assign(Object.assign({}, _normalAxiosConfig), this.config.axiosConfig));
+        this.RequestClient = new lib_2.ValRequestClient(this.axiosConfig);
         this.RequestClient.on('error', ((data) => { this.emit('error', data); }));
         this.RequestClient.on('request', ((data) => { this.emit('request', data); }));
         //service
@@ -248,7 +250,7 @@ class WrapperClient extends lib_1.ValEvent {
     fromCookie() {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const NewCookieAuth = yield CookieAuth_1.CookieAuth.reauth(this.toJSONAuth(), this.config.userAgent || String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)), this.RequestClient);
+            const NewCookieAuth = yield CookieAuth_1.CookieAuth.reauth(this.toJSONAuth(), this.config.userAgent || String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)), this.RequestClient, this.axiosConfig);
             this.fromJSONAuth(NewCookieAuth);
         });
     }

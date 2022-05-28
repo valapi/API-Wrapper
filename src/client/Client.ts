@@ -102,6 +102,7 @@ class WrapperClient extends ValEvent {
     protected lockRegion: boolean;
 
     //reload
+    private axiosConfig: AxiosRequestConfig;
     private RegionServices: ValorantApiRegion;
     private RequestClient: ValRequestClient;
 
@@ -166,7 +167,7 @@ class WrapperClient extends ValEvent {
             'TLS_AES_256_GCM_SHA384',
             'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
         ];
-        const _axiosConfig: AxiosRequestConfig = {
+        const _normalAxiosConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
@@ -175,7 +176,8 @@ class WrapperClient extends ValEvent {
             },
             httpsAgent: new HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
         };
-        this.RequestClient = new ValRequestClient(new Object({ ..._axiosConfig, ...this.config.axiosConfig }));
+        this.axiosConfig = new Object({ ..._normalAxiosConfig, ...this.config.axiosConfig });
+        this.RequestClient = new ValRequestClient(this.axiosConfig);
         this.RequestClient.on('error', ((data: ValorantApiError) => { this.emit('error', data as ValorantApiError); }));
         this.RequestClient.on('request', ((data: ValorantApiRequestData) => { this.emit('request', data as ValorantApiRequestData); }));
 
@@ -216,7 +218,7 @@ class WrapperClient extends ValEvent {
             'TLS_AES_256_GCM_SHA384',
             'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
         ];
-        const _axiosConfig: AxiosRequestConfig = {
+        const _normalAxiosConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
@@ -225,7 +227,8 @@ class WrapperClient extends ValEvent {
             },
             httpsAgent: new HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
         };
-        this.RequestClient = new ValRequestClient(new Object({ ..._axiosConfig, ...this.config.axiosConfig }));
+        this.axiosConfig = new Object({ ..._normalAxiosConfig, ...this.config.axiosConfig });
+        this.RequestClient = new ValRequestClient(this.axiosConfig);
         this.RequestClient.on('error', ((data: ValorantApiError) => { this.emit('error', data as ValorantApiError); }));
         this.RequestClient.on('request', ((data: ValorantApiRequestData) => { this.emit('request', data as ValorantApiRequestData); }));
 
@@ -344,7 +347,7 @@ class WrapperClient extends ValEvent {
      * @returns {Promise<void>}
      */
      public async fromCookie(): Promise<void> {
-        const NewCookieAuth = await ClientAuthCookie.reauth(this.toJSONAuth(), this.config.userAgent || String(this.config.userAgent), String(this.config.client?.version), toUft8(JSON.stringify(this.config.client?.platform)), this.RequestClient);
+        const NewCookieAuth = await ClientAuthCookie.reauth(this.toJSONAuth(), this.config.userAgent || String(this.config.userAgent), String(this.config.client?.version), toUft8(JSON.stringify(this.config.client?.platform)), this.RequestClient, this.axiosConfig);
         this.fromJSONAuth(NewCookieAuth);
     }
 

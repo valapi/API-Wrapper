@@ -53,6 +53,7 @@ declare class WrapperClient extends ValEvent {
     private region;
     protected config: ValWrapperConfig;
     protected lockRegion: boolean;
+    private axiosConfig;
     private RegionServices;
     private RequestClient;
     Contract: ContractService;

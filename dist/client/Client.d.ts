@@ -59,13 +59,13 @@ declare class WrapperClient extends ValEvent {
     private entitlements_token;
     multifactor: boolean;
     isError: boolean;
-    private region;
-    protected config: ValWrapperConfig;
-    protected lockRegion: boolean;
     expireAt: {
         cookie: Date;
         token: Date;
     };
+    private region;
+    protected config: ValWrapperConfig;
+    protected lockRegion: boolean;
     private axiosConfig;
     private RegionServices;
     private RequestClient;

@@ -106,6 +106,11 @@ class WrapperClient extends ValEvent {
     public multifactor: boolean;
     public isError: boolean;
 
+    public expireAt: {
+        cookie: Date,
+        token: Date,
+    };
+
     //region
     private region: {
         pbe: string,
@@ -116,10 +121,6 @@ class WrapperClient extends ValEvent {
     protected lockRegion: boolean;
 
     //reload
-    public expireAt: {
-        cookie: Date,
-        token: Date,
-    };
 
     private axiosConfig: AxiosRequestConfig;
     private RegionServices: ValorantApiRegion;
@@ -576,10 +577,10 @@ class WrapperClient extends ValEvent {
 
 //event
 interface ValWrapperClientEvent {
-    'ready': () => void,
-    'expires': (data: { name: string, data: any }) => void, 
-    'request': (data: ValorantApiRequestData) => void,
-    'changeSettings': (data: { name: string, data: any }) => void,
+    'ready': () => void;
+    'expires': (data: { name: string, data: any }) => void;
+    'request': (data: ValorantApiRequestData) => void;
+    'changeSettings': (data: { name: string, data: any }) => void;
     'error': (data: ValorantApiError) => void;
 }
 

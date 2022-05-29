@@ -84,16 +84,16 @@ class WrapperClient extends lib_1.ValEvent {
         };
         this.multifactor = false;
         this.isError = false;
+        this.expireAt = {
+            cookie: new Date(Date.now() + Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie)),
+            token: new Date(Date.now() + (((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.token) || this.expires_in * 1000)),
+        };
         // first reload
         if (this.lockRegion === true && this.config.region) {
             this.region.live = this.config.region;
         }
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
         //expire
-        this.expireAt = {
-            cookie: new Date(Date.now() + this.expires_in * Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie)),
-            token: new Date(Date.now() + this.expires_in * (((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.token) || this.expires_in * 1000)),
-        };
         if (new Date() >= this.expireAt.cookie) {
             this.emit('expires', {
                 name: 'cookie',
@@ -102,7 +102,7 @@ class WrapperClient extends lib_1.ValEvent {
             this.cookie = new tough_cookie_1.CookieJar();
             if (this.config.autoAuthentication) {
                 if (this.multifactor) {
-                    throw new Error('Multifactor is enabled, please disable it before authenticating');
+                    throw new Error('Multifactor is not supported when autoAuthentication is enabled.');
                 }
                 let _username = this.config.autoAuthentication.username;
                 let _password = this.config.autoAuthentication.password;
@@ -122,6 +122,8 @@ class WrapperClient extends lib_1.ValEvent {
                 data: this.access_token,
             });
             this.access_token = '';
+            this.id_token = '';
+            this.token_type = '';
             if (this.config.autoReconnect === true) {
                 (() => __awaiter(this, void 0, void 0, function* () { yield this.fromCookie(); }))();
             }
@@ -152,7 +154,9 @@ class WrapperClient extends lib_1.ValEvent {
         this.axiosConfig = new Object(Object.assign(Object.assign({}, _normalAxiosConfig), this.config.axiosConfig));
         this.RequestClient = new lib_2.ValRequestClient(this.axiosConfig);
         this.RequestClient.on('error', ((data) => { this.emit('error', data); }));
-        this.RequestClient.on('request', ((data) => { this.emit('request', data); }));
+        this.RequestClient.on('request', ((data) => { this.emit('request', data); if (this.config.autoReconnect === true) {
+            this.reload();
+        } }));
         //service
         this.Contract = new Contract_1.Contract(this.RequestClient, this.RegionServices);
         this.CurrentGame = new CurrentGame_1.CurrentGame(this.RequestClient, this.RegionServices);
@@ -173,16 +177,12 @@ class WrapperClient extends lib_1.ValEvent {
      * @returns {void}
      */
     reload() {
-        var _a, _b, _c, _d;
+        var _a, _b;
         if (this.lockRegion === true && this.config.region) {
             this.region.live = this.config.region;
         }
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
         //expire
-        this.expireAt = {
-            cookie: new Date(Date.now() + this.expires_in * Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie)),
-            token: new Date(Date.now() + this.expires_in * (((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.token) || this.expires_in * 1000)),
-        };
         if (new Date() >= this.expireAt.cookie) {
             this.emit('expires', {
                 name: 'cookie',
@@ -230,15 +230,17 @@ class WrapperClient extends lib_1.ValEvent {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
-                'X-Riot-ClientVersion': String((_c = this.config.client) === null || _c === void 0 ? void 0 : _c.version),
-                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_d = this.config.client) === null || _d === void 0 ? void 0 : _d.platform)),
+                'X-Riot-ClientVersion': String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
+                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
             },
             httpsAgent: new http_cookie_agent_1.HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
         };
         this.axiosConfig = new Object(Object.assign(Object.assign({}, _normalAxiosConfig), this.config.axiosConfig));
         this.RequestClient = new lib_2.ValRequestClient(this.axiosConfig);
         this.RequestClient.on('error', ((data) => { this.emit('error', data); }));
-        this.RequestClient.on('request', ((data) => { this.emit('request', data); }));
+        this.RequestClient.on('request', ((data) => { this.emit('request', data); if (this.config.autoReconnect === true) {
+            this.reload();
+        } }));
         //service
         this.Contract = new Contract_1.Contract(this.RequestClient, this.RegionServices);
         this.CurrentGame = new CurrentGame_1.CurrentGame(this.RequestClient, this.RegionServices);
@@ -274,6 +276,7 @@ class WrapperClient extends lib_1.ValEvent {
      * @returns {void}
      */
     fromJSON(data) {
+        var _a, _b;
         if (!data.cookie) {
             data.cookie = new tough_cookie_1.CookieJar().toJSON();
         }
@@ -286,6 +289,10 @@ class WrapperClient extends lib_1.ValEvent {
         this.token_type = data.token_type;
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
+        this.expireAt = {
+            cookie: new Date(Date.now() + Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie)),
+            token: new Date(Date.now() + (((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.token) || this.expires_in * 1000)),
+        };
         this.reload();
     }
     //auth
@@ -312,6 +319,7 @@ class WrapperClient extends lib_1.ValEvent {
      * @returns {void}
      */
     fromJSONAuth(auth) {
+        var _a, _b;
         this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(auth.cookie));
         this.access_token = auth.access_token;
         this.id_token = auth.id_token;
@@ -331,6 +339,10 @@ class WrapperClient extends lib_1.ValEvent {
                 data: auth,
             });
         }
+        this.expireAt = {
+            cookie: new Date(Date.now() + Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie)),
+            token: new Date(Date.now() + (((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.token) || this.expires_in * 1000)),
+        };
         this.reload();
     }
     /**
@@ -355,6 +367,9 @@ class WrapperClient extends lib_1.ValEvent {
         return __awaiter(this, void 0, void 0, function* () {
             const NewAuth = yield Account_1.Account.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)), this.RequestClient);
             this.fromJSONAuth(NewAuth);
+            if (this.multifactor && this.config.autoAuthentication) {
+                throw new Error('Multifactor is not supported when autoAuthentication is enabled.');
+            }
         });
     }
     /**

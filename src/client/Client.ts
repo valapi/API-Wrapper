@@ -172,6 +172,11 @@ class WrapperClient extends ValEvent {
         this.multifactor = false;
         this.isError = false;
 
+        this.expireAt = {
+            cookie: new Date(Date.now() + Number(this.config.expiresIn?.cookie)),
+            token: new Date(Date.now() + (this.config.expiresIn?.token || this.expires_in * 1000)),
+        };
+
         // first reload
         if(this.lockRegion === true && this.config.region){
             this.region.live = this.config.region;
@@ -180,10 +185,6 @@ class WrapperClient extends ValEvent {
         this.RegionServices = new ValRegion(this.region.live as keyof typeof _Region.from).toJSON();
         
         //expire
-        this.expireAt = {
-            cookie: new Date(Date.now() + this.expires_in * Number(this.config.expiresIn?.cookie)),
-            token: new Date(Date.now() + this.expires_in * (this.config.expiresIn?.token || this.expires_in * 1000)),
-        };
         if(new Date() >= this.expireAt.cookie) {
             this.emit('expires', {
                 name: 'cookie',
@@ -194,7 +195,7 @@ class WrapperClient extends ValEvent {
             if (this.config.autoAuthentication) {
                 if(this.multifactor) {
                     throw new Error(
-                        'Multifactor is enabled, please disable it before authenticating'
+                        'Multifactor is not supported when autoAuthentication is enabled.'
                     );
                 }
 
@@ -215,6 +216,8 @@ class WrapperClient extends ValEvent {
                 data: this.access_token,
             });
             this.access_token = '';
+            this.id_token = '';
+            this.token_type = '';
 
             if (this.config.autoReconnect === true) {
                 (async () => { await this.fromCookie() })();
@@ -246,7 +249,7 @@ class WrapperClient extends ValEvent {
         this.axiosConfig = new Object({ ..._normalAxiosConfig, ...this.config.axiosConfig });
         this.RequestClient = new ValRequestClient(this.axiosConfig);
         this.RequestClient.on('error', ((data: ValorantApiError) => { this.emit('error', data as ValorantApiError); }));
-        this.RequestClient.on('request', ((data: ValorantApiRequestData) => { this.emit('request', data as ValorantApiRequestData); }));
+        this.RequestClient.on('request', ((data: ValorantApiRequestData) => { this.emit('request', data as ValorantApiRequestData); if(this.config.autoReconnect === true){ this.reload(); } }));
 
         //service
         this.Contract = new ContractService(this.RequestClient, this.RegionServices);
@@ -279,10 +282,6 @@ class WrapperClient extends ValEvent {
         this.RegionServices = new ValRegion(this.region.live as keyof typeof _Region.from).toJSON();
         
         //expire
-        this.expireAt = {
-            cookie: new Date(Date.now() + this.expires_in * Number(this.config.expiresIn?.cookie)),
-            token: new Date(Date.now() + this.expires_in * (this.config.expiresIn?.token || this.expires_in * 1000)),
-        };
         if(new Date() >= this.expireAt.cookie) {
             this.emit('expires', {
                 name: 'cookie',
@@ -339,7 +338,7 @@ class WrapperClient extends ValEvent {
         this.axiosConfig = new Object({ ..._normalAxiosConfig, ...this.config.axiosConfig });
         this.RequestClient = new ValRequestClient(this.axiosConfig);
         this.RequestClient.on('error', ((data: ValorantApiError) => { this.emit('error', data as ValorantApiError); }));
-        this.RequestClient.on('request', ((data: ValorantApiRequestData) => { this.emit('request', data as ValorantApiRequestData); }));
+        this.RequestClient.on('request', ((data: ValorantApiRequestData) => { this.emit('request', data as ValorantApiRequestData); if(this.config.autoReconnect === true){ this.reload(); } }));
 
         //service
         this.Contract = new ContractService(this.RequestClient, this.RegionServices);
@@ -396,6 +395,11 @@ class WrapperClient extends ValEvent {
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
 
+        this.expireAt = {
+            cookie: new Date(Date.now() + Number(this.config.expiresIn?.cookie)),
+            token: new Date(Date.now() + (this.config.expiresIn?.token || this.expires_in * 1000)),
+        };
+
         this.reload();
     }
 
@@ -448,6 +452,11 @@ class WrapperClient extends ValEvent {
             });
         }
 
+        this.expireAt = {
+            cookie: new Date(Date.now() + Number(this.config.expiresIn?.cookie)),
+            token: new Date(Date.now() + (this.config.expiresIn?.token || this.expires_in * 1000)),
+        };
+
         this.reload();
     }
 
@@ -471,6 +480,12 @@ class WrapperClient extends ValEvent {
         const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String(this.config.client?.version), toUft8(JSON.stringify(this.config.client?.platform)), this.RequestClient);
 
         this.fromJSONAuth(NewAuth);
+
+        if(this.multifactor && this.config.autoAuthentication) {
+            throw new Error(
+                'Multifactor is not supported when autoAuthentication is enabled.'
+            );
+        }
     }
 
     /**

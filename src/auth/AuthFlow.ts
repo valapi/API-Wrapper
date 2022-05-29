@@ -21,7 +21,7 @@ class AuthFlow {
     public isError:boolean;
 
     private clientVersion:string;
-    private clientPlatfrom:string
+    private clientPlatfrom:string;
 
     /**
      * Class Constructor
@@ -108,7 +108,7 @@ class AuthFlow {
                     affinities: {
                         pbe: 'na',
                         live: 'na',
-                    }
+                    },
                 },
             };
         }
@@ -170,6 +170,10 @@ class AuthFlow {
      */
      public static async fromUrl(data:ValWrapperAuth, url:string, UserAgent:string, clientVersion:string, clientPlatfrom:string, RequestClient:ValRequestClient):Promise<ValWrapperAuth> {
         const _newAuthFlow:AuthFlow = new AuthFlow(data, clientVersion, clientPlatfrom);
+
+        if(!url.includes('https://playvalorant.com/opt_in')) {
+            url = `https://playvalorant.com/opt_in${url}`;
+        }
 
         const auth_response:ValorantApiRequestResponse<{ type: string, response: { parameters: { uri: string } } }> = {
             isError: false,

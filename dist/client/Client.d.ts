@@ -40,6 +40,7 @@ interface ValWrapperConfig {
     };
     forceAuth?: boolean;
     axiosConfig?: AxiosRequestConfig;
+    expiresIn?: number;
 }
 declare class WrapperClient extends ValEvent {
     private cookie;
@@ -53,6 +54,7 @@ declare class WrapperClient extends ValEvent {
     private region;
     protected config: ValWrapperConfig;
     protected lockRegion: boolean;
+    expireAt: Date;
     private axiosConfig;
     private RegionServices;
     private RequestClient;

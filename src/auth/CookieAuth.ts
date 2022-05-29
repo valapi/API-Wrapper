@@ -4,7 +4,8 @@ import type { ValRequestClient } from '@valapi/lib';
 
 import type { ValWrapperAuth } from './Account';
 import { AuthFlow } from "./AuthFlow";
-import axios, { type AxiosError, type AxiosRequestConfig } from 'axios';
+
+import axios, { type AxiosRequestConfig } from 'axios';
 
 //class
 
@@ -68,7 +69,7 @@ class CookieAuth {
                 for (let i = 0; i < myUrl.length; i++) {
                     replaceString += myUrl.at(i);
                     if ((myUrl.at(i)) === 'h' && (myUrl.at(i + 1)) === 't' && (myUrl.at(i + 2)) === 't' && (myUrl.at(i + 3)) === 'p') {
-                        myUrl = myUrl.replace(replaceString, '');
+                        myUrl = myUrl.replace(replaceString + 1, '');
                     }
                 }
 
@@ -98,7 +99,6 @@ class CookieAuth {
         }
 
         //sort with score from most to worst
-        console.log(UrlList);
         UrlList = UrlList.sort((a, b) => {
             return b.score - a.score;
         });
@@ -113,6 +113,9 @@ class CookieAuth {
      * @returns {Promise<any>}
      */
     public async execute(UserAgent: string, clientVersion: string, clientPlatfrom: string, RequestClient: ValRequestClient, axiosConfig:AxiosRequestConfig): Promise<any> {
+        if(axiosConfig.maxRedirects !== 1 && axiosConfig.maxRedirects !== 0) {
+            axiosConfig.maxRedirects = 0;
+        }
         const axiosClient = axios.create(axiosConfig);
 
         //Cookie Reauth
@@ -120,22 +123,21 @@ class CookieAuth {
 
         try {
             await axiosClient.get('https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1', {
-                maxRedirects: RequestClient.theAxios.defaults.maxRedirects || 0,
                 headers: {
                     'X-Riot-ClientVersion': String(clientVersion),
                     'X-Riot-ClientPlatform': String(clientPlatfrom),
                     'User-Agent': String(UserAgent),
                 },
-                timeout: axios.defaults.timeout || 0,
+                timeout: 0,
             });
         } catch (error: any) {
-            if (error.config.maxRedirects == 0) {
+            if (error.config.maxRedirects === 0) {
                 const possible_location = [
                     error.response.headers.location,
                     error.response.data,
                 ] as Array<string>;
                 _URL = this.tranferURL(possible_location) || possible_location[0];
-            } else if (error.config.maxRedirects == 1) {
+            } else if (error.config.maxRedirects === 1) {
                 const possible_location = [
                     error.request._options.hash,
                     error.request._options.href,

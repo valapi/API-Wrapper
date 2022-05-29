@@ -39,7 +39,7 @@ class Account {
      * @returns {Promise<ValWrapperAuth>}
      */
     execute(username, password, UserAgent, clientVersion, clientPlatfrom, RequestClient) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e, _f;
         return __awaiter(this, void 0, void 0, function* () {
             yield RequestClient.post('https://auth.riotgames.com/api/v1/authorization', {
                 "client_id": "play-valorant-web-prod",
@@ -53,6 +53,9 @@ class Account {
                     'User-Agent': String(UserAgent),
                 },
             });
+            this.cookie = new tough_cookie_1.CookieJar((_a = RequestClient.theAxios.defaults.httpsAgent.jar) === null || _a === void 0 ? void 0 : _a.store, {
+                rejectPublicSuffixes: ((_c = (_b = RequestClient.theAxios.defaults.httpsAgent.options) === null || _b === void 0 ? void 0 : _b.jar) === null || _c === void 0 ? void 0 : _c.rejectPublicSuffixes) || undefined,
+            });
             //ACCESS TOKEN
             const auth_response = yield RequestClient.put('https://auth.riotgames.com/api/v1/authorization', {
                 'type': 'auth',
@@ -60,8 +63,8 @@ class Account {
                 'password': String(password),
                 'remember': true,
             });
-            this.cookie = new tough_cookie_1.CookieJar((_a = RequestClient.theAxios.defaults.httpsAgent.jar) === null || _a === void 0 ? void 0 : _a.store, {
-                rejectPublicSuffixes: ((_c = (_b = RequestClient.theAxios.defaults.httpsAgent.options) === null || _b === void 0 ? void 0 : _b.jar) === null || _c === void 0 ? void 0 : _c.rejectPublicSuffixes) || undefined,
+            this.cookie = new tough_cookie_1.CookieJar((_d = RequestClient.theAxios.defaults.httpsAgent.jar) === null || _d === void 0 ? void 0 : _d.store, {
+                rejectPublicSuffixes: ((_f = (_e = RequestClient.theAxios.defaults.httpsAgent.options) === null || _e === void 0 ? void 0 : _e.jar) === null || _f === void 0 ? void 0 : _f.rejectPublicSuffixes) || undefined,
             });
             return yield AuthFlow_1.AuthFlow.execute(this.toJSON(), auth_response, UserAgent, clientVersion, clientPlatfrom, RequestClient);
         });

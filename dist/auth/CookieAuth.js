@@ -60,7 +60,7 @@ class CookieAuth {
                 for (let i = 0; i < myUrl.length; i++) {
                     replaceString += myUrl.at(i);
                     if ((myUrl.at(i)) === 'h' && (myUrl.at(i + 1)) === 't' && (myUrl.at(i + 2)) === 't' && (myUrl.at(i + 3)) === 'p') {
-                        myUrl = myUrl.replace(replaceString, '');
+                        myUrl = myUrl.replace(replaceString + 1, '');
                     }
                 }
                 myUrl = myUrl;
@@ -85,7 +85,6 @@ class CookieAuth {
             });
         }
         //sort with score from most to worst
-        console.log(UrlList);
         UrlList = UrlList.sort((a, b) => {
             return b.score - a.score;
         });
@@ -100,29 +99,31 @@ class CookieAuth {
     execute(UserAgent, clientVersion, clientPlatfrom, RequestClient, axiosConfig) {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
+            if (axiosConfig.maxRedirects !== 1 && axiosConfig.maxRedirects !== 0) {
+                axiosConfig.maxRedirects = 0;
+            }
             const axiosClient = axios_1.default.create(axiosConfig);
             //Cookie Reauth
             let _URL = '';
             try {
                 yield axiosClient.get('https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1', {
-                    maxRedirects: RequestClient.theAxios.defaults.maxRedirects || 0,
                     headers: {
                         'X-Riot-ClientVersion': String(clientVersion),
                         'X-Riot-ClientPlatform': String(clientPlatfrom),
                         'User-Agent': String(UserAgent),
                     },
-                    timeout: axios_1.default.defaults.timeout || 0,
+                    timeout: 0,
                 });
             }
             catch (error) {
-                if (error.config.maxRedirects == 0) {
+                if (error.config.maxRedirects === 0) {
                     const possible_location = [
                         error.response.headers.location,
                         error.response.data,
                     ];
                     _URL = this.tranferURL(possible_location) || possible_location[0];
                 }
-                else if (error.config.maxRedirects == 1) {
+                else if (error.config.maxRedirects === 1) {
                     const possible_location = [
                         error.request._options.hash,
                         error.request._options.href,

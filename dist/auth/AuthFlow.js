@@ -90,7 +90,7 @@ class AuthFlow {
                         affinities: {
                             pbe: 'na',
                             live: 'na',
-                        }
+                        },
                     },
                 };
             }
@@ -150,6 +150,9 @@ class AuthFlow {
     static fromUrl(data, url, UserAgent, clientVersion, clientPlatfrom, RequestClient) {
         return __awaiter(this, void 0, void 0, function* () {
             const _newAuthFlow = new AuthFlow(data, clientVersion, clientPlatfrom);
+            if (!url.includes('https://playvalorant.com/opt_in')) {
+                url = `https://playvalorant.com/opt_in${url}`;
+            }
             const auth_response = {
                 isError: false,
                 data: {

@@ -36,8 +36,8 @@ interface ValWrapperClient {
     token_type?: string;
     entitlements_token: string;
     region: {
-        pbe: string;
-        live: string;
+        pbe: string,
+        live: string,
     };
 }
 
@@ -52,11 +52,12 @@ interface ValWrapperConfig {
     userAgent?: string;
     region?: keyof typeof _Region.from;
     client?: {
-        version?: string;
-        platform?: ValWrapperClientPlatfrom;
+        version?: string,
+        platform?: ValWrapperClientPlatfrom,
     };
     forceAuth?: boolean;
-    axiosConfig?: AxiosRequestConfig,
+    axiosConfig?: AxiosRequestConfig;
+    expiresIn?: number;
 }
 
 const _Client_Version = 'release-04.08-shipping-15-701907';
@@ -64,8 +65,8 @@ const _Client_Platfrom = {
     "platformType": "PC",
     "platformOS": "Windows",
     "platformOSVersion": "10.0.19042.1.256.64bit",
-    "platformChipset": "Unknown"
-}
+    "platformChipset": "Unknown",
+};
 
 const _defaultConfig: ValWrapperConfig = {
     userAgent: 'RiotClient/43.0.1.41953 86.4190634 rso-auth (Windows; 10;;Professional, x64)',
@@ -76,7 +77,8 @@ const _defaultConfig: ValWrapperConfig = {
     },
     forceAuth: false,
     axiosConfig: {},
-}
+    expiresIn: 2592000000, //Milliseconds
+};
 
 //class
 
@@ -102,6 +104,7 @@ class WrapperClient extends ValEvent {
     protected lockRegion: boolean;
 
     //reload
+    public expireAt: Date;
     private axiosConfig: AxiosRequestConfig;
     private RegionServices: ValorantApiRegion;
     private RequestClient: ValRequestClient;
@@ -159,15 +162,25 @@ class WrapperClient extends ValEvent {
         }
             
         this.RegionServices = new ValRegion(this.region.live as keyof typeof _Region.from).toJSON();
+        
+        //expire date
+        this.expireAt = new Date(Date.now() + this.expires_in * Number(this.config.expiresIn));
+        if(new Date() >= this.expireAt) {
+            this.emit('error', {
+                errorCode: 'ValWrapper_Authentication_Expired',
+                message: 'Token expired',
+                data: this.expireAt,
+            });
+        }
 
         //request client
-        const ciphers = [
+        const ciphers:Array<string> = [
             'TLS_CHACHA20_POLY1305_SHA256',
             'TLS_AES_128_GCM_SHA256',
             'TLS_AES_256_GCM_SHA384',
             'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
         ];
-        const _normalAxiosConfig = {
+        const _normalAxiosConfig:AxiosRequestConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
@@ -210,15 +223,25 @@ class WrapperClient extends ValEvent {
         }
             
         this.RegionServices = new ValRegion(this.region.live as keyof typeof _Region.from).toJSON();
+        
+        //expire date
+        this.expireAt = new Date(Date.now() + this.expires_in * Number(this.config.expiresIn));
+        if(new Date() >= this.expireAt) {
+            this.emit('error', {
+                errorCode: 'ValWrapper_Authentication_Expired',
+                message: 'Token expired',
+                data: this.expireAt,
+            });
+        }
 
         //request client
-        const ciphers = [
+        const ciphers:Array<string> = [
             'TLS_CHACHA20_POLY1305_SHA256',
             'TLS_AES_128_GCM_SHA256',
             'TLS_AES_256_GCM_SHA384',
             'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
         ];
-        const _normalAxiosConfig = {
+        const _normalAxiosConfig:AxiosRequestConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
@@ -347,7 +370,8 @@ class WrapperClient extends ValEvent {
      * @returns {Promise<void>}
      */
      public async fromCookie(): Promise<void> {
-        const NewCookieAuth = await ClientAuthCookie.reauth(this.toJSONAuth(), this.config.userAgent || String(this.config.userAgent), String(this.config.client?.version), toUft8(JSON.stringify(this.config.client?.platform)), this.RequestClient, this.axiosConfig);
+        const NewCookieAuth = await ClientAuthCookie.reauth(this.toJSONAuth(), String(this.config.userAgent), String(this.config.client?.version), toUft8(JSON.stringify(this.config.client?.platform)), this.RequestClient, this.axiosConfig);
+
         this.fromJSONAuth(NewCookieAuth);
     }
 
@@ -361,7 +385,6 @@ class WrapperClient extends ValEvent {
         const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String(this.config.client?.version), toUft8(JSON.stringify(this.config.client?.platform)), this.RequestClient);
 
         this.fromJSONAuth(NewAuth);
-        this.reload();
     }
 
     /**
@@ -373,7 +396,6 @@ class WrapperClient extends ValEvent {
         const NewAuth: ValWrapperAuth = await ClientAuthMultifactor.verify(this.toJSONAuth(), Number(verificationCode), String(this.config.userAgent), String(this.config.client?.version), toUft8(JSON.stringify(this.config.client?.platform)), this.RequestClient);
 
         this.fromJSONAuth(NewAuth);
-        this.reload();
     }
 
     //settings

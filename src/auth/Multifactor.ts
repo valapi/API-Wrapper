@@ -17,7 +17,7 @@ class Multifactor {
     private region: {
         pbe: string,
         live: string,
-    }
+    };
     public multifactor:boolean;
     public isError:boolean;
     

@@ -7,18 +7,18 @@ import { AuthFlow } from "./AuthFlow";
 //interface
 
 interface ValWrapperAuth {
-    cookie: CookieJar.Serialized,
-    access_token: string,
-    id_token:string,
-    expires_in: number,
-    token_type: string,
-    entitlements_token: string,
+    cookie: CookieJar.Serialized;
+    access_token: string;
+    id_token:string;
+    expires_in: number;
+    token_type: string;
+    entitlements_token: string;
     region: {
         pbe: string,
         live: string,
-    },
-    multifactor: boolean,
-    isError: boolean,
+    };
+    multifactor: boolean;
+    isError: boolean;
 }
 
 //class
@@ -73,6 +73,9 @@ class Account {
                 'Content-Type': 'application/json',
                 'User-Agent': String(UserAgent),
             },
+        });
+        this.cookie = new CookieJar(RequestClient.theAxios.defaults.httpsAgent.jar?.store, {
+            rejectPublicSuffixes: RequestClient.theAxios.defaults.httpsAgent.options?.jar?.rejectPublicSuffixes || undefined,
         });
 
         //ACCESS TOKEN

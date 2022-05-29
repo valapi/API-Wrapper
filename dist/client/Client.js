@@ -34,7 +34,7 @@ const _Client_Platfrom = {
     "platformType": "PC",
     "platformOS": "Windows",
     "platformOSVersion": "10.0.19042.1.256.64bit",
-    "platformChipset": "Unknown"
+    "platformChipset": "Unknown",
 };
 const _defaultConfig = {
     userAgent: 'RiotClient/43.0.1.41953 86.4190634 rso-auth (Windows; 10;;Professional, x64)',
@@ -45,6 +45,7 @@ const _defaultConfig = {
     },
     forceAuth: false,
     axiosConfig: {},
+    expiresIn: 2592000000, //Milliseconds
 };
 //class
 class WrapperClient extends lib_1.ValEvent {
@@ -84,6 +85,15 @@ class WrapperClient extends lib_1.ValEvent {
             this.region.live = this.config.region;
         }
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
+        //expire date
+        this.expireAt = new Date(Date.now() + this.expires_in * Number(this.config.expiresIn));
+        if (new Date() >= this.expireAt) {
+            this.emit('error', {
+                errorCode: 'ValWrapper_Authentication_Expired',
+                message: 'Token expired',
+                data: this.expireAt,
+            });
+        }
         //request client
         const ciphers = [
             'TLS_CHACHA20_POLY1305_SHA256',
@@ -129,6 +139,15 @@ class WrapperClient extends lib_1.ValEvent {
             this.region.live = this.config.region;
         }
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
+        //expire date
+        this.expireAt = new Date(Date.now() + this.expires_in * Number(this.config.expiresIn));
+        if (new Date() >= this.expireAt) {
+            this.emit('error', {
+                errorCode: 'ValWrapper_Authentication_Expired',
+                message: 'Token expired',
+                data: this.expireAt,
+            });
+        }
         //request client
         const ciphers = [
             'TLS_CHACHA20_POLY1305_SHA256',
@@ -250,7 +269,7 @@ class WrapperClient extends lib_1.ValEvent {
     fromCookie() {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const NewCookieAuth = yield CookieAuth_1.CookieAuth.reauth(this.toJSONAuth(), this.config.userAgent || String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)), this.RequestClient, this.axiosConfig);
+            const NewCookieAuth = yield CookieAuth_1.CookieAuth.reauth(this.toJSONAuth(), String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)), this.RequestClient, this.axiosConfig);
             this.fromJSONAuth(NewCookieAuth);
         });
     }
@@ -265,7 +284,6 @@ class WrapperClient extends lib_1.ValEvent {
         return __awaiter(this, void 0, void 0, function* () {
             const NewAuth = yield Account_1.Account.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)), this.RequestClient);
             this.fromJSONAuth(NewAuth);
-            this.reload();
         });
     }
     /**
@@ -278,7 +296,6 @@ class WrapperClient extends lib_1.ValEvent {
         return __awaiter(this, void 0, void 0, function* () {
             const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), Number(verificationCode), String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)), this.RequestClient);
             this.fromJSONAuth(NewAuth);
-            this.reload();
         });
     }
     //settings

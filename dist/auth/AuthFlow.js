@@ -61,8 +61,8 @@ class AuthFlow {
             const Search_URL = new URL(auth_response.data.response.parameters.uri);
             this.access_token = String(new URLSearchParams(Search_URL.hash).get('#access_token'));
             this.id_token = String(new URLSearchParams(Search_URL.hash).get('id_token'));
-            this.expires_in = Number(new URLSearchParams(Search_URL.hash).get('expires_in'));
-            this.token_type = String(new URLSearchParams(Search_URL.hash).get('token_type'));
+            this.expires_in = Number(new URLSearchParams(Search_URL.hash).get('expires_in')) || 3600;
+            this.token_type = String(new URLSearchParams(Search_URL.hash).get('token_type')) || 'Bearer';
             //ENTITLEMENTS
             const entitlements_response = yield RequestClient.post('https://entitlements.auth.riotgames.com/api/token/v1', {}, {
                 headers: {

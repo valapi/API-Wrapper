@@ -45,7 +45,11 @@ const _defaultConfig = {
     },
     forceAuth: false,
     axiosConfig: {},
-    expiresIn: 2592000000, //Milliseconds
+    expiresIn: {
+        cookie: 2592000000,
+        token: 3600000,
+    },
+    autoReconnect: false,
 };
 //class
 class WrapperClient extends lib_1.ValEvent {
@@ -54,7 +58,7 @@ class WrapperClient extends lib_1.ValEvent {
      * @param {ValWrapperConfig} config Client Config
      */
     constructor(config = {}) {
-        var _a, _b;
+        var _a, _b, _c, _d;
         super();
         //config
         this.config = new Object(Object.assign(Object.assign({}, _defaultConfig), config));
@@ -85,14 +89,49 @@ class WrapperClient extends lib_1.ValEvent {
             this.region.live = this.config.region;
         }
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
-        //expire date
-        this.expireAt = new Date(Date.now() + this.expires_in * Number(this.config.expiresIn));
-        if (new Date() >= this.expireAt) {
-            this.emit('error', {
-                errorCode: 'ValWrapper_Authentication_Expired',
-                message: 'Token expired',
-                data: this.expireAt,
+        //expire
+        this.expireAt = {
+            cookie: new Date(Date.now() + this.expires_in * Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie)),
+            token: new Date(Date.now() + this.expires_in * (((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.token) || this.expires_in * 1000)),
+        };
+        if (new Date() >= this.expireAt.cookie) {
+            this.emit('expires', {
+                name: 'cookie',
+                data: this.cookie,
             });
+            this.cookie = new tough_cookie_1.CookieJar();
+            if (this.config.autoAuthentication) {
+                if (this.multifactor) {
+                    throw new Error('Multifactor is enabled, please disable it before authenticating');
+                }
+                let _username = this.config.autoAuthentication.username;
+                let _password = this.config.autoAuthentication.password;
+                (() => __awaiter(this, void 0, void 0, function* () { yield this.login(_username, _password); }))();
+            }
+            else {
+                this.emit('error', {
+                    errorCode: 'ValWrapper_Expired_Cookie',
+                    message: 'Cookie Expired',
+                    data: this.expireAt,
+                });
+            }
+        }
+        if (new Date() >= this.expireAt.token) {
+            this.emit('expires', {
+                name: 'token',
+                data: this.access_token,
+            });
+            this.access_token = '';
+            if (this.config.autoReconnect === true) {
+                (() => __awaiter(this, void 0, void 0, function* () { yield this.fromCookie(); }))();
+            }
+            else {
+                this.emit('error', {
+                    errorCode: 'ValWrapper_Expired_Token',
+                    message: 'Token expired',
+                    data: this.expireAt,
+                });
+            }
         }
         //request client
         const ciphers = [
@@ -105,8 +144,8 @@ class WrapperClient extends lib_1.ValEvent {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
-                'X-Riot-ClientVersion': String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
-                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
+                'X-Riot-ClientVersion': String((_c = this.config.client) === null || _c === void 0 ? void 0 : _c.version),
+                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_d = this.config.client) === null || _d === void 0 ? void 0 : _d.platform)),
             },
             httpsAgent: new http_cookie_agent_1.HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
         };
@@ -134,19 +173,51 @@ class WrapperClient extends lib_1.ValEvent {
      * @returns {void}
      */
     reload() {
-        var _a, _b;
+        var _a, _b, _c, _d;
         if (this.lockRegion === true && this.config.region) {
             this.region.live = this.config.region;
         }
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
-        //expire date
-        this.expireAt = new Date(Date.now() + this.expires_in * Number(this.config.expiresIn));
-        if (new Date() >= this.expireAt) {
-            this.emit('error', {
-                errorCode: 'ValWrapper_Authentication_Expired',
-                message: 'Token expired',
-                data: this.expireAt,
+        //expire
+        this.expireAt = {
+            cookie: new Date(Date.now() + this.expires_in * Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie)),
+            token: new Date(Date.now() + this.expires_in * (((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.token) || this.expires_in * 1000)),
+        };
+        if (new Date() >= this.expireAt.cookie) {
+            this.emit('expires', {
+                name: 'cookie',
+                data: this.cookie,
             });
+            this.cookie = new tough_cookie_1.CookieJar();
+            if (this.config.autoAuthentication) {
+                let _username = this.config.autoAuthentication.username;
+                let _password = this.config.autoAuthentication.password;
+                (() => __awaiter(this, void 0, void 0, function* () { yield this.login(_username, _password); }))();
+            }
+            else {
+                this.emit('error', {
+                    errorCode: 'ValWrapper_Expired_Cookie',
+                    message: 'Cookie Expired',
+                    data: this.expireAt,
+                });
+            }
+        }
+        if (new Date() >= this.expireAt.token) {
+            this.emit('expires', {
+                name: 'token',
+                data: this.access_token,
+            });
+            this.access_token = '';
+            if (this.config.autoReconnect === true) {
+                (() => __awaiter(this, void 0, void 0, function* () { yield this.fromCookie(); }))();
+            }
+            else {
+                this.emit('error', {
+                    errorCode: 'ValWrapper_Expired_Token',
+                    message: 'Token expired',
+                    data: this.expireAt,
+                });
+            }
         }
         //request client
         const ciphers = [
@@ -159,8 +230,8 @@ class WrapperClient extends lib_1.ValEvent {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
-                'X-Riot-ClientVersion': String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
-                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
+                'X-Riot-ClientVersion': String((_c = this.config.client) === null || _c === void 0 ? void 0 : _c.version),
+                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_d = this.config.client) === null || _d === void 0 ? void 0 : _d.platform)),
             },
             httpsAgent: new http_cookie_agent_1.HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
         };

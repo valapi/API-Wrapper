@@ -40,7 +40,15 @@ interface ValWrapperConfig {
     };
     forceAuth?: boolean;
     axiosConfig?: AxiosRequestConfig;
-    expiresIn?: number;
+    expiresIn?: {
+        cookie: number;
+        token?: number;
+    };
+    autoReconnect?: boolean;
+    autoAuthentication?: {
+        username: string;
+        password: string;
+    };
 }
 declare class WrapperClient extends ValEvent {
     private cookie;
@@ -54,7 +62,10 @@ declare class WrapperClient extends ValEvent {
     private region;
     protected config: ValWrapperConfig;
     protected lockRegion: boolean;
-    expireAt: Date;
+    expireAt: {
+        cookie: Date;
+        token: Date;
+    };
     private axiosConfig;
     private RegionServices;
     private RequestClient;
@@ -148,6 +159,10 @@ declare class WrapperClient extends ValEvent {
 }
 interface ValWrapperClientEvent {
     'ready': () => void;
+    'expires': (data: {
+        name: string;
+        data: any;
+    }) => void;
     'request': (data: ValorantApiRequestData) => void;
     'changeSettings': (data: {
         name: string;

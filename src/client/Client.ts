@@ -57,7 +57,15 @@ interface ValWrapperConfig {
     };
     forceAuth?: boolean;
     axiosConfig?: AxiosRequestConfig;
-    expiresIn?: number;
+    expiresIn?: {
+        cookie: number,
+        token?: number,
+    };
+    autoReconnect?: boolean;
+    autoAuthentication?: {
+        username: string,
+        password: string,
+    };
 }
 
 const _Client_Version = 'release-04.08-shipping-15-701907';
@@ -77,7 +85,11 @@ const _defaultConfig: ValWrapperConfig = {
     },
     forceAuth: false,
     axiosConfig: {},
-    expiresIn: 2592000000, //Milliseconds
+    expiresIn: {
+        cookie: 2592000000,
+        token: 3600000,
+    }, //Milliseconds
+    autoReconnect: false,
 };
 
 //class
@@ -104,7 +116,11 @@ class WrapperClient extends ValEvent {
     protected lockRegion: boolean;
 
     //reload
-    public expireAt: Date;
+    public expireAt: {
+        cookie: Date,
+        token: Date,
+    };
+
     private axiosConfig: AxiosRequestConfig;
     private RegionServices: ValorantApiRegion;
     private RequestClient: ValRequestClient;
@@ -163,14 +179,52 @@ class WrapperClient extends ValEvent {
             
         this.RegionServices = new ValRegion(this.region.live as keyof typeof _Region.from).toJSON();
         
-        //expire date
-        this.expireAt = new Date(Date.now() + this.expires_in * Number(this.config.expiresIn));
-        if(new Date() >= this.expireAt) {
-            this.emit('error', {
-                errorCode: 'ValWrapper_Authentication_Expired',
-                message: 'Token expired',
-                data: this.expireAt,
+        //expire
+        this.expireAt = {
+            cookie: new Date(Date.now() + this.expires_in * Number(this.config.expiresIn?.cookie)),
+            token: new Date(Date.now() + this.expires_in * (this.config.expiresIn?.token || this.expires_in * 1000)),
+        };
+        if(new Date() >= this.expireAt.cookie) {
+            this.emit('expires', {
+                name: 'cookie',
+                data: this.cookie,
             });
+            this.cookie = new CookieJar();
+
+            if (this.config.autoAuthentication) {
+                if(this.multifactor) {
+                    throw new Error(
+                        'Multifactor is enabled, please disable it before authenticating'
+                    );
+                }
+
+                let _username = this.config.autoAuthentication.username;
+                let _password = this.config.autoAuthentication.password;
+                (async () => { await this.login(_username, _password) })();
+            } else {
+                this.emit('error', {
+                    errorCode: 'ValWrapper_Expired_Cookie',
+                    message: 'Cookie Expired',
+                    data: this.expireAt,
+                });
+            }
+        }
+        if(new Date() >= this.expireAt.token) {
+            this.emit('expires', {
+                name: 'token',
+                data: this.access_token,
+            });
+            this.access_token = '';
+
+            if (this.config.autoReconnect === true) {
+                (async () => { await this.fromCookie() })();
+            } else {
+                this.emit('error', {
+                    errorCode: 'ValWrapper_Expired_Token',
+                    message: 'Token expired',
+                    data: this.expireAt,
+                });
+            }
         }
 
         //request client
@@ -224,14 +278,46 @@ class WrapperClient extends ValEvent {
             
         this.RegionServices = new ValRegion(this.region.live as keyof typeof _Region.from).toJSON();
         
-        //expire date
-        this.expireAt = new Date(Date.now() + this.expires_in * Number(this.config.expiresIn));
-        if(new Date() >= this.expireAt) {
-            this.emit('error', {
-                errorCode: 'ValWrapper_Authentication_Expired',
-                message: 'Token expired',
-                data: this.expireAt,
+        //expire
+        this.expireAt = {
+            cookie: new Date(Date.now() + this.expires_in * Number(this.config.expiresIn?.cookie)),
+            token: new Date(Date.now() + this.expires_in * (this.config.expiresIn?.token || this.expires_in * 1000)),
+        };
+        if(new Date() >= this.expireAt.cookie) {
+            this.emit('expires', {
+                name: 'cookie',
+                data: this.cookie,
             });
+            this.cookie = new CookieJar();
+
+            if (this.config.autoAuthentication) {
+                let _username = this.config.autoAuthentication.username;
+                let _password = this.config.autoAuthentication.password;
+                (async () => { await this.login(_username, _password) })();
+            } else {
+                this.emit('error', {
+                    errorCode: 'ValWrapper_Expired_Cookie',
+                    message: 'Cookie Expired',
+                    data: this.expireAt,
+                });
+            }
+        }
+        if(new Date() >= this.expireAt.token) {
+            this.emit('expires', {
+                name: 'token',
+                data: this.access_token,
+            });
+            this.access_token = '';
+
+            if (this.config.autoReconnect === true) {
+                (async () => { await this.fromCookie() })();
+            } else {
+                this.emit('error', {
+                    errorCode: 'ValWrapper_Expired_Token',
+                    message: 'Token expired',
+                    data: this.expireAt,
+                });
+            }
         }
 
         //request client
@@ -476,6 +562,7 @@ class WrapperClient extends ValEvent {
 //event
 interface ValWrapperClientEvent {
     'ready': () => void,
+    'expires': (data: { name: string, data: any }) => void, 
     'request': (data: ValorantApiRequestData) => void,
     'changeSettings': (data: { name: string, data: any }) => void,
     'error': (data: ValorantApiError) => void;

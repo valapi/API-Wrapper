@@ -24,8 +24,8 @@ class MMR {
     /**
      * @param {String} puuid Player UUID
      * @param {String} queueId Queue
-     * @param {Number} startIndex Start Index
-     * @param {Number} endIndex End Index
+     * @param {Number} startIndex Start Index (default: 0)
+     * @param {Number} endIndex End Index (default: 10)
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchCompetitiveUpdates(puuid, queueId, startIndex = 0, endIndex = 10) {
@@ -39,8 +39,8 @@ class MMR {
     }
     /**
      * @param {String} seasonId Season ID
-     * @param {Number} startIndex Start Index
-     * @param {Number} size Size
+     * @param {Number} startIndex Start Index (default: 0)
+     * @param {Number} size Size (default: 510)
      * @param {String} serachUsername Search Username
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */

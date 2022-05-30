@@ -33,8 +33,8 @@ class Match {
     /**
      * @param {String} puuid Player UUID
      * @param {String} queueId Queue
-     * @param {Number} startIndex Start Index
-     * @param {Number} endIndex End Index
+     * @param {Number} startIndex Start Index (default: 0)
+     * @param {Number} endIndex End Index (default: 10)
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
      public async FetchMatchHistory(puuid:string, queueId?:keyof typeof QueueId.from, startIndex:number = 0, endIndex:number = 10):Promise<ValorantApiRequestResponse<any>> {

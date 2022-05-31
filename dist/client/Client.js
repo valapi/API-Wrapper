@@ -29,7 +29,7 @@ const Client_1 = require("../custom/Client");
 const Match_1 = require("../custom/Match");
 const MMR_1 = require("../custom/MMR");
 const Player_1 = require("../custom/Player");
-const _Client_Version = 'release-04.08-shipping-15-701907';
+const _Client_Version = 'release-04.10-shipping-5-714978';
 const _Client_Platfrom = {
     "platformType": "PC",
     "platformOS": "Windows",

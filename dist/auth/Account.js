@@ -33,15 +33,13 @@ class Account {
     /**
      * @param {String} username Riot Account Username (not email)
      * @param {String} password Riot Account Password
-     * @param {String} UserAgent User Agent
-     * @param {String} clientVersion Client Version
-     * @param {String} clientPlatfrom Client Platform
+     * @param {ValWrapperAuthExtend} extendsData Extradata of auth
      * @returns {Promise<ValWrapperAuth>}
      */
-    execute(username, password, UserAgent, clientVersion, clientPlatfrom, RequestClient) {
+    execute(username, password, extendsData) {
         var _a, _b, _c, _d, _e, _f;
         return __awaiter(this, void 0, void 0, function* () {
-            yield RequestClient.post('https://auth.riotgames.com/api/v1/authorization', {
+            yield extendsData.RequestClient.post('https://auth.riotgames.com/api/v1/authorization', {
                 "client_id": "play-valorant-web-prod",
                 "nonce": "1",
                 "redirect_uri": "https://playvalorant.com/opt_in",
@@ -50,23 +48,23 @@ class Account {
             }, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'User-Agent': String(UserAgent),
+                    'User-Agent': String(extendsData.UserAgent),
                 },
             });
-            this.cookie = new tough_cookie_1.CookieJar((_a = RequestClient.theAxios.defaults.httpsAgent.jar) === null || _a === void 0 ? void 0 : _a.store, {
-                rejectPublicSuffixes: ((_c = (_b = RequestClient.theAxios.defaults.httpsAgent.options) === null || _b === void 0 ? void 0 : _b.jar) === null || _c === void 0 ? void 0 : _c.rejectPublicSuffixes) || undefined,
+            this.cookie = new tough_cookie_1.CookieJar((_a = extendsData.RequestClient.theAxios.defaults.httpsAgent.jar) === null || _a === void 0 ? void 0 : _a.store, {
+                rejectPublicSuffixes: ((_c = (_b = extendsData.RequestClient.theAxios.defaults.httpsAgent.options) === null || _b === void 0 ? void 0 : _b.jar) === null || _c === void 0 ? void 0 : _c.rejectPublicSuffixes) || undefined,
             });
             //ACCESS TOKEN
-            const auth_response = yield RequestClient.put('https://auth.riotgames.com/api/v1/authorization', {
+            const auth_response = yield extendsData.RequestClient.put('https://auth.riotgames.com/api/v1/authorization', {
                 'type': 'auth',
                 'username': String(username),
                 'password': String(password),
                 'remember': true,
             });
-            this.cookie = new tough_cookie_1.CookieJar((_d = RequestClient.theAxios.defaults.httpsAgent.jar) === null || _d === void 0 ? void 0 : _d.store, {
-                rejectPublicSuffixes: ((_f = (_e = RequestClient.theAxios.defaults.httpsAgent.options) === null || _e === void 0 ? void 0 : _e.jar) === null || _f === void 0 ? void 0 : _f.rejectPublicSuffixes) || undefined,
+            this.cookie = new tough_cookie_1.CookieJar((_d = extendsData.RequestClient.theAxios.defaults.httpsAgent.jar) === null || _d === void 0 ? void 0 : _d.store, {
+                rejectPublicSuffixes: ((_f = (_e = extendsData.RequestClient.theAxios.defaults.httpsAgent.options) === null || _e === void 0 ? void 0 : _e.jar) === null || _f === void 0 ? void 0 : _f.rejectPublicSuffixes) || undefined,
             });
-            return yield AuthFlow_1.AuthFlow.execute(this.toJSON(), auth_response, UserAgent, clientVersion, clientPlatfrom, RequestClient);
+            return yield AuthFlow_1.AuthFlow.execute(this.toJSON(), auth_response, extendsData);
         });
     }
     /**
@@ -90,16 +88,14 @@ class Account {
      * @param {ValWrapperAuth} data Authentication Data
      * @param {String} username Riot Account Username
      * @param {String} password Riot Account Password
-     * @param {String} UserAgent User Agent
-     * @param {String} clientVersion Client Version
-     * @param {String} clientPlatfrom Client Platform
+     * @param {ValWrapperAuthExtend} extendsData Extradata of auth
      * @returns {Promise<ValWrapperAuth>}
      */
-    static login(data, username, password, UserAgent, clientVersion, clientPlatfrom, RequestClient) {
+    static login(data, username, password, extendsData) {
         return __awaiter(this, void 0, void 0, function* () {
             const NewAccount = new Account(data);
             try {
-                return yield NewAccount.execute(username, password, UserAgent, clientVersion, clientPlatfrom, RequestClient);
+                return yield NewAccount.execute(username, password, extendsData);
             }
             catch (error) {
                 NewAccount.isError = true;

@@ -14,6 +14,13 @@ interface ValWrapperAuth {
     multifactor: boolean;
     isError: boolean;
 }
+interface ValWrapperAuthExtend {
+    UserAgent: string;
+    clientVersion: string;
+    clientPlatform: string;
+    RequestClient: ValRequestClient;
+    lockRegion: Boolean;
+}
 declare class Account {
     private cookie;
     private access_token;
@@ -32,12 +39,10 @@ declare class Account {
     /**
      * @param {String} username Riot Account Username (not email)
      * @param {String} password Riot Account Password
-     * @param {String} UserAgent User Agent
-     * @param {String} clientVersion Client Version
-     * @param {String} clientPlatfrom Client Platform
+     * @param {ValWrapperAuthExtend} extendsData Extradata of auth
      * @returns {Promise<ValWrapperAuth>}
      */
-    execute(username: string, password: string, UserAgent: string, clientVersion: string, clientPlatfrom: string, RequestClient: ValRequestClient): Promise<ValWrapperAuth>;
+    execute(username: string, password: string, extendsData: ValWrapperAuthExtend): Promise<ValWrapperAuth>;
     /**
      *
      * @returns {ValWrapperAuth}
@@ -47,13 +52,11 @@ declare class Account {
      * @param {ValWrapperAuth} data Authentication Data
      * @param {String} username Riot Account Username
      * @param {String} password Riot Account Password
-     * @param {String} UserAgent User Agent
-     * @param {String} clientVersion Client Version
-     * @param {String} clientPlatfrom Client Platform
+     * @param {ValWrapperAuthExtend} extendsData Extradata of auth
      * @returns {Promise<ValWrapperAuth>}
      */
-    static login(data: ValWrapperAuth, username: string, password: string, UserAgent: string, clientVersion: string, clientPlatfrom: string, RequestClient: ValRequestClient): Promise<ValWrapperAuth>;
+    static login(data: ValWrapperAuth, username: string, password: string, extendsData: ValWrapperAuthExtend): Promise<ValWrapperAuth>;
 }
 export { Account };
-export type { ValWrapperAuth };
+export type { ValWrapperAuth, ValWrapperAuthExtend };
 //# sourceMappingURL=Account.d.ts.map

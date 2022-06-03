@@ -15,7 +15,7 @@ import { Match as MatchService } from "../custom/Match";
 import { MMR as MMRService } from "../custom/MMR";
 import { Player as PlayerService } from "../custom/Player";
 interface ValWrapperClient {
-    cookie?: CookieJar.Serialized;
+    cookie: CookieJar.Serialized;
     access_token: string;
     id_token?: string;
     token_type?: string;
@@ -23,6 +23,10 @@ interface ValWrapperClient {
     region: {
         pbe: string;
         live: string;
+    };
+    expires: {
+        cookie: Date;
+        token: Date;
     };
 }
 interface ValWrapperClientPlatfrom {

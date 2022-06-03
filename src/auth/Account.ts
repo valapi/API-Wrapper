@@ -21,6 +21,14 @@ interface ValWrapperAuth {
     isError: boolean;
 }
 
+interface ValWrapperAuthExtend {
+    UserAgent: string;
+    clientVersion: string;
+    clientPlatform: string;
+    RequestClient: ValRequestClient;
+    lockRegion: Boolean;
+}
+
 //class
 
 class Account {
@@ -56,13 +64,11 @@ class Account {
     /**
      * @param {String} username Riot Account Username (not email)
      * @param {String} password Riot Account Password
-     * @param {String} UserAgent User Agent
-     * @param {String} clientVersion Client Version
-     * @param {String} clientPlatfrom Client Platform
+     * @param {ValWrapperAuthExtend} extendsData Extradata of auth
      * @returns {Promise<ValWrapperAuth>}
      */
-     public async execute(username:string, password:string, UserAgent:string, clientVersion:string, clientPlatfrom:string, RequestClient:ValRequestClient):Promise<ValWrapperAuth> {
-        await RequestClient.post('https://auth.riotgames.com/api/v1/authorization', {
+     public async execute(username:string, password:string, extendsData:ValWrapperAuthExtend):Promise<ValWrapperAuth> {
+        await extendsData.RequestClient.post('https://auth.riotgames.com/api/v1/authorization', {
             "client_id": "play-valorant-web-prod",
             "nonce": "1",
             "redirect_uri": "https://playvalorant.com/opt_in",
@@ -71,25 +77,25 @@ class Account {
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                'User-Agent': String(UserAgent),
+                'User-Agent': String(extendsData.UserAgent),
             },
         });
-        this.cookie = new CookieJar(RequestClient.theAxios.defaults.httpsAgent.jar?.store, {
-            rejectPublicSuffixes: RequestClient.theAxios.defaults.httpsAgent.options?.jar?.rejectPublicSuffixes || undefined,
+        this.cookie = new CookieJar(extendsData.RequestClient.theAxios.defaults.httpsAgent.jar?.store, {
+            rejectPublicSuffixes: extendsData.RequestClient.theAxios.defaults.httpsAgent.options?.jar?.rejectPublicSuffixes || undefined,
         });
 
         //ACCESS TOKEN
-        const auth_response:ValorantApiRequestResponse<any> = await RequestClient.put('https://auth.riotgames.com/api/v1/authorization', {
+        const auth_response:ValorantApiRequestResponse<any> = await extendsData.RequestClient.put('https://auth.riotgames.com/api/v1/authorization', {
             'type': 'auth',
             'username': String(username),
             'password': String(password),
             'remember': true,
         });
 
-        this.cookie = new CookieJar(RequestClient.theAxios.defaults.httpsAgent.jar?.store, {
-            rejectPublicSuffixes: RequestClient.theAxios.defaults.httpsAgent.options?.jar?.rejectPublicSuffixes || undefined,
+        this.cookie = new CookieJar(extendsData.RequestClient.theAxios.defaults.httpsAgent.jar?.store, {
+            rejectPublicSuffixes: extendsData.RequestClient.theAxios.defaults.httpsAgent.options?.jar?.rejectPublicSuffixes || undefined,
         });
-        return await AuthFlow.execute(this.toJSON(), auth_response, UserAgent, clientVersion, clientPlatfrom, RequestClient);
+        return await AuthFlow.execute(this.toJSON(), auth_response, extendsData);
     }
 
     /**
@@ -114,16 +120,14 @@ class Account {
      * @param {ValWrapperAuth} data Authentication Data
      * @param {String} username Riot Account Username
      * @param {String} password Riot Account Password
-     * @param {String} UserAgent User Agent
-     * @param {String} clientVersion Client Version
-     * @param {String} clientPlatfrom Client Platform
+     * @param {ValWrapperAuthExtend} extendsData Extradata of auth
      * @returns {Promise<ValWrapperAuth>}
      */
-     public static async login(data:ValWrapperAuth, username:string, password:string, UserAgent:string, clientVersion:string, clientPlatfrom:string, RequestClient:ValRequestClient):Promise<ValWrapperAuth> {
+     public static async login(data:ValWrapperAuth, username:string, password:string, extendsData:ValWrapperAuthExtend):Promise<ValWrapperAuth> {
         const NewAccount:Account = new Account(data);
 
         try {
-            return await NewAccount.execute(username, password, UserAgent, clientVersion, clientPlatfrom, RequestClient);
+            return await NewAccount.execute(username, password, extendsData);
         } catch (error) {
             NewAccount.isError = true;
 
@@ -134,4 +138,4 @@ class Account {
 
 //export
 export { Account };
-export type { ValWrapperAuth };
+export type { ValWrapperAuth, ValWrapperAuthExtend };

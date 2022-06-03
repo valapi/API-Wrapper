@@ -35,16 +35,14 @@ class Multifactor {
     }
     /**
     * @param {Number} verificationCode Verification Code
-    * @param {String} UserAgent User Agent
-    * @param {String} clientVersion Client Version
-    * @param {String} clientPlatfrom Client Platform
+    * @param {ValWrapperAuthExtend} extendsData Extradata of auth
     * @returns {Promise<ValWrapperAuth>}
     */
-    execute(verificationCode, UserAgent, clientVersion, clientPlatfrom, RequestClient) {
+    execute(verificationCode, extendsData) {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             //ACCESS TOKEN
-            const auth_response = yield RequestClient.put('https://auth.riotgames.com/api/v1/authorization', {
+            const auth_response = yield extendsData.RequestClient.put('https://auth.riotgames.com/api/v1/authorization', {
                 "type": "multifactor",
                 "code": String(verificationCode),
                 "rememberDevice": true
@@ -52,10 +50,10 @@ class Multifactor {
             if (!auth_response.isError) {
                 this.multifactor = false;
             }
-            this.cookie = new tough_cookie_1.CookieJar((_a = RequestClient.theAxios.defaults.httpsAgent.jar) === null || _a === void 0 ? void 0 : _a.store, {
-                rejectPublicSuffixes: ((_c = (_b = RequestClient.theAxios.defaults.httpsAgent.options) === null || _b === void 0 ? void 0 : _b.jar) === null || _c === void 0 ? void 0 : _c.rejectPublicSuffixes) || undefined,
+            this.cookie = new tough_cookie_1.CookieJar((_a = extendsData.RequestClient.theAxios.defaults.httpsAgent.jar) === null || _a === void 0 ? void 0 : _a.store, {
+                rejectPublicSuffixes: ((_c = (_b = extendsData.RequestClient.theAxios.defaults.httpsAgent.options) === null || _b === void 0 ? void 0 : _b.jar) === null || _c === void 0 ? void 0 : _c.rejectPublicSuffixes) || undefined,
             });
-            return yield AuthFlow_1.AuthFlow.execute(this.toJSON(), auth_response, UserAgent, clientVersion, clientPlatfrom, RequestClient);
+            return yield AuthFlow_1.AuthFlow.execute(this.toJSON(), auth_response, extendsData);
         });
     }
     /**
@@ -78,16 +76,14 @@ class Multifactor {
     /**
      * @param {ValWrapperAuth} data ValAuth_Account toJSON data
      * @param {Number} verificationCode Verification Code
-     * @param {String} UserAgent User Agent
-     * @param {String} clientVersion Client Version
-     * @param {String} clientPlatfrom Client Platform
+     * @param {ValWrapperAuthExtend} extendsData Extradata of auth
      * @returns {Promise<ValWrapperAuth>}
      */
-    static verify(data, verificationCode, UserAgent, clientVersion, clientPlatfrom, RequestClient) {
+    static verify(data, verificationCode, extendsData) {
         return __awaiter(this, void 0, void 0, function* () {
             const MultifactorAccount = new Multifactor(data);
             try {
-                return yield MultifactorAccount.execute(verificationCode, UserAgent, clientVersion, clientPlatfrom, RequestClient);
+                return yield MultifactorAccount.execute(verificationCode, extendsData);
             }
             catch (error) {
                 MultifactorAccount.isError = true;

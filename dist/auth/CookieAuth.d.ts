@@ -1,5 +1,4 @@
-import type { ValRequestClient } from '@valapi/lib';
-import type { ValWrapperAuth } from './Account';
+import type { ValWrapperAuth, ValWrapperAuthExtend } from './Account';
 import { type AxiosRequestConfig } from 'axios';
 /**
  * * Not Recommend
@@ -26,12 +25,10 @@ declare class CookieAuth {
      */
     private tranferURL;
     /**
-     * @param {String} UserAgent User Agent
-     * @param {String} clientVersion Client Version
-     * @param {String} clientPlatfrom Client Platform
+     * @param {ValWrapperAuthExtend} extendsData Extradata of auth
      * @returns {Promise<any>}
      */
-    execute(UserAgent: string, clientVersion: string, clientPlatfrom: string, RequestClient: ValRequestClient, axiosConfig: AxiosRequestConfig): Promise<any>;
+    execute(extendsData: ValWrapperAuthExtend, axiosConfig: AxiosRequestConfig): Promise<any>;
     /**
      *
      * @returns {ValWrapperAuth}
@@ -39,12 +36,11 @@ declare class CookieAuth {
     toJSON(): ValWrapperAuth;
     /**
      * @param {ValWrapperAuth} data ValAuth_Account toJSON data
-     * @param {String} UserAgent User Agent
-     * @param {String} clientVersion Client Version
-     * @param {String} clientPlatfrom Client Platform
+     * @param {ValWrapperAuthExtend} extendsData Extradata of auth
+     * @param {AxiosRequestConfig} axiosConfig Axios Config
      * @returns {Promise<ValWrapperAuth>}
      */
-    static reauth(data: ValWrapperAuth, UserAgent: string, clientVersion: string, clientPlatfrom: string, RequestClient: ValRequestClient, axiosConfig: AxiosRequestConfig): Promise<ValWrapperAuth>;
+    static reauth(data: ValWrapperAuth, extendsData: ValWrapperAuthExtend, axiosConfig: AxiosRequestConfig): Promise<ValWrapperAuth>;
 }
 export { CookieAuth };
 //# sourceMappingURL=CookieAuth.d.ts.map

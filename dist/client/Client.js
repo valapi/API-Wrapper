@@ -268,6 +268,7 @@ class WrapperClient extends lib_1.ValEvent {
             token_type: this.token_type,
             entitlements_token: this.entitlements_token,
             region: this.region,
+            expires: this.expireAt,
         };
     }
     /**
@@ -276,23 +277,19 @@ class WrapperClient extends lib_1.ValEvent {
      * @returns {void}
      */
     fromJSON(data) {
-        var _a, _b;
-        if (!data.cookie) {
-            data.cookie = new tough_cookie_1.CookieJar().toJSON();
+        if (!data.id_token) {
+            data.id_token = '';
         }
         if (!data.token_type) {
             data.token_type = 'Bearer';
         }
         this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(data.cookie));
         this.access_token = data.access_token;
-        this.id_token = data.id_token || '';
+        this.id_token = data.id_token;
         this.token_type = data.token_type;
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
-        this.expireAt = {
-            cookie: new Date(Date.now() + Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie)),
-            token: new Date(Date.now() + (((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.token) || this.expires_in * 1000)),
-        };
+        this.expireAt = data.expires;
         this.reload();
     }
     //auth
@@ -352,7 +349,14 @@ class WrapperClient extends lib_1.ValEvent {
     fromCookie() {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const NewCookieAuth = yield CookieAuth_1.CookieAuth.reauth(this.toJSONAuth(), String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)), this.RequestClient, this.axiosConfig);
+            const _extraData = {
+                UserAgent: String(this.config.userAgent),
+                clientVersion: String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
+                clientPlatform: (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
+                RequestClient: this.RequestClient,
+                lockRegion: this.lockRegion,
+            };
+            const NewCookieAuth = yield CookieAuth_1.CookieAuth.reauth(this.toJSONAuth(), _extraData, this.axiosConfig);
             this.fromJSONAuth(NewCookieAuth);
         });
     }
@@ -365,7 +369,14 @@ class WrapperClient extends lib_1.ValEvent {
     login(username, password) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const NewAuth = yield Account_1.Account.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)), this.RequestClient);
+            const _extraData = {
+                UserAgent: String(this.config.userAgent),
+                clientVersion: String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
+                clientPlatform: (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
+                RequestClient: this.RequestClient,
+                lockRegion: this.lockRegion,
+            };
+            const NewAuth = yield Account_1.Account.login(this.toJSONAuth(), username, password, _extraData);
             this.fromJSONAuth(NewAuth);
             if (this.multifactor && this.config.autoAuthentication) {
                 throw new Error('Multifactor is not supported when autoAuthentication is enabled.');
@@ -380,7 +391,14 @@ class WrapperClient extends lib_1.ValEvent {
     verify(verificationCode) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), Number(verificationCode), String(this.config.userAgent), String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version), (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)), this.RequestClient);
+            const _extraData = {
+                UserAgent: String(this.config.userAgent),
+                clientVersion: String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
+                clientPlatform: (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
+                RequestClient: this.RequestClient,
+                lockRegion: this.lockRegion,
+            };
+            const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), Number(verificationCode), _extraData);
             this.fromJSONAuth(NewAuth);
         });
     }

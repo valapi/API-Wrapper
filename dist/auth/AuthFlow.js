@@ -36,9 +36,11 @@ class AuthFlow {
     /**
      * @param {IValRequestClient} auth_response First Auth Response
      * @param {String} UserAgent User Agent
+     * @param {ValRequestClient} RequestClient Request Client
+     * @param {Boolean} lockRegion Lock Region
      * @returns {Promise<ValWrapperAuth>}
      */
-    execute(auth_response, UserAgent, RequestClient) {
+    execute(auth_response, UserAgent, RequestClient, lockRegion) {
         var _a, _b, _c, _d, _e, _f, _g;
         return __awaiter(this, void 0, void 0, function* () {
             if (auth_response.isError) {
@@ -72,30 +74,32 @@ class AuthFlow {
             });
             this.entitlements_token = entitlements_response.data.entitlements_token;
             //REGION
-            let region_response = yield RequestClient.put('https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant', {
-                "id_token": this.id_token,
-            }, {
-                headers: {
-                    'Authorization': `${this.token_type} ${this.access_token}`,
-                    'X-Riot-Entitlements-JWT': this.entitlements_token,
-                    'X-Riot-ClientVersion': this.clientVersion,
-                    'X-Riot-ClientPlatform': this.clientPlatfrom,
-                    'User-Agent': String(UserAgent),
-                }
-            });
-            if (region_response.isError || !((_a = region_response.data.affinities) === null || _a === void 0 ? void 0 : _a.pbe) || !((_b = region_response.data.affinities) === null || _b === void 0 ? void 0 : _b.live)) {
-                region_response = {
-                    isError: true,
-                    data: {
-                        affinities: {
-                            pbe: 'na',
-                            live: 'na',
+            if (lockRegion === false) {
+                let region_response = yield RequestClient.put('https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant', {
+                    "id_token": this.id_token,
+                }, {
+                    headers: {
+                        'Authorization': `${this.token_type} ${this.access_token}`,
+                        'X-Riot-Entitlements-JWT': this.entitlements_token,
+                        'X-Riot-ClientVersion': this.clientVersion,
+                        'X-Riot-ClientPlatform': this.clientPlatfrom,
+                        'User-Agent': String(UserAgent),
+                    }
+                });
+                if (region_response.isError || !((_a = region_response.data.affinities) === null || _a === void 0 ? void 0 : _a.pbe) || !((_b = region_response.data.affinities) === null || _b === void 0 ? void 0 : _b.live)) {
+                    region_response = {
+                        isError: true,
+                        data: {
+                            affinities: {
+                                pbe: 'na',
+                                live: 'na',
+                            },
                         },
-                    },
-                };
+                    };
+                }
+                this.region.pbe = ((_c = region_response.data.affinities) === null || _c === void 0 ? void 0 : _c.pbe) || 'na';
+                this.region.live = ((_d = region_response.data.affinities) === null || _d === void 0 ? void 0 : _d.live) || 'na';
             }
-            this.region.pbe = ((_c = region_response.data.affinities) === null || _c === void 0 ? void 0 : _c.pbe) || 'na';
-            this.region.live = ((_d = region_response.data.affinities) === null || _d === void 0 ? void 0 : _d.live) || 'na';
             this.cookie = new tough_cookie_1.CookieJar((_e = RequestClient.theAxios.defaults.httpsAgent.jar) === null || _e === void 0 ? void 0 : _e.store, {
                 rejectPublicSuffixes: ((_g = (_f = RequestClient.theAxios.defaults.httpsAgent.options) === null || _f === void 0 ? void 0 : _f.jar) === null || _g === void 0 ? void 0 : _g.rejectPublicSuffixes) || undefined,
             });
@@ -122,16 +126,14 @@ class AuthFlow {
     /**
      * @param {ValWrapperAuth} data Account toJSON data
      * @param {ValorantApiRequestResponse} auth_response First Auth Response
-     * @param {String} UserAgent User Agent
-     * @param {String} clientVersion Client Version
-     * @param {String} clientPlatfrom Client Platform
+     * @param {ValWrapperAuthExtend} extendsData Extradata of auth
      * @returns {Promise<ValWrapperAuth>}
      */
-    static execute(data, auth_response, UserAgent, clientVersion, clientPlatfrom, RequestClient) {
+    static execute(data, auth_response, extendsData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const _newAuthFlow = new AuthFlow(data, clientVersion, clientPlatfrom);
+            const _newAuthFlow = new AuthFlow(data, extendsData.clientVersion, extendsData.clientPlatform);
             try {
-                return yield _newAuthFlow.execute(auth_response, UserAgent, RequestClient);
+                return yield _newAuthFlow.execute(auth_response, extendsData.UserAgent, extendsData.RequestClient, extendsData.lockRegion);
             }
             catch (error) {
                 _newAuthFlow.isError = true;
@@ -142,14 +144,12 @@ class AuthFlow {
     /**
      * @param {ValWrapperAuth} data Account toJSON data
      * @param {String} url Url of First Auth Response
-     * @param {String} UserAgent User Agent
-     * @param {String} clientVersion Client Version
-     * @param {String} clientPlatfrom Client Platform
+     * @param {ValWrapperAuthExtend} extendsData Extradata of auth
      * @returns {Promise<ValWrapperAuth>}
      */
-    static fromUrl(data, url, UserAgent, clientVersion, clientPlatfrom, RequestClient) {
+    static fromUrl(data, url, extendsData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const _newAuthFlow = new AuthFlow(data, clientVersion, clientPlatfrom);
+            const _newAuthFlow = new AuthFlow(data, extendsData.clientVersion, extendsData.clientPlatform);
             if (!url.includes('https://playvalorant.com/opt_in')) {
                 url = `https://playvalorant.com/opt_in${url}`;
             }
@@ -165,7 +165,7 @@ class AuthFlow {
                 },
             };
             try {
-                return yield _newAuthFlow.execute(auth_response, UserAgent, RequestClient);
+                return yield _newAuthFlow.execute(auth_response, extendsData.UserAgent, extendsData.RequestClient, extendsData.lockRegion);
             }
             catch (error) {
                 _newAuthFlow.isError = true;

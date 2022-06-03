@@ -10,7 +10,7 @@ import {
 import { Region as _Region } from "@valapi/lib";
 import { HttpsCookieAgent } from "http-cookie-agent";
 
-import { Account as ClientAuthAccount, type ValWrapperAuth } from "../auth/Account";
+import { Account as ClientAuthAccount, type ValWrapperAuth, type ValWrapperAuthExtend } from "../auth/Account";
 import { Multifactor as ClientAuthMultifactor } from "../auth/Multifactor";
 import { CookieAuth as ClientAuthCookie } from "../auth/CookieAuth";
 
@@ -30,7 +30,7 @@ import { Player as PlayerService } from "../custom/Player";
 //interface
 
 interface ValWrapperClient {
-    cookie?: CookieJar.Serialized;
+    cookie: CookieJar.Serialized;
     access_token: string;
     id_token?: string;
     token_type?: string;
@@ -38,6 +38,10 @@ interface ValWrapperClient {
     region: {
         pbe: string,
         live: string,
+    };
+    expires: {
+        cookie: Date,
+        token: Date,
     };
 }
 
@@ -372,6 +376,7 @@ class WrapperClient extends ValEvent {
             token_type: this.token_type,
             entitlements_token: this.entitlements_token,
             region: this.region,
+            expires: this.expireAt,
         };
     }
 
@@ -381,8 +386,8 @@ class WrapperClient extends ValEvent {
      * @returns {void}
      */
     public fromJSON(data: ValWrapperClient): void {
-        if (!data.cookie) {
-            data.cookie = new CookieJar().toJSON();
+        if (!data.id_token) {
+            data.id_token = '';
         }
 
         if (!data.token_type) {
@@ -391,15 +396,11 @@ class WrapperClient extends ValEvent {
 
         this.cookie = CookieJar.fromJSON(JSON.stringify(data.cookie));
         this.access_token = data.access_token;
-        this.id_token = data.id_token || '';
+        this.id_token = data.id_token;
         this.token_type = data.token_type;
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
-
-        this.expireAt = {
-            cookie: new Date(Date.now() + Number(this.config.expiresIn?.cookie)),
-            token: new Date(Date.now() + (this.config.expiresIn?.token || this.expires_in * 1000)),
-        };
+        this.expireAt = data.expires;
 
         this.reload();
     }
@@ -466,7 +467,14 @@ class WrapperClient extends ValEvent {
      * @returns {Promise<void>}
      */
      public async fromCookie(): Promise<void> {
-        const NewCookieAuth = await ClientAuthCookie.reauth(this.toJSONAuth(), String(this.config.userAgent), String(this.config.client?.version), toUft8(JSON.stringify(this.config.client?.platform)), this.RequestClient, this.axiosConfig);
+        const _extraData:ValWrapperAuthExtend = {
+            UserAgent: String(this.config.userAgent),
+            clientVersion: String(this.config.client?.version),
+            clientPlatform: toUft8(JSON.stringify(this.config.client?.platform)),
+            RequestClient: this.RequestClient,
+            lockRegion: this.lockRegion,
+        };
+        const NewCookieAuth = await ClientAuthCookie.reauth(this.toJSONAuth(), _extraData, this.axiosConfig);
 
         this.fromJSONAuth(NewCookieAuth);
     }
@@ -478,7 +486,14 @@ class WrapperClient extends ValEvent {
      * @returns {Promise<void>}
      */
     public async login(username: string, password: string): Promise<void> {
-        const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(this.toJSONAuth(), username, password, String(this.config.userAgent), String(this.config.client?.version), toUft8(JSON.stringify(this.config.client?.platform)), this.RequestClient);
+        const _extraData:ValWrapperAuthExtend = {
+            UserAgent: String(this.config.userAgent),
+            clientVersion: String(this.config.client?.version),
+            clientPlatform: toUft8(JSON.stringify(this.config.client?.platform)),
+            RequestClient: this.RequestClient,
+            lockRegion: this.lockRegion,
+        };
+        const NewAuth: ValWrapperAuth = await ClientAuthAccount.login(this.toJSONAuth(), username, password, _extraData);
 
         this.fromJSONAuth(NewAuth);
 
@@ -495,7 +510,14 @@ class WrapperClient extends ValEvent {
      * @returns {Promise<void>}
      */
     public async verify(verificationCode: number | string): Promise<void> {
-        const NewAuth: ValWrapperAuth = await ClientAuthMultifactor.verify(this.toJSONAuth(), Number(verificationCode), String(this.config.userAgent), String(this.config.client?.version), toUft8(JSON.stringify(this.config.client?.platform)), this.RequestClient);
+        const _extraData:ValWrapperAuthExtend = {
+            UserAgent: String(this.config.userAgent),
+            clientVersion: String(this.config.client?.version),
+            clientPlatform: toUft8(JSON.stringify(this.config.client?.platform)),
+            RequestClient: this.RequestClient,
+            lockRegion: this.lockRegion,
+        };
+        const NewAuth: ValWrapperAuth = await ClientAuthMultifactor.verify(this.toJSONAuth(), Number(verificationCode), _extraData);
 
         this.fromJSONAuth(NewAuth);
     }

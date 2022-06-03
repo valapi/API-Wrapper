@@ -1,5 +1,5 @@
 import type { ValRequestClient, ValorantApiRequestResponse } from '@valapi/lib';
-import type { ValWrapperAuth } from './Account';
+import type { ValWrapperAuth, ValWrapperAuthExtend } from './Account';
 declare class AuthFlow {
     private cookie;
     private access_token;
@@ -22,9 +22,11 @@ declare class AuthFlow {
     /**
      * @param {IValRequestClient} auth_response First Auth Response
      * @param {String} UserAgent User Agent
+     * @param {ValRequestClient} RequestClient Request Client
+     * @param {Boolean} lockRegion Lock Region
      * @returns {Promise<ValWrapperAuth>}
      */
-    execute(auth_response: ValorantApiRequestResponse, UserAgent: string, RequestClient: ValRequestClient): Promise<ValWrapperAuth>;
+    execute(auth_response: ValorantApiRequestResponse, UserAgent: string, RequestClient: ValRequestClient, lockRegion: Boolean): Promise<ValWrapperAuth>;
     /**
      *
      * @returns {ValWrapperAuth}
@@ -33,21 +35,17 @@ declare class AuthFlow {
     /**
      * @param {ValWrapperAuth} data Account toJSON data
      * @param {ValorantApiRequestResponse} auth_response First Auth Response
-     * @param {String} UserAgent User Agent
-     * @param {String} clientVersion Client Version
-     * @param {String} clientPlatfrom Client Platform
+     * @param {ValWrapperAuthExtend} extendsData Extradata of auth
      * @returns {Promise<ValWrapperAuth>}
      */
-    static execute(data: ValWrapperAuth, auth_response: ValorantApiRequestResponse, UserAgent: string, clientVersion: string, clientPlatfrom: string, RequestClient: ValRequestClient): Promise<ValWrapperAuth>;
+    static execute(data: ValWrapperAuth, auth_response: ValorantApiRequestResponse, extendsData: ValWrapperAuthExtend): Promise<ValWrapperAuth>;
     /**
      * @param {ValWrapperAuth} data Account toJSON data
      * @param {String} url Url of First Auth Response
-     * @param {String} UserAgent User Agent
-     * @param {String} clientVersion Client Version
-     * @param {String} clientPlatfrom Client Platform
+     * @param {ValWrapperAuthExtend} extendsData Extradata of auth
      * @returns {Promise<ValWrapperAuth>}
      */
-    static fromUrl(data: ValWrapperAuth, url: string, UserAgent: string, clientVersion: string, clientPlatfrom: string, RequestClient: ValRequestClient): Promise<ValWrapperAuth>;
+    static fromUrl(data: ValWrapperAuth, url: string, extendsData: ValWrapperAuthExtend): Promise<ValWrapperAuth>;
 }
 export { AuthFlow };
 //# sourceMappingURL=AuthFlow.d.ts.map

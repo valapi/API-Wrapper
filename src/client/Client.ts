@@ -98,7 +98,9 @@ const _defaultConfig: ValWrapperConfig = {
 //class
 
 class WrapperClient extends ValEvent {
-    
+    public reloadTimes: number = 0;
+    public reconnectTimes: number = 0;
+
     //auth
     private cookie: CookieJar;
     private access_token: string;
@@ -124,7 +126,6 @@ class WrapperClient extends ValEvent {
     protected lockRegion: boolean;
 
     //reload
-
     private axiosConfig: AxiosRequestConfig;
     private RegionServices: ValorantApiRegion;
     private RequestClient: ValRequestClient;
@@ -177,25 +178,25 @@ class WrapperClient extends ValEvent {
         this.isError = false;
 
         this.expireAt = {
-            cookie: new Date(Date.now() + Number(this.config.expiresIn?.cookie)),
-            token: new Date(Date.now() + (this.config.expiresIn?.token || this.expires_in * 1000)),
+            cookie: new Date(new Date().getTime() + Number(this.config.expiresIn?.cookie)),
+            token: new Date(new Date().getTime() + (this.config.expiresIn?.token || this.expires_in * 1000)),
         };
 
         // first reload
-        if(this.lockRegion === true && this.config.region){
+        if (this.lockRegion === true && this.config.region) {
             this.region.live = this.config.region;
         }
-            
+
         this.RegionServices = new ValRegion(this.region.live as keyof typeof _Region.from).toJSON();
 
         //request client
-        const ciphers:Array<string> = [
+        const ciphers: Array<string> = [
             'TLS_CHACHA20_POLY1305_SHA256',
             'TLS_AES_128_GCM_SHA256',
             'TLS_AES_256_GCM_SHA384',
             'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
         ];
-        const _normalAxiosConfig:AxiosRequestConfig = {
+        const _normalAxiosConfig: AxiosRequestConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
@@ -233,20 +234,22 @@ class WrapperClient extends ValEvent {
      * @returns {void}
      */
     private reload(): void {
-        if(this.lockRegion === true && this.config.region){
+        this.reloadTimes + 1;
+
+        if (this.lockRegion === true && this.config.region) {
             this.region.live = this.config.region;
         }
-            
+
         this.RegionServices = new ValRegion(this.region.live as keyof typeof _Region.from).toJSON();
 
         //request client
-        const ciphers:Array<string> = [
+        const ciphers: Array<string> = [
             'TLS_CHACHA20_POLY1305_SHA256',
             'TLS_AES_128_GCM_SHA256',
             'TLS_AES_256_GCM_SHA384',
             'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
         ];
-        const _normalAxiosConfig:AxiosRequestConfig = {
+        const _normalAxiosConfig: AxiosRequestConfig = {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
@@ -278,11 +281,11 @@ class WrapperClient extends ValEvent {
     }
 
     /**
-     * @param {Boolean} force Force to reconnect
      * Reconnect to the server
+     * @param {Boolean} force Force to reconnect
      */
     public async reconnect(force?: Boolean): Promise<void> {
-        if(new Date() >= this.expireAt.cookie) {
+        if ((new Date().getTime()) >= (this.expireAt.cookie.getTime() - 10000)) {
             //event
             this.emit('expires', {
                 name: 'cookie',
@@ -294,30 +297,16 @@ class WrapperClient extends ValEvent {
                 this.config.expiresIn.cookie = _defaultConfig.expiresIn?.cookie as number;
             }
             this.expireAt = {
-                cookie: new Date(Date.now() + Number(this.config.expiresIn?.cookie)),
-                token: new Date(Date.now() + (this.config.expiresIn?.token || this.expires_in * 1000)),
+                cookie: new Date(new Date().getTime() + Number(this.config.expiresIn?.cookie)),
+                token: new Date(new Date().getTime() + (this.config.expiresIn?.token || this.expires_in * 1000)),
             };
             //auto
             if (this.config.selfAuthentication) {
-                let _username:string | Function = this.config.selfAuthentication.username;
-                if (typeof _username === 'function') {
-                    _username = (await _username()) as string;
-                }
-
-                let _password:string | Function = this.config.selfAuthentication.password;
-                if (typeof _password === 'function') {
-                    _password = (await _password()) as string;
-                }
-
-                await this.login(_username, _password);
+                await this.login(this.config.selfAuthentication.username, this.config.selfAuthentication.password);
+                this.reconnectTimes + 1;
 
                 if (this.multifactor && this.config.selfAuthentication.verifyCode) {
-                    let _verifyCode:string | number | Function = this.config.selfAuthentication.verifyCode;
-                    if (typeof _verifyCode === 'function') {
-                        _verifyCode = (await _verifyCode()) as string;
-                    }
-
-                    await this.verify(_verifyCode);
+                    await this.verify(this.config.selfAuthentication.verifyCode);
                 } else if (this.multifactor) {
                     this.emit('error', {
                         errorCode: 'ValWrapper_Authentication_Error',
@@ -325,16 +314,16 @@ class WrapperClient extends ValEvent {
                         data: this.config.selfAuthentication,
                     });
                 }
-            } else {
+            } else if (!this.config.forceAuth) {
                 this.emit('error', {
                     errorCode: 'ValWrapper_Expired_Cookie',
                     message: 'Cookie Expired',
-                    data: this.expireAt,
+                    data: this.expireAt.cookie,
                 });
             }
         }
 
-        if(new Date() >= this.expireAt.token || force === true) {
+        if ((new Date().getTime()) >= (this.expireAt.token.getTime() - 10000) || force === true) {
             //event
             this.emit('expires', {
                 name: 'token',
@@ -345,17 +334,10 @@ class WrapperClient extends ValEvent {
             if (this.config.expiresIn && Number(this.config.expiresIn.token) <= 0) {
                 this.config.expiresIn.token = _defaultConfig.expiresIn?.token as number;
             }
-            this.expireAt.token = new Date(Date.now() + (this.config.expiresIn?.token || this.expires_in * 1000));
+            this.expireAt.token = new Date(new Date().getTime() + (this.config.expiresIn?.token || this.expires_in * 1000));
             //auto
-            try {
-                await this.fromCookie();
-            } catch (error) {
-                this.emit('error', {
-                    errorCode: 'ValWrapper_Expired_Token',
-                    message: 'Token expired',
-                    data: this.expireAt,
-                });
-            }
+            await this.fromCookie();
+            this.reconnectTimes + 1;
         }
     }
 
@@ -436,7 +418,7 @@ class WrapperClient extends ValEvent {
         this.entitlements_token = auth.entitlements_token;
         this.region = auth.region;
 
-        if(!this.region.live) {
+        if (!this.region.live) {
             this.region.live = 'na';
         }
 
@@ -452,8 +434,8 @@ class WrapperClient extends ValEvent {
         }
 
         this.expireAt = {
-            cookie: new Date(Date.now() + Number(this.config.expiresIn?.cookie)),
-            token: new Date(Date.now() + (this.config.expiresIn?.token || this.expires_in * 1000)),
+            cookie: new Date(new Date().getTime() + Number(this.config.expiresIn?.cookie)),
+            token: new Date(new Date().getTime() + (this.config.expiresIn?.token || this.expires_in * 1000)),
         };
 
         this.reload();
@@ -464,12 +446,12 @@ class WrapperClient extends ValEvent {
      * @param {CookieJar} cookie Client Cookie
      * @returns {Promise<void>}
      */
-     public async fromCookie(cookie?: CookieJar): Promise<void> {
+    public async fromCookie(cookie?: CookieJar): Promise<void> {
         if (cookie) {
             this.cookie = cookie;
         }
 
-        const _extraData:ValWrapperAuthExtend = {
+        const _extraData: ValWrapperAuthExtend = {
             UserAgent: String(this.config.userAgent),
             clientVersion: String(this.config.client?.version),
             clientPlatform: toUft8(JSON.stringify(this.config.client?.platform)),
@@ -487,8 +469,16 @@ class WrapperClient extends ValEvent {
      * @param {String} password Password
      * @returns {Promise<void>}
      */
-    public async login(username: string, password: string): Promise<void> {
-        const _extraData:ValWrapperAuthExtend = {
+    public async login(username: string | Function, password: string | Function): Promise<void> {
+        if (typeof username === 'function') {
+            username = (await username()) as string;
+        }
+
+        if (typeof password === 'function') {
+            password = (await password()) as string;
+        }
+
+        const _extraData: ValWrapperAuthExtend = {
             UserAgent: String(this.config.userAgent),
             clientVersion: String(this.config.client?.version),
             clientPlatform: toUft8(JSON.stringify(this.config.client?.platform)),
@@ -513,8 +503,12 @@ class WrapperClient extends ValEvent {
      * @param {number} verificationCode Verification Code
      * @returns {Promise<void>}
      */
-    public async verify(verificationCode: number | string): Promise<void> {
-        const _extraData:ValWrapperAuthExtend = {
+    public async verify(verificationCode: number | string | Function): Promise<void> {
+        if (typeof verificationCode === 'function') {
+            verificationCode = (await verificationCode()) as number | string;
+        }
+
+        const _extraData: ValWrapperAuthExtend = {
             UserAgent: String(this.config.userAgent),
             clientVersion: String(this.config.client?.version),
             clientPlatform: toUft8(JSON.stringify(this.config.client?.platform)),
@@ -591,11 +585,13 @@ class WrapperClient extends ValEvent {
         const NewClient: WrapperClient = new WrapperClient(config);
         NewClient.fromJSON(data);
 
-        if(config.region) {
+        if (config.region) {
             NewClient.setRegion(config.region);
         } else if (data.region.live) {
             NewClient.setRegion(data.region.live as keyof typeof _Region.from);
         }
+
+        NewClient.reconnectTimes = 1;
 
         return NewClient;
     }

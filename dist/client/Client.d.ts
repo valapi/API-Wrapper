@@ -55,6 +55,8 @@ interface ValWrapperConfig {
     };
 }
 declare class WrapperClient extends ValEvent {
+    reloadTimes: number;
+    reconnectTimes: number;
     private cookie;
     private access_token;
     private id_token;
@@ -94,8 +96,8 @@ declare class WrapperClient extends ValEvent {
      */
     private reload;
     /**
-     * @param {Boolean} force Force to reconnect
      * Reconnect to the server
+     * @param {Boolean} force Force to reconnect
      */
     reconnect(force?: Boolean): Promise<void>;
     /**
@@ -132,13 +134,13 @@ declare class WrapperClient extends ValEvent {
      * @param {String} password Password
      * @returns {Promise<void>}
      */
-    login(username: string, password: string): Promise<void>;
+    login(username: string | Function, password: string | Function): Promise<void>;
     /**
      * Multi-Factor Authentication
      * @param {number} verificationCode Verification Code
      * @returns {Promise<void>}
      */
-    verify(verificationCode: number | string): Promise<void>;
+    verify(verificationCode: number | string | Function): Promise<void>;
     /**
      * @param {String} region Region
      * @returns {void}

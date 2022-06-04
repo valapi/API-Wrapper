@@ -59,6 +59,8 @@ class WrapperClient extends lib_1.ValEvent {
     constructor(config = {}) {
         var _a, _b, _c, _d;
         super();
+        this.reloadTimes = 0;
+        this.reconnectTimes = 0;
         //config
         this.config = new Object(Object.assign(Object.assign({}, _defaultConfig), config));
         if (config.region) {
@@ -84,8 +86,8 @@ class WrapperClient extends lib_1.ValEvent {
         this.multifactor = false;
         this.isError = false;
         this.expireAt = {
-            cookie: new Date(Date.now() + Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie)),
-            token: new Date(Date.now() + (((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.token) || this.expires_in * 1000)),
+            cookie: new Date(new Date().getTime() + Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie)),
+            token: new Date(new Date().getTime() + (((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.token) || this.expires_in * 1000)),
         };
         // first reload
         if (this.lockRegion === true && this.config.region) {
@@ -133,6 +135,7 @@ class WrapperClient extends lib_1.ValEvent {
      */
     reload() {
         var _a, _b;
+        this.reloadTimes + 1;
         if (this.lockRegion === true && this.config.region) {
             this.region.live = this.config.region;
         }
@@ -172,13 +175,13 @@ class WrapperClient extends lib_1.ValEvent {
         this.emit('ready');
     }
     /**
-     * @param {Boolean} force Force to reconnect
      * Reconnect to the server
+     * @param {Boolean} force Force to reconnect
      */
     reconnect(force) {
         var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
-            if (new Date() >= this.expireAt.cookie) {
+            if ((new Date().getTime()) >= (this.expireAt.cookie.getTime() - 10000)) {
                 //event
                 this.emit('expires', {
                     name: 'cookie',
@@ -190,26 +193,15 @@ class WrapperClient extends lib_1.ValEvent {
                     this.config.expiresIn.cookie = (_a = _defaultConfig.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie;
                 }
                 this.expireAt = {
-                    cookie: new Date(Date.now() + Number((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.cookie)),
-                    token: new Date(Date.now() + (((_c = this.config.expiresIn) === null || _c === void 0 ? void 0 : _c.token) || this.expires_in * 1000)),
+                    cookie: new Date(new Date().getTime() + Number((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.cookie)),
+                    token: new Date(new Date().getTime() + (((_c = this.config.expiresIn) === null || _c === void 0 ? void 0 : _c.token) || this.expires_in * 1000)),
                 };
                 //auto
                 if (this.config.selfAuthentication) {
-                    let _username = this.config.selfAuthentication.username;
-                    if (typeof _username === 'function') {
-                        _username = (yield _username());
-                    }
-                    let _password = this.config.selfAuthentication.password;
-                    if (typeof _password === 'function') {
-                        _password = (yield _password());
-                    }
-                    yield this.login(_username, _password);
+                    yield this.login(this.config.selfAuthentication.username, this.config.selfAuthentication.password);
+                    this.reconnectTimes + 1;
                     if (this.multifactor && this.config.selfAuthentication.verifyCode) {
-                        let _verifyCode = this.config.selfAuthentication.verifyCode;
-                        if (typeof _verifyCode === 'function') {
-                            _verifyCode = (yield _verifyCode());
-                        }
-                        yield this.verify(_verifyCode);
+                        yield this.verify(this.config.selfAuthentication.verifyCode);
                     }
                     else if (this.multifactor) {
                         this.emit('error', {
@@ -219,15 +211,15 @@ class WrapperClient extends lib_1.ValEvent {
                         });
                     }
                 }
-                else {
+                else if (!this.config.forceAuth) {
                     this.emit('error', {
                         errorCode: 'ValWrapper_Expired_Cookie',
                         message: 'Cookie Expired',
-                        data: this.expireAt,
+                        data: this.expireAt.cookie,
                     });
                 }
             }
-            if (new Date() >= this.expireAt.token || force === true) {
+            if ((new Date().getTime()) >= (this.expireAt.token.getTime() - 10000) || force === true) {
                 //event
                 this.emit('expires', {
                     name: 'token',
@@ -238,18 +230,10 @@ class WrapperClient extends lib_1.ValEvent {
                 if (this.config.expiresIn && Number(this.config.expiresIn.token) <= 0) {
                     this.config.expiresIn.token = (_d = _defaultConfig.expiresIn) === null || _d === void 0 ? void 0 : _d.token;
                 }
-                this.expireAt.token = new Date(Date.now() + (((_e = this.config.expiresIn) === null || _e === void 0 ? void 0 : _e.token) || this.expires_in * 1000));
+                this.expireAt.token = new Date(new Date().getTime() + (((_e = this.config.expiresIn) === null || _e === void 0 ? void 0 : _e.token) || this.expires_in * 1000));
                 //auto
-                try {
-                    yield this.fromCookie();
-                }
-                catch (error) {
-                    this.emit('error', {
-                        errorCode: 'ValWrapper_Expired_Token',
-                        message: 'Token expired',
-                        data: this.expireAt,
-                    });
-                }
+                yield this.fromCookie();
+                this.reconnectTimes + 1;
             }
         });
     }
@@ -335,8 +319,8 @@ class WrapperClient extends lib_1.ValEvent {
             });
         }
         this.expireAt = {
-            cookie: new Date(Date.now() + Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie)),
-            token: new Date(Date.now() + (((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.token) || this.expires_in * 1000)),
+            cookie: new Date(new Date().getTime() + Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie)),
+            token: new Date(new Date().getTime() + (((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.token) || this.expires_in * 1000)),
         };
         this.reload();
     }
@@ -371,6 +355,12 @@ class WrapperClient extends lib_1.ValEvent {
     login(username, password) {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
+            if (typeof username === 'function') {
+                username = (yield username());
+            }
+            if (typeof password === 'function') {
+                password = (yield password());
+            }
             const _extraData = {
                 UserAgent: String(this.config.userAgent),
                 clientVersion: String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
@@ -395,6 +385,9 @@ class WrapperClient extends lib_1.ValEvent {
     verify(verificationCode) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
+            if (typeof verificationCode === 'function') {
+                verificationCode = (yield verificationCode());
+            }
             const _extraData = {
                 UserAgent: String(this.config.userAgent),
                 clientVersion: String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
@@ -468,6 +461,7 @@ class WrapperClient extends lib_1.ValEvent {
         else if (data.region.live) {
             NewClient.setRegion(data.region.live);
         }
+        NewClient.reconnectTimes = 1;
         return NewClient;
     }
 }

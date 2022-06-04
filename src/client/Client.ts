@@ -39,9 +39,9 @@ interface ValWrapperClient {
         pbe: string,
         live: string,
     };
-    expires: {
-        cookie: Date,
-        token: Date,
+    createAt: {
+        cookie: number,
+        token: number,
     };
 }
 
@@ -111,9 +111,9 @@ class WrapperClient extends ValEvent {
     public multifactor: boolean;
     public isError: boolean;
 
-    public expireAt: {
-        cookie: Date,
-        token: Date,
+    public createAt: {
+        cookie: number,
+        token: number,
     };
 
     //region
@@ -177,9 +177,9 @@ class WrapperClient extends ValEvent {
         this.multifactor = false;
         this.isError = false;
 
-        this.expireAt = {
-            cookie: new Date(new Date().getTime() + Number(this.config.expiresIn?.cookie)),
-            token: new Date(new Date().getTime() + (this.config.expiresIn?.token || this.expires_in * 1000)),
+        this.createAt = {
+            cookie: new Date().getTime(),
+            token: new Date().getTime(),
         };
 
         // first reload
@@ -285,7 +285,7 @@ class WrapperClient extends ValEvent {
      * @param {Boolean} force Force to reconnect
      */
     public async reconnect(force?: Boolean): Promise<void> {
-        if ((new Date().getTime()) >= (new Date(this.expireAt.cookie).getTime() - 10000)) {
+        if ((new Date().getTime()) >= (this.createAt.cookie + Number(this.config.expiresIn?.cookie))) {
             //event
             this.emit('expires', {
                 name: 'cookie',
@@ -296,9 +296,9 @@ class WrapperClient extends ValEvent {
             if (this.config.expiresIn && this.config.expiresIn.cookie <= 0) {
                 this.config.expiresIn.cookie = _defaultConfig.expiresIn?.cookie as number;
             }
-            this.expireAt = {
-                cookie: new Date(new Date().getTime() + Number(this.config.expiresIn?.cookie)),
-                token: new Date(new Date().getTime() + (this.config.expiresIn?.token || this.expires_in * 1000)),
+            this.createAt = {
+                cookie: new Date().getTime(),
+                token: new Date().getTime(),
             };
             //auto
             if (this.config.selfAuthentication) {
@@ -318,12 +318,12 @@ class WrapperClient extends ValEvent {
                 this.emit('error', {
                     errorCode: 'ValWrapper_Expired_Cookie',
                     message: 'Cookie Expired',
-                    data: this.expireAt.cookie,
+                    data: this.createAt.cookie,
                 });
             }
         }
 
-        if ((new Date().getTime()) >= (new Date(this.expireAt.token).getTime() - 10000) || force === true) {
+        if ((new Date().getTime()) >= (this.createAt.token + Number(this.config.expiresIn?.token)) || force === true) {
             //event
             this.emit('expires', {
                 name: 'token',
@@ -334,7 +334,7 @@ class WrapperClient extends ValEvent {
             if (this.config.expiresIn && Number(this.config.expiresIn.token) <= 0) {
                 this.config.expiresIn.token = _defaultConfig.expiresIn?.token as number;
             }
-            this.expireAt.token = new Date(new Date().getTime() + (this.config.expiresIn?.token || this.expires_in * 1000));
+            this.createAt.token = new Date().getTime();
             //auto
             await this.fromCookie();
             this.reconnectTimes + 1;
@@ -355,7 +355,7 @@ class WrapperClient extends ValEvent {
             token_type: this.token_type,
             entitlements_token: this.entitlements_token,
             region: this.region,
-            expires: this.expireAt,
+            createAt: this.createAt,
         };
     }
 
@@ -379,7 +379,7 @@ class WrapperClient extends ValEvent {
         this.token_type = data.token_type;
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
-        this.expireAt = data.expires;
+        this.createAt = data.createAt;
 
         this.reload();
     }
@@ -433,9 +433,9 @@ class WrapperClient extends ValEvent {
             });
         }
 
-        this.expireAt = {
-            cookie: new Date(new Date().getTime() + Number(this.config.expiresIn?.cookie)),
-            token: new Date(new Date().getTime() + (this.config.expiresIn?.token || this.expires_in * 1000)),
+        this.createAt = {
+            cookie: new Date().getTime(),
+            token: new Date().getTime(),
         };
 
         this.reload();
@@ -598,11 +598,23 @@ class WrapperClient extends ValEvent {
 }
 
 //event
+interface ValWrapperEventExpire {
+    'cookie': CookieJar;
+    'token': string;
+}
+
+interface ValWrapperEventSettings {
+    'region': string;
+    'client_version': string;
+    'client_platfrom': ValWrapperClientPlatfrom;
+    'cookie': CookieJar.Serialized;
+}
+
 interface ValWrapperClientEvent {
     'ready': () => void;
-    'expires': (data: { name: string, data: any }) => void;
+    'expires': <ExpireName extends keyof ValWrapperEventExpire>(data: { name: ExpireName, data: ValWrapperEventExpire[ExpireName] }) => void;
     'request': (data: ValorantApiRequestData) => void;
-    'changeSettings': (data: { name: string, data: any }) => void;
+    'changeSettings': <SettingName extends keyof ValWrapperEventSettings>(data: { name: SettingName, data: ValWrapperEventSettings[SettingName] }) => void;
     'error': (data: ValorantApiError) => void;
 }
 
@@ -615,4 +627,4 @@ declare interface WrapperClient {
 
 //export
 export { WrapperClient };
-export type { ValWrapperClient, ValWrapperClientPlatfrom, ValWrapperConfig, ValWrapperClientEvent };
+export type { ValWrapperClient, ValWrapperClientPlatfrom, ValWrapperConfig, ValWrapperEventExpire, ValWrapperEventSettings, ValWrapperClientEvent };

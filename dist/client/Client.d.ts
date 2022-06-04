@@ -24,9 +24,9 @@ interface ValWrapperClient {
         pbe: string;
         live: string;
     };
-    expires: {
-        cookie: Date;
-        token: Date;
+    createAt: {
+        cookie: number;
+        token: number;
     };
 }
 interface ValWrapperClientPlatfrom {
@@ -65,9 +65,9 @@ declare class WrapperClient extends ValEvent {
     private entitlements_token;
     multifactor: boolean;
     isError: boolean;
-    expireAt: {
-        cookie: Date;
-        token: Date;
+    createAt: {
+        cookie: number;
+        token: number;
     };
     private region;
     protected config: ValWrapperConfig;
@@ -169,16 +169,26 @@ declare class WrapperClient extends ValEvent {
      */
     static fromJSON(config: ValWrapperConfig, data: ValWrapperClient): WrapperClient;
 }
+interface ValWrapperEventExpire {
+    'cookie': CookieJar;
+    'token': string;
+}
+interface ValWrapperEventSettings {
+    'region': string;
+    'client_version': string;
+    'client_platfrom': ValWrapperClientPlatfrom;
+    'cookie': CookieJar.Serialized;
+}
 interface ValWrapperClientEvent {
     'ready': () => void;
-    'expires': (data: {
-        name: string;
-        data: any;
+    'expires': <ExpireName extends keyof ValWrapperEventExpire>(data: {
+        name: ExpireName;
+        data: ValWrapperEventExpire[ExpireName];
     }) => void;
     'request': (data: ValorantApiRequestData) => void;
-    'changeSettings': (data: {
-        name: string;
-        data: any;
+    'changeSettings': <SettingName extends keyof ValWrapperEventSettings>(data: {
+        name: SettingName;
+        data: ValWrapperEventSettings[SettingName];
     }) => void;
     'error': (data: ValorantApiError) => void;
 }
@@ -189,5 +199,5 @@ declare interface WrapperClient {
     off<EventName extends keyof ValWrapperClientEvent>(name: EventName, callback?: ValWrapperClientEvent[EventName]): void;
 }
 export { WrapperClient };
-export type { ValWrapperClient, ValWrapperClientPlatfrom, ValWrapperConfig, ValWrapperClientEvent };
+export type { ValWrapperClient, ValWrapperClientPlatfrom, ValWrapperConfig, ValWrapperEventExpire, ValWrapperEventSettings, ValWrapperClientEvent };
 //# sourceMappingURL=Client.d.ts.map

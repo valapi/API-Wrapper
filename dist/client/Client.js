@@ -57,7 +57,7 @@ class WrapperClient extends lib_1.ValEvent {
      * @param {ValWrapperConfig} config Client Config
      */
     constructor(config = {}) {
-        var _a, _b, _c, _d;
+        var _a, _b;
         super();
         this.reloadTimes = 0;
         this.reconnectTimes = 0;
@@ -85,9 +85,9 @@ class WrapperClient extends lib_1.ValEvent {
         };
         this.multifactor = false;
         this.isError = false;
-        this.expireAt = {
-            cookie: new Date(new Date().getTime() + Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie)),
-            token: new Date(new Date().getTime() + (((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.token) || this.expires_in * 1000)),
+        this.createAt = {
+            cookie: new Date().getTime(),
+            token: new Date().getTime(),
         };
         // first reload
         if (this.lockRegion === true && this.config.region) {
@@ -105,8 +105,8 @@ class WrapperClient extends lib_1.ValEvent {
             headers: {
                 'Authorization': `${this.token_type} ${this.access_token}`,
                 'X-Riot-Entitlements-JWT': this.entitlements_token,
-                'X-Riot-ClientVersion': String((_c = this.config.client) === null || _c === void 0 ? void 0 : _c.version),
-                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_d = this.config.client) === null || _d === void 0 ? void 0 : _d.platform)),
+                'X-Riot-ClientVersion': String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
+                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
             },
             httpsAgent: new http_cookie_agent_1.HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
         };
@@ -179,9 +179,9 @@ class WrapperClient extends lib_1.ValEvent {
      * @param {Boolean} force Force to reconnect
      */
     reconnect(force) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
-            if ((new Date().getTime()) >= (new Date(this.expireAt.cookie).getTime() - 10000)) {
+            if ((new Date().getTime()) >= (this.createAt.cookie + Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie))) {
                 //event
                 this.emit('expires', {
                     name: 'cookie',
@@ -190,11 +190,11 @@ class WrapperClient extends lib_1.ValEvent {
                 this.cookie = new tough_cookie_1.CookieJar();
                 //uptodate
                 if (this.config.expiresIn && this.config.expiresIn.cookie <= 0) {
-                    this.config.expiresIn.cookie = (_a = _defaultConfig.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie;
+                    this.config.expiresIn.cookie = (_b = _defaultConfig.expiresIn) === null || _b === void 0 ? void 0 : _b.cookie;
                 }
-                this.expireAt = {
-                    cookie: new Date(new Date().getTime() + Number((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.cookie)),
-                    token: new Date(new Date().getTime() + (((_c = this.config.expiresIn) === null || _c === void 0 ? void 0 : _c.token) || this.expires_in * 1000)),
+                this.createAt = {
+                    cookie: new Date().getTime(),
+                    token: new Date().getTime(),
                 };
                 //auto
                 if (this.config.selfAuthentication) {
@@ -215,11 +215,11 @@ class WrapperClient extends lib_1.ValEvent {
                     this.emit('error', {
                         errorCode: 'ValWrapper_Expired_Cookie',
                         message: 'Cookie Expired',
-                        data: this.expireAt.cookie,
+                        data: this.createAt.cookie,
                     });
                 }
             }
-            if ((new Date().getTime()) >= (new Date(this.expireAt.token).getTime() - 10000) || force === true) {
+            if ((new Date().getTime()) >= (this.createAt.token + Number((_c = this.config.expiresIn) === null || _c === void 0 ? void 0 : _c.token)) || force === true) {
                 //event
                 this.emit('expires', {
                     name: 'token',
@@ -230,7 +230,7 @@ class WrapperClient extends lib_1.ValEvent {
                 if (this.config.expiresIn && Number(this.config.expiresIn.token) <= 0) {
                     this.config.expiresIn.token = (_d = _defaultConfig.expiresIn) === null || _d === void 0 ? void 0 : _d.token;
                 }
-                this.expireAt.token = new Date(new Date().getTime() + (((_e = this.config.expiresIn) === null || _e === void 0 ? void 0 : _e.token) || this.expires_in * 1000));
+                this.createAt.token = new Date().getTime();
                 //auto
                 yield this.fromCookie();
                 this.reconnectTimes + 1;
@@ -250,7 +250,7 @@ class WrapperClient extends lib_1.ValEvent {
             token_type: this.token_type,
             entitlements_token: this.entitlements_token,
             region: this.region,
-            expires: this.expireAt,
+            createAt: this.createAt,
         };
     }
     /**
@@ -271,7 +271,7 @@ class WrapperClient extends lib_1.ValEvent {
         this.token_type = data.token_type;
         this.entitlements_token = data.entitlements_token;
         this.region = data.region;
-        this.expireAt = data.expires;
+        this.createAt = data.createAt;
         this.reload();
     }
     //auth
@@ -298,7 +298,6 @@ class WrapperClient extends lib_1.ValEvent {
      * @returns {void}
      */
     fromJSONAuth(auth) {
-        var _a, _b;
         this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(auth.cookie));
         this.access_token = auth.access_token;
         this.id_token = auth.id_token;
@@ -318,9 +317,9 @@ class WrapperClient extends lib_1.ValEvent {
                 data: auth,
             });
         }
-        this.expireAt = {
-            cookie: new Date(new Date().getTime() + Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie)),
-            token: new Date(new Date().getTime() + (((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.token) || this.expires_in * 1000)),
+        this.createAt = {
+            cookie: new Date().getTime(),
+            token: new Date().getTime(),
         };
         this.reload();
     }

@@ -285,7 +285,7 @@ class WrapperClient extends ValEvent {
      * @param {Boolean} force Force to reconnect
      */
     public async reconnect(force?: Boolean): Promise<void> {
-        if ((new Date().getTime()) >= (this.expireAt.cookie.getTime() - 10000)) {
+        if ((new Date().getTime()) >= (new Date(this.expireAt.cookie).getTime() - 10000)) {
             //event
             this.emit('expires', {
                 name: 'cookie',
@@ -323,7 +323,7 @@ class WrapperClient extends ValEvent {
             }
         }
 
-        if ((new Date().getTime()) >= (this.expireAt.token.getTime() - 10000) || force === true) {
+        if ((new Date().getTime()) >= (new Date(this.expireAt.token).getTime() - 10000) || force === true) {
             //event
             this.emit('expires', {
                 name: 'token',

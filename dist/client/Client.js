@@ -181,7 +181,7 @@ class WrapperClient extends lib_1.ValEvent {
     reconnect(force) {
         var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
-            if ((new Date().getTime()) >= (this.expireAt.cookie.getTime() - 10000)) {
+            if ((new Date().getTime()) >= (new Date(this.expireAt.cookie).getTime() - 10000)) {
                 //event
                 this.emit('expires', {
                     name: 'cookie',
@@ -219,7 +219,7 @@ class WrapperClient extends lib_1.ValEvent {
                     });
                 }
             }
-            if ((new Date().getTime()) >= (this.expireAt.token.getTime() - 10000) || force === true) {
+            if ((new Date().getTime()) >= (new Date(this.expireAt.token).getTime() - 10000) || force === true) {
                 //event
                 this.emit('expires', {
                     name: 'token',

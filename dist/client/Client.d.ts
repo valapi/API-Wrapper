@@ -48,10 +48,10 @@ interface ValWrapperConfig {
         cookie: number;
         token?: number;
     };
-    autoReconnect?: boolean;
-    autoAuthentication?: {
-        username: string;
-        password: string;
+    selfAuthentication?: {
+        username: string | Function;
+        password: string | Function;
+        verifyCode?: string | number | Function;
     };
 }
 declare class WrapperClient extends ValEvent {
@@ -94,6 +94,11 @@ declare class WrapperClient extends ValEvent {
      */
     private reload;
     /**
+     * @param {Boolean} force Force to reconnect
+     * Reconnect to the server
+     */
+    reconnect(force?: Boolean): Promise<void>;
+    /**
      *
      * @returns {ValWrapperClient}
      */
@@ -117,9 +122,10 @@ declare class WrapperClient extends ValEvent {
     fromJSONAuth(auth: ValWrapperAuth): void;
     /**
      * * Not Recommend to use
+     * @param {CookieJar} cookie Client Cookie
      * @returns {Promise<void>}
      */
-    fromCookie(): Promise<void>;
+    fromCookie(cookie?: CookieJar): Promise<void>;
     /**
      * Login to Riot Account
      * @param {String} username Username

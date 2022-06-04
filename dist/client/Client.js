@@ -49,7 +49,6 @@ const _defaultConfig = {
         cookie: 2592000000,
         token: 3600000,
     },
-    autoReconnect: false,
 };
 //class
 class WrapperClient extends lib_1.ValEvent {
@@ -93,48 +92,6 @@ class WrapperClient extends lib_1.ValEvent {
             this.region.live = this.config.region;
         }
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
-        //expire
-        if (new Date() >= this.expireAt.cookie) {
-            this.emit('expires', {
-                name: 'cookie',
-                data: this.cookie,
-            });
-            this.cookie = new tough_cookie_1.CookieJar();
-            if (this.config.autoAuthentication) {
-                if (this.multifactor) {
-                    throw new Error('Multifactor is not supported when autoAuthentication is enabled.');
-                }
-                let _username = this.config.autoAuthentication.username;
-                let _password = this.config.autoAuthentication.password;
-                (() => __awaiter(this, void 0, void 0, function* () { yield this.login(_username, _password); }))();
-            }
-            else {
-                this.emit('error', {
-                    errorCode: 'ValWrapper_Expired_Cookie',
-                    message: 'Cookie Expired',
-                    data: this.expireAt,
-                });
-            }
-        }
-        if (new Date() >= this.expireAt.token) {
-            this.emit('expires', {
-                name: 'token',
-                data: this.access_token,
-            });
-            this.access_token = '';
-            this.id_token = '';
-            this.token_type = '';
-            if (this.config.autoReconnect === true) {
-                (() => __awaiter(this, void 0, void 0, function* () { yield this.fromCookie(); }))();
-            }
-            else {
-                this.emit('error', {
-                    errorCode: 'ValWrapper_Expired_Token',
-                    message: 'Token expired',
-                    data: this.expireAt,
-                });
-            }
-        }
         //request client
         const ciphers = [
             'TLS_CHACHA20_POLY1305_SHA256',
@@ -154,9 +111,7 @@ class WrapperClient extends lib_1.ValEvent {
         this.axiosConfig = new Object(Object.assign(Object.assign({}, _normalAxiosConfig), this.config.axiosConfig));
         this.RequestClient = new lib_2.ValRequestClient(this.axiosConfig);
         this.RequestClient.on('error', ((data) => { this.emit('error', data); }));
-        this.RequestClient.on('request', ((data) => { this.emit('request', data); if (this.config.autoReconnect === true) {
-            this.reload();
-        } }));
+        this.RequestClient.on('request', ((data) => { this.emit('request', data); }));
         //service
         this.Contract = new Contract_1.Contract(this.RequestClient, this.RegionServices);
         this.CurrentGame = new CurrentGame_1.CurrentGame(this.RequestClient, this.RegionServices);
@@ -182,43 +137,6 @@ class WrapperClient extends lib_1.ValEvent {
             this.region.live = this.config.region;
         }
         this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
-        //expire
-        if (new Date() >= this.expireAt.cookie) {
-            this.emit('expires', {
-                name: 'cookie',
-                data: this.cookie,
-            });
-            this.cookie = new tough_cookie_1.CookieJar();
-            if (this.config.autoAuthentication) {
-                let _username = this.config.autoAuthentication.username;
-                let _password = this.config.autoAuthentication.password;
-                (() => __awaiter(this, void 0, void 0, function* () { yield this.login(_username, _password); }))();
-            }
-            else {
-                this.emit('error', {
-                    errorCode: 'ValWrapper_Expired_Cookie',
-                    message: 'Cookie Expired',
-                    data: this.expireAt,
-                });
-            }
-        }
-        if (new Date() >= this.expireAt.token) {
-            this.emit('expires', {
-                name: 'token',
-                data: this.access_token,
-            });
-            this.access_token = '';
-            if (this.config.autoReconnect === true) {
-                (() => __awaiter(this, void 0, void 0, function* () { yield this.fromCookie(); }))();
-            }
-            else {
-                this.emit('error', {
-                    errorCode: 'ValWrapper_Expired_Token',
-                    message: 'Token expired',
-                    data: this.expireAt,
-                });
-            }
-        }
         //request client
         const ciphers = [
             'TLS_CHACHA20_POLY1305_SHA256',
@@ -238,9 +156,7 @@ class WrapperClient extends lib_1.ValEvent {
         this.axiosConfig = new Object(Object.assign(Object.assign({}, _normalAxiosConfig), this.config.axiosConfig));
         this.RequestClient = new lib_2.ValRequestClient(this.axiosConfig);
         this.RequestClient.on('error', ((data) => { this.emit('error', data); }));
-        this.RequestClient.on('request', ((data) => { this.emit('request', data); if (this.config.autoReconnect === true) {
-            this.reload();
-        } }));
+        this.RequestClient.on('request', ((data) => { this.emit('request', data); }));
         //service
         this.Contract = new Contract_1.Contract(this.RequestClient, this.RegionServices);
         this.CurrentGame = new CurrentGame_1.CurrentGame(this.RequestClient, this.RegionServices);
@@ -254,6 +170,88 @@ class WrapperClient extends lib_1.ValEvent {
         this.Player = new Player_1.Player(this.RequestClient, this.RegionServices, String(this.config.userAgent));
         //event
         this.emit('ready');
+    }
+    /**
+     * @param {Boolean} force Force to reconnect
+     * Reconnect to the server
+     */
+    reconnect(force) {
+        var _a, _b, _c, _d, _e;
+        return __awaiter(this, void 0, void 0, function* () {
+            if (new Date() >= this.expireAt.cookie) {
+                //event
+                this.emit('expires', {
+                    name: 'cookie',
+                    data: this.cookie,
+                });
+                this.cookie = new tough_cookie_1.CookieJar();
+                //uptodate
+                if (this.config.expiresIn && this.config.expiresIn.cookie <= 0) {
+                    this.config.expiresIn.cookie = (_a = _defaultConfig.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie;
+                }
+                this.expireAt = {
+                    cookie: new Date(Date.now() + Number((_b = this.config.expiresIn) === null || _b === void 0 ? void 0 : _b.cookie)),
+                    token: new Date(Date.now() + (((_c = this.config.expiresIn) === null || _c === void 0 ? void 0 : _c.token) || this.expires_in * 1000)),
+                };
+                //auto
+                if (this.config.selfAuthentication) {
+                    let _username = this.config.selfAuthentication.username;
+                    if (typeof _username === 'function') {
+                        _username = (yield _username());
+                    }
+                    let _password = this.config.selfAuthentication.password;
+                    if (typeof _password === 'function') {
+                        _password = (yield _password());
+                    }
+                    yield this.login(_username, _password);
+                    if (this.multifactor && this.config.selfAuthentication.verifyCode) {
+                        let _verifyCode = this.config.selfAuthentication.verifyCode;
+                        if (typeof _verifyCode === 'function') {
+                            _verifyCode = (yield _verifyCode());
+                        }
+                        yield this.verify(_verifyCode);
+                    }
+                    else if (this.multifactor) {
+                        this.emit('error', {
+                            errorCode: 'ValWrapper_Authentication_Error',
+                            message: 'Missing verifyCode at autoAuthentication',
+                            data: this.config.selfAuthentication,
+                        });
+                    }
+                }
+                else {
+                    this.emit('error', {
+                        errorCode: 'ValWrapper_Expired_Cookie',
+                        message: 'Cookie Expired',
+                        data: this.expireAt,
+                    });
+                }
+            }
+            if (new Date() >= this.expireAt.token || force === true) {
+                //event
+                this.emit('expires', {
+                    name: 'token',
+                    data: this.access_token,
+                });
+                this.access_token = '';
+                //uptodate
+                if (this.config.expiresIn && Number(this.config.expiresIn.token) <= 0) {
+                    this.config.expiresIn.token = (_d = _defaultConfig.expiresIn) === null || _d === void 0 ? void 0 : _d.token;
+                }
+                this.expireAt.token = new Date(Date.now() + (((_e = this.config.expiresIn) === null || _e === void 0 ? void 0 : _e.token) || this.expires_in * 1000));
+                //auto
+                try {
+                    yield this.fromCookie();
+                }
+                catch (error) {
+                    this.emit('error', {
+                        errorCode: 'ValWrapper_Expired_Token',
+                        message: 'Token expired',
+                        data: this.expireAt,
+                    });
+                }
+            }
+        });
     }
     //save
     /**
@@ -344,11 +342,15 @@ class WrapperClient extends lib_1.ValEvent {
     }
     /**
      * * Not Recommend to use
+     * @param {CookieJar} cookie Client Cookie
      * @returns {Promise<void>}
      */
-    fromCookie() {
+    fromCookie(cookie) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
+            if (cookie) {
+                this.cookie = cookie;
+            }
             const _extraData = {
                 UserAgent: String(this.config.userAgent),
                 clientVersion: String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
@@ -367,7 +369,7 @@ class WrapperClient extends lib_1.ValEvent {
      * @returns {Promise<void>}
      */
     login(username, password) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             const _extraData = {
                 UserAgent: String(this.config.userAgent),
@@ -378,8 +380,10 @@ class WrapperClient extends lib_1.ValEvent {
             };
             const NewAuth = yield Account_1.Account.login(this.toJSONAuth(), username, password, _extraData);
             this.fromJSONAuth(NewAuth);
-            if (this.multifactor && this.config.autoAuthentication) {
-                throw new Error('Multifactor is not supported when autoAuthentication is enabled.');
+            if (this.multifactor) {
+                if (this.config.selfAuthentication && !((_c = this.config.selfAuthentication) === null || _c === void 0 ? void 0 : _c.verifyCode)) {
+                    throw new Error('Multifactor is not supported when selfAuthentication.verifyCode is not set');
+                }
             }
         });
     }

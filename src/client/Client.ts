@@ -190,10 +190,14 @@ class WrapperClient extends ValEvent {
         this.RegionServices = new ValRegion(this.region.live as keyof typeof _Region.from).toJSON();
 
         //request client
+        
+        //cipher suite: https://developers.cloudflare.com/ssl/ssl-tls/cipher-suites/
         const ciphers: Array<string> = [
-            'TLS_CHACHA20_POLY1305_SHA256',
             'TLS_AES_128_GCM_SHA256',
             'TLS_AES_256_GCM_SHA384',
+            'TLS_AES_128_CCM_8_SHA256', //extra tls 1.3 (https://developer.ibm.com/blogs/migrating-to-tls13-in-nodejs)
+            'TLS_AES_128_CCM_SHA256', //extra tls 1.3 (https://developer.ibm.com/blogs/migrating-to-tls13-in-nodejs)
+            'TLS_CHACHA20_POLY1305_SHA256',
             'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
         ];
         const _normalAxiosConfig: AxiosRequestConfig = {

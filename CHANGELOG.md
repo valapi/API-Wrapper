@@ -1,6 +1,6 @@
-# 1.2.4
+# 1.2.4 (18 June 2020)
 
-- fixed
+- add 2 more cipher suites
 
 # 1.0.0 (1 January, 2020)
 

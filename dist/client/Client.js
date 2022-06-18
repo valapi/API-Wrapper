@@ -111,7 +111,8 @@ class WrapperClient extends lib_1.ValEvent {
                 'X-Riot-ClientVersion': String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
                 'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
             },
-            httpsAgent: new http_cookie_agent_1.HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
+            httpsAgent: new http_cookie_agent_1.HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2', maxVersion: 'TLSv1.3' }),
+            httpAgent: new http_cookie_agent_1.HttpCookieAgent({ jar: this.cookie, keepAlive: true }),
         };
         this.axiosConfig = new Object(Object.assign(Object.assign({}, _normalAxiosConfig), this.config.axiosConfig));
         this.RequestClient = new lib_2.ValRequestClient(this.axiosConfig);
@@ -157,7 +158,8 @@ class WrapperClient extends lib_1.ValEvent {
                 'X-Riot-ClientVersion': String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
                 'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
             },
-            httpsAgent: new http_cookie_agent_1.HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
+            httpsAgent: new http_cookie_agent_1.HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2', maxVersion: 'TLSv1.3' }),
+            httpAgent: new http_cookie_agent_1.HttpCookieAgent({ jar: this.cookie, keepAlive: true }),
         };
         this.axiosConfig = new Object(Object.assign(Object.assign({}, _normalAxiosConfig), this.config.axiosConfig));
         this.RequestClient = new lib_2.ValRequestClient(this.axiosConfig);

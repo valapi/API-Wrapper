@@ -61,10 +61,22 @@ class AuthFlow {
                 return this.toJSON();
             }
             const Search_URL = new URL(auth_response.data.response.parameters.uri);
-            this.access_token = String(new URLSearchParams(Search_URL.hash).get('#access_token'));
-            this.id_token = String(new URLSearchParams(Search_URL.hash).get('id_token'));
-            this.expires_in = Number(new URLSearchParams(Search_URL.hash).get('expires_in')) || 3600;
-            this.token_type = String(new URLSearchParams(Search_URL.hash).get('token_type')) || 'Bearer';
+            let Search_path = Search_URL.search;
+            let Search_token = 'access_token';
+            if (!Search_path) {
+                if (!Search_URL.hash) {
+                    this.isError = true;
+                    return this.toJSON();
+                }
+                else {
+                    Search_path = Search_URL.hash;
+                    Search_token = `#${Search_token}`;
+                }
+            }
+            this.access_token = String(new URLSearchParams(Search_path).get(Search_token));
+            this.id_token = String(new URLSearchParams(Search_path).get('id_token'));
+            this.expires_in = Number(new URLSearchParams(Search_path).get('expires_in')) || 3600;
+            this.token_type = String(new URLSearchParams(Search_path).get('token_type')) || 'Bearer';
             //ENTITLEMENTS
             const entitlements_response = yield RequestClient.post('https://entitlements.auth.riotgames.com/api/token/v1', {}, {
                 headers: {

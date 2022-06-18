@@ -43,6 +43,7 @@ class Account {
                 "client_id": "play-valorant-web-prod",
                 "nonce": "1",
                 "redirect_uri": "https://playvalorant.com/opt_in",
+                "response_mode": "query",
                 "response_type": "token id_token",
                 "scope": "account openid"
             }, {

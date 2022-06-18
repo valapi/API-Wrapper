@@ -8,7 +8,7 @@ import {
     ValRequestClient, type ValorantApiRequestData,
 } from "@valapi/lib";
 import { Region as _Region } from "@valapi/lib";
-import { HttpsCookieAgent } from "http-cookie-agent";
+import { HttpsCookieAgent, HttpCookieAgent } from "http-cookie-agent";
 
 import { Account as ClientAuthAccount, type ValWrapperAuth, type ValWrapperAuthExtend } from "../auth/Account";
 import { Multifactor as ClientAuthMultifactor } from "../auth/Multifactor";
@@ -207,7 +207,8 @@ class WrapperClient extends ValEvent {
                 'X-Riot-ClientVersion': String(this.config.client?.version),
                 'X-Riot-ClientPlatform': toUft8(JSON.stringify(this.config.client?.platform)),
             },
-            httpsAgent: new HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
+            httpsAgent: new HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2', maxVersion: 'TLSv1.3' }),
+            httpAgent: new HttpCookieAgent({ jar: this.cookie, keepAlive: true }),
         };
         this.axiosConfig = new Object({ ..._normalAxiosConfig, ...this.config.axiosConfig });
         this.RequestClient = new ValRequestClient(this.axiosConfig);
@@ -260,7 +261,8 @@ class WrapperClient extends ValEvent {
                 'X-Riot-ClientVersion': String(this.config.client?.version),
                 'X-Riot-ClientPlatform': toUft8(JSON.stringify(this.config.client?.platform)),
             },
-            httpsAgent: new HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2' }),
+            httpsAgent: new HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2', maxVersion: 'TLSv1.3' }),
+            httpAgent: new HttpCookieAgent({ jar: this.cookie, keepAlive: true }),
         };
         this.axiosConfig = new Object({ ..._normalAxiosConfig, ...this.config.axiosConfig });
         this.RequestClient = new ValRequestClient(this.axiosConfig);

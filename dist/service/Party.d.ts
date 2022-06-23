@@ -150,6 +150,13 @@ declare class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     StartSoloExperience(puuid: string): Promise<ValorantApiRequestResponse<any>>;
+    /**
+     * * Careful to use, Riot will immediately shut down your Project.
+     * @param {String} puuid Player UUID
+     * @param {String} partyId Party ID
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     */
+    TransferOwner(puuid: string, partyId: string): Promise<ValorantApiRequestResponse<any>>;
 }
 export { Party };
 export type { ValWrapperSetAccessibility, ValWrapperCustomGameSettings, ValWrapperCustomGameTeam };

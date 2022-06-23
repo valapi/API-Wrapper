@@ -243,6 +243,17 @@ class Party {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/players/${puuid}/startsoloexperience`);
         });
     }
+    /**
+     * * Careful to use, Riot will immediately shut down your Project.
+     * @param {String} puuid Player UUID
+     * @param {String} partyId Party ID
+     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     */
+    TransferOwner(puuid, partyId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/members/${puuid}/owner`);
+        });
+    }
 }
 exports.Party = Party;
 //# sourceMappingURL=Party.js.map

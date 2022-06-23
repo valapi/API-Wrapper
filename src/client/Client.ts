@@ -72,7 +72,7 @@ interface ValWrapperConfig {
     };
 }
 
-const _Client_Version = 'release-04.10-shipping-5-714978';
+const _Client_Version = 'release-05.00-shipping-6-725355';
 const _Client_Platfrom = {
     "platformType": "PC",
     "platformOS": "Windows",

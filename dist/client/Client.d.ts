@@ -1,9 +1,5 @@
-import { ValEvent, type ValorantApiError } from "@valapi/lib";
-import { CookieJar } from "tough-cookie";
-import type { AxiosRequestConfig } from "axios";
-import { type ValorantApiRequestData } from "@valapi/lib";
-import { Region as _Region } from "@valapi/lib";
-import { type ValWrapperAuth } from "../auth/Account";
+import { Region as _Region, type ValorantApiError, type ValorantApiRequestData, ValEvent } from "@valapi/lib";
+import { Client as ValAuth, type ValAuthEngine, ValAuthData } from "@valapi/auth";
 import { Contract as ContractService } from "../service/Contract";
 import { CurrentGame as CurrentGameService } from "../service/CurrentGame";
 import { Party as PartyService } from "../service/Party";
@@ -14,65 +10,29 @@ import { Client as ClientService } from "../custom/Client";
 import { Match as MatchService } from "../custom/Match";
 import { MMR as MMRService } from "../custom/MMR";
 import { Player as PlayerService } from "../custom/Player";
-interface ValWrapperClient {
-    cookie: CookieJar.Serialized;
-    access_token: string;
-    id_token?: string;
-    token_type?: string;
-    entitlements_token: string;
-    region: {
-        pbe: string;
-        live: string;
-    };
-    createAt: {
-        cookie: number;
-        token: number;
-    };
+declare namespace ValWebClient {
+    interface Options extends ValAuthEngine.Options {
+        region?: keyof typeof _Region.from;
+    }
+    interface Event {
+        'ready': (data: ValWebClient) => void;
+        'expires': (data: {
+            name: string;
+            data: any;
+        }) => void;
+        'request': (data: ValorantApiRequestData) => void;
+        'error': (data: ValorantApiError) => void;
+    }
 }
-interface ValWrapperClientPlatfrom {
-    "platformType": string;
-    "platformOS": string;
-    "platformOSVersion": string;
-    "platformChipset": string;
+declare interface ValWebClient {
+    emit<EventName extends keyof ValWebClient.Event>(name: EventName, ...args: Parameters<ValWebClient.Event[EventName]>): void;
+    on<EventName extends keyof ValWebClient.Event>(name: EventName, callback: ValWebClient.Event[EventName]): void;
+    once<EventName extends keyof ValWebClient.Event>(name: EventName, callback: ValWebClient.Event[EventName]): void;
+    off<EventName extends keyof ValWebClient.Event>(name: EventName, callback?: ValWebClient.Event[EventName]): void;
 }
-interface ValWrapperConfig {
-    userAgent?: string;
-    region?: keyof typeof _Region.from;
-    client?: {
-        version?: string;
-        platform?: ValWrapperClientPlatfrom;
-    };
-    forceAuth?: boolean;
-    axiosConfig?: AxiosRequestConfig;
-    expiresIn?: {
-        cookie: number;
-        token?: number;
-    };
-    selfAuthentication?: {
-        username: string | Function;
-        password: string | Function;
-        verifyCode?: string | number | Function;
-    };
-}
-declare class WrapperClient extends ValEvent {
-    reloadTimes: number;
-    reconnectTimes: number;
-    private cookie;
-    private access_token;
-    private id_token;
-    private expires_in;
-    private token_type;
-    private entitlements_token;
-    multifactor: boolean;
-    isError: boolean;
-    createAt: {
-        cookie: number;
-        token: number;
-    };
-    private region;
-    protected config: ValWrapperConfig;
-    protected lockRegion: boolean;
-    private axiosConfig;
+declare class ValWebClient extends ValEvent {
+    protected options: ValWebClient.Options;
+    private AuthClient;
     private RegionServices;
     private RequestClient;
     Contract: ContractService;
@@ -87,117 +47,61 @@ declare class WrapperClient extends ValEvent {
     Player: PlayerService;
     /**
      * Create a new Valorant API Wrapper Client
-     * @param {ValWrapperConfig} config Client Config
+     * @param {ValWebClient.Options} config Client Config
      */
-    constructor(config?: ValWrapperConfig);
-    /**
-     * Reload Class
-     * @returns {void}
-     */
+    constructor(config?: ValWebClient.Options);
     private reload;
     /**
+     * From {@link ValAuthData save} data
+     * @param {ValAuthData} data {@link toJSON toJSON()} data
+     * @returns {void}
+     */
+    fromJSON(data: ValAuthData): void;
+    /**
+     * To {@link ValAuthData save} data
+     * @returns {ValAuthData}
+     */
+    toJSON(): ValAuthData;
+    /**
      * Reconnect to the server
-     * @param {Boolean} force Force to reconnect
+     * @param force force to reload (only token)
+     * @returns {Promise<Array<ValAuth.Expire>>}
      */
-    reconnect(force?: Boolean): Promise<void>;
-    /**
-     *
-     * @returns {ValWrapperClient}
-     */
-    toJSON(): ValWrapperClient;
-    /**
-     *
-     * @param {ValWrapperClient} data Client `.toJSON()` data
-     * @returns {void}
-     */
-    fromJSON(data: ValWrapperClient): void;
-    /**
-     *
-     * @returns {ValWrapperAuth}
-     */
-    toJSONAuth(): ValWrapperAuth;
-    /**
-     *
-     * @param {ValWrapperAuth} auth Authentication Data
-     * @returns {void}
-     */
-    fromJSONAuth(auth: ValWrapperAuth): void;
-    /**
-     * * Not Recommend to use
-     * @param {CookieJar} cookie Client Cookie
-     * @returns {Promise<void>}
-     */
-    fromCookie(cookie?: CookieJar): Promise<void>;
+    refresh(force?: Boolean): Promise<Array<ValAuth.Expire>>;
     /**
      * Login to Riot Account
-     * @param {String} username Username
-     * @param {String} password Password
+     * @param {string} username Username
+     * @param {string} password Password
      * @returns {Promise<void>}
      */
-    login(username: string | Function, password: string | Function): Promise<void>;
+    login(username: string, password: string): Promise<void>;
     /**
      * Multi-Factor Authentication
      * @param {number} verificationCode Verification Code
      * @returns {Promise<void>}
      */
-    verify(verificationCode: number | string | Function): Promise<void>;
+    verify(verificationCode: number): Promise<void>;
     /**
-     * @param {String} region Region
+     * @param {string} region Region
      * @returns {void}
      */
     setRegion(region: keyof typeof _Region.from): void;
     /**
-     * @param {String} clientVersion Client Version
+     * @param {string} clientVersion Client Version
      * @returns {void}
      */
     setClientVersion(clientVersion?: string): void;
     /**
-     * @param {ValWrapperClientPlatfrom} clientPlatfrom Client Platfrom in json
+     * @param {ValAuthEngine.ClientPlatfrom} clientPlatfrom Client Platfrom in json
      * @returns {void}
      */
-    setClientPlatfrom(clientPlatfrom?: ValWrapperClientPlatfrom): void;
+    setClientPlatfrom(clientPlatfrom?: ValAuthEngine.ClientPlatfrom): void;
     /**
-     * @param {CookieJar.Serialized} cookie Cookie
-     * @returns {void}
-     */
-    setCookie(cookie: CookieJar.Serialized): void;
-    /**
-     * * Something went wrong? try to not use static methods.
-     * @param {ValWrapperConfig} config Client Config
-     * @param {ValWrapperClient} data Client `.toJSON()` data
-     * @returns {WrapperClient}
-     */
-    static fromJSON(config: ValWrapperConfig, data: ValWrapperClient): WrapperClient;
+      * From {@link toJSON toJSON()} data
+      * @param {ValAuthData} data {@link toJSON toJSON()} data
+      * @param {ValAuthEngine.Options} options Client Config
+      * @returns {ValAuth}
+      */
+    static fromJSON(data: ValAuthData, options?: ValAuthEngine.Options): ValWebClient;
 }
-interface ValWrapperEventExpire {
-    'cookie': CookieJar;
-    'token': string;
-}
-interface ValWrapperEventSettings {
-    'region': string;
-    'client_version': string;
-    'client_platfrom': ValWrapperClientPlatfrom;
-    'cookie': CookieJar.Serialized;
-}
-interface ValWrapperClientEvent {
-    'ready': () => void;
-    'expires': <ExpireName extends keyof ValWrapperEventExpire>(data: {
-        name: ExpireName;
-        data: ValWrapperEventExpire[ExpireName];
-    }) => void;
-    'request': (data: ValorantApiRequestData) => void;
-    'changeSettings': <SettingName extends keyof ValWrapperEventSettings>(data: {
-        name: SettingName;
-        data: ValWrapperEventSettings[SettingName];
-    }) => void;
-    'error': (data: ValorantApiError) => void;
-}
-declare interface WrapperClient {
-    emit<EventName extends keyof ValWrapperClientEvent>(name: EventName, ...args: Parameters<ValWrapperClientEvent[EventName]>): void;
-    on<EventName extends keyof ValWrapperClientEvent>(name: EventName, callback: ValWrapperClientEvent[EventName]): void;
-    once<EventName extends keyof ValWrapperClientEvent>(name: EventName, callback: ValWrapperClientEvent[EventName]): void;
-    off<EventName extends keyof ValWrapperClientEvent>(name: EventName, callback?: ValWrapperClientEvent[EventName]): void;
-}
-export { WrapperClient };
-export type { ValWrapperClient, ValWrapperClientPlatfrom, ValWrapperConfig, ValWrapperEventExpire, ValWrapperEventSettings, ValWrapperClientEvent };
-//# sourceMappingURL=Client.d.ts.map
+export { ValWebClient };

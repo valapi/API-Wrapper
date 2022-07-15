@@ -46,4 +46,3 @@ declare class Player {
     MassRewards(puuid: string): Promise<ValorantApiRequestResponse<any>>;
 }
 export { Player };
-//# sourceMappingURL=Player.d.ts.map

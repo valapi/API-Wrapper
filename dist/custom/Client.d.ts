@@ -19,4 +19,3 @@ declare class Client {
     FetchConfig(): Promise<ValorantApiRequestResponse<any>>;
 }
 export { Client };
-//# sourceMappingURL=Client.d.ts.map

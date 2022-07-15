@@ -54,4 +54,3 @@ declare class PreGame {
     SelectCharacter(matchId: string, agentId: string): Promise<ValorantApiRequestResponse<any>>;
 }
 export { PreGame };
-//# sourceMappingURL=PreGame.d.ts.map

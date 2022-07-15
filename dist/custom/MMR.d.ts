@@ -38,4 +38,3 @@ declare class MMR {
     HideActRankBadge(puuid: string): Promise<ValorantApiRequestResponse<any>>;
 }
 export { MMR };
-//# sourceMappingURL=MMR.d.ts.map

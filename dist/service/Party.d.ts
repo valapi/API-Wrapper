@@ -160,4 +160,3 @@ declare class Party {
 }
 export { Party };
 export type { ValWrapperSetAccessibility, ValWrapperCustomGameSettings, ValWrapperCustomGameTeam };
-//# sourceMappingURL=Party.d.ts.map

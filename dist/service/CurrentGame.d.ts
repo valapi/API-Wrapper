@@ -43,4 +43,3 @@ declare class CurrentGame {
     DisassociatePlayer(puuid: string, matchId: string): Promise<ValorantApiRequestResponse<any>>;
 }
 export { CurrentGame };
-//# sourceMappingURL=CurrentGame.d.ts.map

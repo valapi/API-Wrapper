@@ -30,4 +30,3 @@ declare class Contract {
     Activate(puuid: string, contractId: string): Promise<ValorantApiRequestResponse<any>>;
 }
 export { Contract };
-//# sourceMappingURL=Contract.d.ts.map

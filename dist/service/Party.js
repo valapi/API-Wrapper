@@ -1,15 +1,7 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Party = void 0;
+const tslib_1 = require("tslib");
 //service
 class Party {
     /**
@@ -27,7 +19,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     RemovePlayer(puuid) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.delete(this.Region.url.partyService + `/parties/v1/players/${puuid}`);
         });
     }
@@ -35,7 +27,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchCustomGameConfigs() {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.partyService + `/parties/v1/parties/customgameconfigs`);
         });
     }
@@ -44,7 +36,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchMUCToken(partyId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.partyService + `/parties/v1/parties/${partyId}/muctoken`);
         });
     }
@@ -53,7 +45,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchParty(partyId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.partyService + `/parties/v1/parties/${partyId}`);
         });
     }
@@ -62,7 +54,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchPlayer(puuid) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.partyService + `/parties/v1/players/${puuid}`);
         });
     }
@@ -71,7 +63,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchVoiceToken(partyId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.partyService + `/parties/v1/parties/${partyId}/voicetoken`);
         });
     }
@@ -81,7 +73,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     ChangeQueue(partyId, queueId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/queue`, {
                 "queueID": String(queueId)
             });
@@ -93,7 +85,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     DeclineRequest(partyId, requestId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/request/${requestId}/decline`);
         });
     }
@@ -102,7 +94,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     EnterMatchmakingQueue(partyId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/matchmaking/join`);
         });
     }
@@ -113,7 +105,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     InviteToPartyByDisplayName(partyId, gameName, tagLine) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/invites/name/${gameName}/tag/${tagLine}`);
         });
     }
@@ -122,7 +114,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     LeaveMatchmakingQueue(partyId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/matchmaking/leave`);
         });
     }
@@ -132,7 +124,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     RefreshCompetitiveTier(puuid, partyId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/refreshCompetitiveTier`);
         });
     }
@@ -142,7 +134,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     RefreshPings(puuid, partyId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/refreshPings`);
         });
     }
@@ -152,7 +144,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     RefreshPlayerIdentity(puuid, partyId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/refreshPlayerIdentity`);
         });
     }
@@ -162,7 +154,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     SetAccessibility(partyId, accessibility) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/accessibility`, {
                 "accessibility": `${accessibility}`
             });
@@ -174,7 +166,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     SetCustomGameSettings(partyId, settings) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/customgamesettings`, settings);
         });
     }
@@ -185,7 +177,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     SetMemberReady(puuid, partyId, isReady) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/setReady`, {
                 "ready": isReady
             });
@@ -196,7 +188,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     StartCustomGame(partyId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/startcustomgame`);
         });
     }
@@ -207,7 +199,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     LeaveParty(puuid, partyId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/players/${puuid}/leaveparty/${partyId}`);
         });
     }
@@ -216,7 +208,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     AutoBalance(partyId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/balance`);
         });
     }
@@ -227,7 +219,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     ChangeTeamInCustomGame(partyId, team, puuid) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/customgamemembership/${team}`, {
                 "playerToPutOnTeam": String(puuid),
             });
@@ -239,7 +231,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     StartSoloExperience(puuid) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/players/${puuid}/startsoloexperience`);
         });
     }
@@ -250,10 +242,9 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     TransferOwner(puuid, partyId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/members/${puuid}/owner`);
         });
     }
 }
 exports.Party = Party;
-//# sourceMappingURL=Party.js.map

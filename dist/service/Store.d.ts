@@ -38,4 +38,3 @@ declare class Store {
     RevealNightMarketOffers(puuid: string): Promise<ValorantApiRequestResponse<any>>;
 }
 export { Store };
-//# sourceMappingURL=Store.d.ts.map

@@ -1,15 +1,7 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MMR = void 0;
+const tslib_1 = require("tslib");
 //service
 class MMR {
     /**
@@ -29,7 +21,7 @@ class MMR {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchCompetitiveUpdates(puuid, queueId, startIndex = 0, endIndex = 10) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             let _url = this.Region.url.playerData + `/mmr/v1/players/${puuid}/competitiveupdates?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
             if (queueId) {
                 _url += `&queue=${queueId}`;
@@ -45,7 +37,7 @@ class MMR {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchLeaderboard(seasonId, startIndex = 0, size = 510, serachUsername) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             let _url = this.Region.url.playerData + `/mmr/v1/leaderboards/affinity/${this.Region.data.api}/queue/competitive/season/${seasonId}?startIndex=${startIndex}&size=${size}`;
             if (serachUsername) {
                 _url += `&query=${serachUsername}`;
@@ -58,7 +50,7 @@ class MMR {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchPlayer(puuid) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.playerData + `/mmr/v1/players/${puuid}`);
         });
     }
@@ -68,10 +60,9 @@ class MMR {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     HideActRankBadge(puuid) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.playerData + `/mmr/v1/players/${puuid}/hideactrankbadge`);
         });
     }
 }
 exports.MMR = MMR;
-//# sourceMappingURL=MMR.js.map

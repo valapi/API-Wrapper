@@ -22,4 +22,3 @@ declare class Session {
     ReConnect(puuid: string): Promise<ValorantApiRequestResponse<any>>;
 }
 export { Session };
-//# sourceMappingURL=Session.d.ts.map

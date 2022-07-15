@@ -1,4 +1,11 @@
-export { WrapperClient as Client } from "./client/Client";
+//import
 
-export type { ValWrapperClient, ValWrapperClientEvent, ValWrapperClientPlatfrom, ValWrapperConfig } from "./client/Client";
-export type { ValWrapperAuth, ValWrapperAuthExtend } from "./auth/Account";
+import { ValWebClient } from "./client/Client";
+
+//export
+
+export {
+    ValWebClient as Client
+};
+
+export default ValWebClient;

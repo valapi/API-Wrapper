@@ -1,15 +1,7 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PreGame = void 0;
+const tslib_1 = require("tslib");
 //service
 class PreGame {
     /**
@@ -26,7 +18,7 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchChatToken(matchId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/chattoken`);
         });
     }
@@ -35,7 +27,7 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchVoiceToken(matchId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/voicetoken`);
         });
     }
@@ -44,7 +36,7 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetMatch(matchId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}`);
         });
     }
@@ -53,7 +45,7 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetMatchLoadouts(matchId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/loadouts`);
         });
     }
@@ -62,7 +54,7 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetPlayer(puuid) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.partyService + `/pregame/v1/players/${puuid}`);
         });
     }
@@ -72,7 +64,7 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     LockCharacter(matchId, agentId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/lock/${agentId}`);
         });
     }
@@ -82,7 +74,7 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     QuitMatch(matchId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/quit`);
         });
     }
@@ -92,10 +84,9 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     SelectCharacter(matchId, agentId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/select/${agentId}`);
         });
     }
 }
 exports.PreGame = PreGame;
-//# sourceMappingURL=PreGame.js.map

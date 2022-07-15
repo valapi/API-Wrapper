@@ -1,15 +1,7 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CurrentGame = void 0;
+const tslib_1 = require("tslib");
 //service
 class CurrentGame {
     /**
@@ -26,7 +18,7 @@ class CurrentGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchAllChatMUCToken(matchId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/allchatmuctoken`);
         });
     }
@@ -35,7 +27,7 @@ class CurrentGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchMatch(matchId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}`);
         });
     }
@@ -44,7 +36,7 @@ class CurrentGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchMatchLoadouts(matchId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/loadouts`);
         });
     }
@@ -53,7 +45,7 @@ class CurrentGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchPlayer(puuid) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/players/${puuid}`);
         });
     }
@@ -62,7 +54,7 @@ class CurrentGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchTeamChatMUCToken(matchId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/teamchatmuctoken`);
         });
     }
@@ -73,10 +65,9 @@ class CurrentGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     DisassociatePlayer(puuid, matchId) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.RequestClient.post(this.Region.url.partyService + `/core-game/v1/players/${puuid}/disassociate/${matchId}`);
         });
     }
 }
 exports.CurrentGame = CurrentGame;
-//# sourceMappingURL=CurrentGame.js.map

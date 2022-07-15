@@ -26,4 +26,3 @@ declare class Match {
     FetchMatchHistory(puuid: string, queueId?: keyof typeof QueueId.from, startIndex?: number, endIndex?: number): Promise<ValorantApiRequestResponse<any>>;
 }
 export { Match };
-//# sourceMappingURL=Match.d.ts.map

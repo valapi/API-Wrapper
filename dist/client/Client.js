@@ -1,23 +1,13 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.WrapperClient = void 0;
 //import
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ValWebClient = void 0;
+const tslib_1 = require("tslib");
 const lib_1 = require("@valapi/lib");
-const tough_cookie_1 = require("tough-cookie");
-const lib_2 = require("@valapi/lib");
-const http_cookie_agent_1 = require("http-cookie-agent");
-const Account_1 = require("../auth/Account");
-const Multifactor_1 = require("../auth/Multifactor");
-const CookieAuth_1 = require("../auth/CookieAuth");
+const auth_1 = require("@valapi/auth");
+const Engine_1 = require("@valapi/auth/dist/client/Engine");
+const http_1 = require("http");
+const https_1 = require("https");
 //service
 const Contract_1 = require("../service/Contract");
 const CurrentGame_1 = require("../service/CurrentGame");
@@ -29,95 +19,30 @@ const Client_1 = require("../custom/Client");
 const Match_1 = require("../custom/Match");
 const MMR_1 = require("../custom/MMR");
 const Player_1 = require("../custom/Player");
-const _Client_Version = 'release-05.00-shipping-6-725355';
-const _Client_Platfrom = {
-    "platformType": "PC",
-    "platformOS": "Windows",
-    "platformOSVersion": "10.0.19042.1.256.64bit",
-    "platformChipset": "Unknown",
-};
-const _defaultConfig = {
-    userAgent: 'RiotClient/43.0.1.41953 86.4190634 rso-auth (Windows; 10;;Professional, x64)',
-    region: 'na',
-    client: {
-        version: _Client_Version,
-        platform: _Client_Platfrom,
-    },
-    forceAuth: false,
-    axiosConfig: {},
-    expiresIn: {
-        cookie: 2592000000,
-        token: 3600000,
-    },
-};
 //class
-class WrapperClient extends lib_1.ValEvent {
+const _defaultConfig = {
+    region: 'na',
+    client: auth_1.ValAuthEngineDefault.client,
+    axiosConfig: auth_1.ValAuthEngineDefault.axiosConfig,
+    expiresIn: auth_1.ValAuthEngineDefault.expiresIn,
+};
+class ValWebClient extends lib_1.ValEvent {
     /**
      * Create a new Valorant API Wrapper Client
-     * @param {ValWrapperConfig} config Client Config
+     * @param {ValWebClient.Options} config Client Config
      */
     constructor(config = {}) {
-        var _a, _b;
         super();
-        this.reloadTimes = 0;
-        this.reconnectTimes = 0;
+        this.AuthClient = new auth_1.Client(config);
+        this.AuthClient.on('expires', ((data) => { this.emit('expires', data); }));
+        this.AuthClient.on('error', ((data) => { this.emit('error', { errorCode: data.name, message: data.message, data: data.data }); }));
         //config
-        this.config = new Object(Object.assign(Object.assign({}, _defaultConfig), config));
-        if (config.region) {
-            this.lockRegion = true;
-        }
-        else {
-            this.lockRegion = false;
-        }
-        if (!this.config.region) {
-            this.config.region = 'na';
-        }
-        //create without auth
-        this.cookie = new tough_cookie_1.CookieJar();
-        this.access_token = '';
-        this.id_token = '';
-        this.expires_in = 3600;
-        this.token_type = 'Bearer';
-        this.entitlements_token = '';
-        this.region = {
-            pbe: 'na',
-            live: this.config.region,
-        };
-        this.multifactor = false;
-        this.isError = false;
-        this.createAt = {
-            cookie: new Date().getTime(),
-            token: new Date().getTime(),
-        };
-        // first reload
-        if (this.lockRegion === true && this.config.region) {
-            this.region.live = this.config.region;
-        }
-        this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
-        //request client
-        //cipher suite: https://developers.cloudflare.com/ssl/ssl-tls/cipher-suites/
-        const ciphers = [
-            'TLS_AES_128_GCM_SHA256',
-            'TLS_AES_256_GCM_SHA384',
-            'TLS_AES_128_CCM_8_SHA256',
-            'TLS_AES_128_CCM_SHA256',
-            'TLS_CHACHA20_POLY1305_SHA256',
-            'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
-        ];
-        const _normalAxiosConfig = {
-            headers: {
-                'Authorization': `${this.token_type} ${this.access_token}`,
-                'X-Riot-Entitlements-JWT': this.entitlements_token,
-                'X-Riot-ClientVersion': String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
-                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
-            },
-            httpsAgent: new http_cookie_agent_1.HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2', maxVersion: 'TLSv1.3' }),
-            httpAgent: new http_cookie_agent_1.HttpCookieAgent({ jar: this.cookie, keepAlive: true }),
-        };
-        this.axiosConfig = new Object(Object.assign(Object.assign({}, _normalAxiosConfig), this.config.axiosConfig));
-        this.RequestClient = new lib_2.ValRequestClient(this.axiosConfig);
-        this.RequestClient.on('error', ((data) => { this.emit('error', data); }));
+        this.options = new Object(Object.assign(Object.assign({}, _defaultConfig), config));
+        this.RegionServices = new lib_1.ValRegion(this.AuthClient.region.live).toJSON();
+        //axios
+        this.RequestClient = new lib_1.ValRequestClient(this.options.axiosConfig);
         this.RequestClient.on('request', ((data) => { this.emit('request', data); }));
+        this.RequestClient.on('error', ((data) => { this.emit('error', data); }));
         //service
         this.Contract = new Contract_1.Contract(this.RequestClient, this.RegionServices);
         this.CurrentGame = new CurrentGame_1.CurrentGame(this.RequestClient, this.RegionServices);
@@ -128,43 +53,32 @@ class WrapperClient extends lib_1.ValEvent {
         this.Client = new Client_1.Client(this.RequestClient, this.RegionServices);
         this.Match = new Match_1.Match(this.RequestClient, this.RegionServices);
         this.MMR = new MMR_1.MMR(this.RequestClient, this.RegionServices);
-        this.Player = new Player_1.Player(this.RequestClient, this.RegionServices, String(this.config.userAgent));
+        this.Player = new Player_1.Player(this.RequestClient, this.RegionServices, Engine_1.CONFIG_UserAgent);
         //event
-        this.emit('ready');
+        this.emit('ready', this);
     }
     //reload
-    /**
-     * Reload Class
-     * @returns {void}
-     */
     reload() {
         var _a, _b;
-        this.reloadTimes + 1;
-        if (this.lockRegion === true && this.config.region) {
-            this.region.live = this.config.region;
-        }
-        this.RegionServices = new lib_2.ValRegion(this.region.live).toJSON();
-        //request client
-        const ciphers = [
-            'TLS_CHACHA20_POLY1305_SHA256',
-            'TLS_AES_128_GCM_SHA256',
-            'TLS_AES_256_GCM_SHA384',
-            'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256'
-        ];
+        const _data = this.AuthClient.toJSON();
+        //config
+        this.AuthClient.config = this.options;
+        this.RegionServices = new lib_1.ValRegion(_data.region.live).toJSON();
+        //axios
         const _normalAxiosConfig = {
             headers: {
-                'Authorization': `${this.token_type} ${this.access_token}`,
-                'X-Riot-Entitlements-JWT': this.entitlements_token,
-                'X-Riot-ClientVersion': String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
-                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
+                Cookie: _data.cookie.ssid,
+                'Authorization': `${_data.token_type} ${_data.access_token}`,
+                'X-Riot-Entitlements-JWT': _data.entitlements_token,
+                'X-Riot-ClientVersion': String((_a = this.AuthClient.config.client) === null || _a === void 0 ? void 0 : _a.version),
+                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_b = this.AuthClient.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
             },
-            httpsAgent: new http_cookie_agent_1.HttpsCookieAgent({ jar: this.cookie, keepAlive: true, ciphers: ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2', maxVersion: 'TLSv1.3' }),
-            httpAgent: new http_cookie_agent_1.HttpCookieAgent({ jar: this.cookie, keepAlive: true }),
+            httpsAgent: new https_1.Agent({ keepAlive: true, ciphers: Engine_1.CONFIG_Ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2', maxVersion: 'TLSv1.3' }),
+            httpAgent: new http_1.Agent({ keepAlive: true }),
         };
-        this.axiosConfig = new Object(Object.assign(Object.assign({}, _normalAxiosConfig), this.config.axiosConfig));
-        this.RequestClient = new lib_2.ValRequestClient(this.axiosConfig);
-        this.RequestClient.on('error', ((data) => { this.emit('error', data); }));
+        this.RequestClient = new lib_1.ValRequestClient(new Object(Object.assign(Object.assign(Object.assign({}, this.AuthClient.config.axiosConfig), this.options.axiosConfig), _normalAxiosConfig)));
         this.RequestClient.on('request', ((data) => { this.emit('request', data); }));
+        this.RequestClient.on('error', ((data) => { this.emit('error', data); }));
         //service
         this.Contract = new Contract_1.Contract(this.RequestClient, this.RegionServices);
         this.CurrentGame = new CurrentGame_1.CurrentGame(this.RequestClient, this.RegionServices);
@@ -175,210 +89,48 @@ class WrapperClient extends lib_1.ValEvent {
         this.Client = new Client_1.Client(this.RequestClient, this.RegionServices);
         this.Match = new Match_1.Match(this.RequestClient, this.RegionServices);
         this.MMR = new MMR_1.MMR(this.RequestClient, this.RegionServices);
-        this.Player = new Player_1.Player(this.RequestClient, this.RegionServices, String(this.config.userAgent));
+        this.Player = new Player_1.Player(this.RequestClient, this.RegionServices, Engine_1.CONFIG_UserAgent);
         //event
-        this.emit('ready');
-    }
-    /**
-     * Reconnect to the server
-     * @param {Boolean} force Force to reconnect
-     */
-    reconnect(force) {
-        var _a, _b, _c, _d;
-        return __awaiter(this, void 0, void 0, function* () {
-            if ((new Date().getTime()) >= (this.createAt.cookie + Number((_a = this.config.expiresIn) === null || _a === void 0 ? void 0 : _a.cookie))) {
-                //event
-                this.emit('expires', {
-                    name: 'cookie',
-                    data: this.cookie,
-                });
-                this.cookie = new tough_cookie_1.CookieJar();
-                //uptodate
-                if (this.config.expiresIn && this.config.expiresIn.cookie <= 0) {
-                    this.config.expiresIn.cookie = (_b = _defaultConfig.expiresIn) === null || _b === void 0 ? void 0 : _b.cookie;
-                }
-                this.createAt = {
-                    cookie: new Date().getTime(),
-                    token: new Date().getTime(),
-                };
-                //auto
-                if (this.config.selfAuthentication) {
-                    yield this.login(this.config.selfAuthentication.username, this.config.selfAuthentication.password);
-                    this.reconnectTimes + 1;
-                    if (this.multifactor && this.config.selfAuthentication.verifyCode) {
-                        yield this.verify(this.config.selfAuthentication.verifyCode);
-                    }
-                    else if (this.multifactor) {
-                        this.emit('error', {
-                            errorCode: 'ValWrapper_Authentication_Error',
-                            message: 'Missing verifyCode at autoAuthentication',
-                            data: this.config.selfAuthentication,
-                        });
-                    }
-                }
-                else if (!this.config.forceAuth) {
-                    this.emit('error', {
-                        errorCode: 'ValWrapper_Expired_Cookie',
-                        message: 'Cookie Expired',
-                        data: this.createAt.cookie,
-                    });
-                }
-            }
-            if ((new Date().getTime()) >= (this.createAt.token + Number((_c = this.config.expiresIn) === null || _c === void 0 ? void 0 : _c.token)) || force === true) {
-                //event
-                this.emit('expires', {
-                    name: 'token',
-                    data: this.access_token,
-                });
-                this.access_token = '';
-                //uptodate
-                if (this.config.expiresIn && Number(this.config.expiresIn.token) <= 0) {
-                    this.config.expiresIn.token = (_d = _defaultConfig.expiresIn) === null || _d === void 0 ? void 0 : _d.token;
-                }
-                this.createAt.token = new Date().getTime();
-                //auto
-                yield this.fromCookie();
-                this.reconnectTimes + 1;
-            }
-        });
+        this.emit('ready', this);
     }
     //save
     /**
-     *
-     * @returns {ValWrapperClient}
-     */
-    toJSON() {
-        return {
-            cookie: this.cookie.toJSON(),
-            access_token: this.access_token,
-            id_token: this.id_token,
-            token_type: this.token_type,
-            entitlements_token: this.entitlements_token,
-            region: this.region,
-            createAt: this.createAt,
-        };
-    }
-    /**
-     *
-     * @param {ValWrapperClient} data Client `.toJSON()` data
+     * From {@link ValAuthData save} data
+     * @param {ValAuthData} data {@link toJSON toJSON()} data
      * @returns {void}
      */
     fromJSON(data) {
-        if (!data.id_token) {
-            data.id_token = '';
-        }
-        if (!data.token_type) {
-            data.token_type = 'Bearer';
-        }
-        this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(data.cookie));
-        this.access_token = data.access_token;
-        this.id_token = data.id_token;
-        this.token_type = data.token_type;
-        this.entitlements_token = data.entitlements_token;
-        this.region = data.region;
-        this.createAt = data.createAt;
+        this.AuthClient.fromJSON(data);
         this.reload();
+    }
+    /**
+     * To {@link ValAuthData save} data
+     * @returns {ValAuthData}
+     */
+    toJSON() {
+        return this.AuthClient.toJSON();
     }
     //auth
     /**
-     *
-     * @returns {ValWrapperAuth}
+     * Reconnect to the server
+     * @param force force to reload (only token)
+     * @returns {Promise<Array<ValAuth.Expire>>}
      */
-    toJSONAuth() {
-        return {
-            cookie: this.cookie.toJSON(),
-            access_token: this.access_token,
-            id_token: this.id_token,
-            expires_in: this.expires_in,
-            token_type: this.token_type,
-            entitlements_token: this.entitlements_token,
-            region: this.region,
-            multifactor: this.multifactor,
-            isError: this.isError,
-        };
-    }
-    /**
-     *
-     * @param {ValWrapperAuth} auth Authentication Data
-     * @returns {void}
-     */
-    fromJSONAuth(auth) {
-        this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(auth.cookie));
-        this.access_token = auth.access_token;
-        this.id_token = auth.id_token;
-        this.expires_in = auth.expires_in || Number(3600);
-        this.token_type = auth.token_type;
-        this.entitlements_token = auth.entitlements_token;
-        this.region = auth.region;
-        if (!this.region.live) {
-            this.region.live = 'na';
-        }
-        this.multifactor = auth.multifactor || Boolean(false);
-        this.isError = auth.isError || Boolean(false);
-        if (auth.isError && !this.config.forceAuth) {
-            this.emit('error', {
-                errorCode: 'ValWrapper_Authentication_Error',
-                message: 'Authentication Error',
-                data: auth,
-            });
-        }
-        this.createAt = {
-            cookie: new Date().getTime(),
-            token: new Date().getTime(),
-        };
-        this.reload();
-    }
-    /**
-     * * Not Recommend to use
-     * @param {CookieJar} cookie Client Cookie
-     * @returns {Promise<void>}
-     */
-    fromCookie(cookie) {
-        var _a, _b;
-        return __awaiter(this, void 0, void 0, function* () {
-            if (cookie) {
-                this.cookie = cookie;
-            }
-            const _extraData = {
-                UserAgent: String(this.config.userAgent),
-                clientVersion: String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
-                clientPlatform: (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
-                RequestClient: this.RequestClient,
-                lockRegion: this.lockRegion,
-            };
-            const NewCookieAuth = yield CookieAuth_1.CookieAuth.reauth(this.toJSONAuth(), _extraData, this.axiosConfig);
-            this.fromJSONAuth(NewCookieAuth);
+    refresh(force) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return this.AuthClient.refresh(force);
         });
     }
     /**
      * Login to Riot Account
-     * @param {String} username Username
-     * @param {String} password Password
+     * @param {string} username Username
+     * @param {string} password Password
      * @returns {Promise<void>}
      */
     login(username, password) {
-        var _a, _b, _c;
-        return __awaiter(this, void 0, void 0, function* () {
-            if (typeof username === 'function') {
-                username = (yield username());
-            }
-            if (typeof password === 'function') {
-                password = (yield password());
-            }
-            const _extraData = {
-                UserAgent: String(this.config.userAgent),
-                clientVersion: String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
-                clientPlatform: (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
-                RequestClient: this.RequestClient,
-                lockRegion: this.lockRegion,
-            };
-            const NewAuth = yield Account_1.Account.login(this.toJSONAuth(), username, password, _extraData);
-            this.fromJSONAuth(NewAuth);
-            if (this.multifactor) {
-                if (this.config.selfAuthentication && !((_c = this.config.selfAuthentication) === null || _c === void 0 ? void 0 : _c.verifyCode)) {
-                    throw new Error('Multifactor is not supported when selfAuthentication.verifyCode is not set');
-                }
-            }
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            yield this.AuthClient.login(username, password);
+            this.reload();
         });
     }
     /**
@@ -387,87 +139,58 @@ class WrapperClient extends lib_1.ValEvent {
      * @returns {Promise<void>}
      */
     verify(verificationCode) {
-        var _a, _b;
-        return __awaiter(this, void 0, void 0, function* () {
-            if (typeof verificationCode === 'function') {
-                verificationCode = (yield verificationCode());
-            }
-            const _extraData = {
-                UserAgent: String(this.config.userAgent),
-                clientVersion: String((_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version),
-                clientPlatform: (0, lib_1.toUft8)(JSON.stringify((_b = this.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
-                RequestClient: this.RequestClient,
-                lockRegion: this.lockRegion,
-            };
-            const NewAuth = yield Multifactor_1.Multifactor.verify(this.toJSONAuth(), Number(verificationCode), _extraData);
-            this.fromJSONAuth(NewAuth);
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            yield this.AuthClient.verify(verificationCode);
+            this.reload();
         });
     }
     //settings
     /**
-     * @param {String} region Region
+     * @param {string} region Region
      * @returns {void}
      */
     setRegion(region) {
-        this.emit('changeSettings', { name: 'region', data: region });
-        this.config.region = region;
-        this.region.live = region;
+        this.options.region = region;
+        this.AuthClient.region.live = region;
         this.reload();
     }
     /**
-     * @param {String} clientVersion Client Version
+     * @param {string} clientVersion Client Version
      * @returns {void}
      */
-    setClientVersion(clientVersion = _Client_Version) {
-        var _a;
-        this.emit('changeSettings', { name: 'client_version', data: clientVersion });
-        this.config.client = {
+    setClientVersion(clientVersion) {
+        var _a, _b;
+        if (clientVersion === void 0) { clientVersion = (_a = auth_1.ValAuthEngineDefault.client) === null || _a === void 0 ? void 0 : _a.version; }
+        this.options.client = {
             version: clientVersion,
-            platform: (_a = this.config.client) === null || _a === void 0 ? void 0 : _a.platform,
+            platform: (_b = this.options.client) === null || _b === void 0 ? void 0 : _b.platform,
         };
         this.reload();
     }
     /**
-     * @param {ValWrapperClientPlatfrom} clientPlatfrom Client Platfrom in json
+     * @param {ValAuthEngine.ClientPlatfrom} clientPlatfrom Client Platfrom in json
      * @returns {void}
      */
-    setClientPlatfrom(clientPlatfrom = _Client_Platfrom) {
-        var _a;
-        this.emit('changeSettings', { name: 'client_platfrom', data: clientPlatfrom });
-        this.config.client = {
-            version: (_a = this.config.client) === null || _a === void 0 ? void 0 : _a.version,
+    setClientPlatfrom(clientPlatfrom) {
+        var _a, _b;
+        if (clientPlatfrom === void 0) { clientPlatfrom = (_a = auth_1.ValAuthEngineDefault.client) === null || _a === void 0 ? void 0 : _a.platform; }
+        this.options.client = {
+            version: (_b = this.options.client) === null || _b === void 0 ? void 0 : _b.version,
             platform: clientPlatfrom,
         };
         this.reload();
     }
-    /**
-     * @param {CookieJar.Serialized} cookie Cookie
-     * @returns {void}
-     */
-    setCookie(cookie) {
-        this.emit('changeSettings', { name: 'cookie', data: cookie });
-        this.cookie = tough_cookie_1.CookieJar.fromJSON(JSON.stringify(cookie));
-        this.reload();
-    }
     //static
     /**
-     * * Something went wrong? try to not use static methods.
-     * @param {ValWrapperConfig} config Client Config
-     * @param {ValWrapperClient} data Client `.toJSON()` data
-     * @returns {WrapperClient}
-     */
-    static fromJSON(config, data) {
-        const NewClient = new WrapperClient(config);
-        NewClient.fromJSON(data);
-        if (config.region) {
-            NewClient.setRegion(config.region);
-        }
-        else if (data.region.live) {
-            NewClient.setRegion(data.region.live);
-        }
-        NewClient.reconnectTimes = 1;
-        return NewClient;
+      * From {@link toJSON toJSON()} data
+      * @param {ValAuthData} data {@link toJSON toJSON()} data
+      * @param {ValAuthEngine.Options} options Client Config
+      * @returns {ValAuth}
+      */
+    static fromJSON(data, options) {
+        const _WebClient = new ValWebClient(options);
+        _WebClient.fromJSON(data);
+        return _WebClient;
     }
 }
-exports.WrapperClient = WrapperClient;
-//# sourceMappingURL=Client.js.map
+exports.ValWebClient = ValWebClient;

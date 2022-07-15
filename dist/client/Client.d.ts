@@ -30,11 +30,16 @@ declare interface ValWebClient {
     once<EventName extends keyof ValWebClient.Event>(name: EventName, callback: ValWebClient.Event[EventName]): void;
     off<EventName extends keyof ValWebClient.Event>(name: EventName, callback?: ValWebClient.Event[EventName]): void;
 }
+/**
+ * API from Web Client
+ */
 declare class ValWebClient extends ValEvent {
     protected options: ValWebClient.Options;
     private AuthClient;
     private RegionServices;
     private RequestClient;
+    isError: boolean;
+    isMultifactor: boolean;
     Contract: ContractService;
     CurrentGame: CurrentGameService;
     Party: PartyService;
@@ -51,6 +56,7 @@ declare class ValWebClient extends ValEvent {
      */
     constructor(config?: ValWebClient.Options);
     private reload;
+    private fromCookie;
     /**
      * From {@link ValAuthData save} data
      * @param {ValAuthData} data {@link toJSON toJSON()} data
@@ -99,9 +105,16 @@ declare class ValWebClient extends ValEvent {
     /**
       * From {@link toJSON toJSON()} data
       * @param {ValAuthData} data {@link toJSON toJSON()} data
-      * @param {ValAuthEngine.Options} options Client Config
-      * @returns {ValAuth}
+      * @param {ValWebClient.Options} options Client Config
+      * @returns {ValWebClient}
       */
-    static fromJSON(data: ValAuthData, options?: ValAuthEngine.Options): ValWebClient;
+    static fromJSON(data: ValAuthData, options?: ValWebClient.Options): ValWebClient;
+    /**
+     * From ssid Cookie
+     * @param {string} cookie ssid Cookie
+     * @param {ValWebClient.Options} options Client Config
+     * @returns {Promise<ValWebClient>}
+     */
+    static fromCookie(cookie: string, options?: ValWebClient.Options): Promise<ValWebClient>;
 }
 export { ValWebClient };

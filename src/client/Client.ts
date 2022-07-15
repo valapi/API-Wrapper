@@ -63,6 +63,9 @@ const _defaultConfig: ValWebClient.Options = {
     expiresIn: ValAuthEngineDefault.expiresIn,
 };
 
+/**
+ * API from Web Client
+ */
 class ValWebClient extends ValEvent {
     protected options: ValWebClient.Options;
 
@@ -70,6 +73,10 @@ class ValWebClient extends ValEvent {
     private AuthClient: ValAuth;
     private RegionServices: ValorantApiRegion;
     private RequestClient: ValRequestClient;
+
+    //data
+    public isError = false;
+    public isMultifactor = false;
 
     //service
     public Contract: ContractService;
@@ -104,6 +111,9 @@ class ValWebClient extends ValEvent {
         this.RequestClient.on('request', ((data: ValorantApiRequestData) => { this.emit('request', data); }));
         this.RequestClient.on('error', ((data: ValorantApiError) => { this.emit('error', data); }));
 
+        //data
+
+
         //service
         this.Contract = new ContractService(this.RequestClient, this.RegionServices);
         this.CurrentGame = new CurrentGameService(this.RequestClient, this.RegionServices);
@@ -125,6 +135,9 @@ class ValWebClient extends ValEvent {
 
     private reload(): void {
         const _data = this.AuthClient.toJSON();
+
+        this.isError = _data.isError;
+        this.isMultifactor = _data.multifactor;
 
         //config
         this.AuthClient.config = this.options;
@@ -166,6 +179,12 @@ class ValWebClient extends ValEvent {
 
     //save
 
+    private async fromCookie(cookie: string): Promise<void> {
+        this.AuthClient = await ValAuth.fromCookie(cookie);
+
+        this.reload();
+    }
+
     /**
      * From {@link ValAuthData save} data
      * @param {ValAuthData} data {@link toJSON toJSON()} data
@@ -202,7 +221,7 @@ class ValWebClient extends ValEvent {
      * @param {string} password Password
      * @returns {Promise<void>}
      */
-     public async login(username: string, password: string): Promise<void> {
+    public async login(username: string, password: string): Promise<void> {
         await this.AuthClient.login(username, password);
 
         this.reload();
@@ -254,7 +273,7 @@ class ValWebClient extends ValEvent {
             version: this.options.client?.version,
             platform: clientPlatfrom,
         };
-        
+
         this.reload();
     }
 
@@ -263,12 +282,25 @@ class ValWebClient extends ValEvent {
     /**
       * From {@link toJSON toJSON()} data
       * @param {ValAuthData} data {@link toJSON toJSON()} data
-      * @param {ValAuthEngine.Options} options Client Config
-      * @returns {ValAuth}
+      * @param {ValWebClient.Options} options Client Config
+      * @returns {ValWebClient}
       */
-    public static fromJSON(data: ValAuthData, options?: ValAuthEngine.Options): ValWebClient {
+    public static fromJSON(data: ValAuthData, options?: ValWebClient.Options): ValWebClient {
         const _WebClient = new ValWebClient(options);
         _WebClient.fromJSON(data);
+
+        return _WebClient;
+    }
+
+    /**
+     * From ssid Cookie
+     * @param {string} cookie ssid Cookie
+     * @param {ValWebClient.Options} options Client Config
+     * @returns {Promise<ValWebClient>}
+     */
+    public static async fromCookie(cookie: string, options?: ValWebClient.Options): Promise<ValWebClient> {
+        const _WebClient = new ValWebClient(options);
+        await _WebClient.fromCookie(cookie);
 
         return _WebClient;
     }

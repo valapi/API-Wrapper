@@ -3,13 +3,13 @@
 # Valorant API - Web Client
   
 [![Profile](https://github.com/valapi/.github/blob/main/128_valapi.png?raw=true)](https://github.com/valapi)
-  
-API from webclient
-  
+
+API from Web Client
+
 [![LICENSE](https://badgen.net/badge/license/MIT/blue)](https://github.com/valapi/.github/blob/main/LICENSE)
 [![Github](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/valapi)
 [![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/pbyWbUYjyt)
-  
+
 </div>
 
 -----------

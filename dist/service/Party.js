@@ -7,8 +7,8 @@ const tslib_1 = require("tslib");
 class Party {
     /**
      * Class Constructor
-     * @param {ValRequestClient} ValRequestClient Services Data
-     * @param {ValorantApiRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Request Client
+     * @param {ValorantApiRegion} Region Region Service Data
      */
     constructor(ValRequestClient, Region) {
         this.RequestClient = ValRequestClient;
@@ -111,6 +111,7 @@ class Party {
         });
     }
     /**
+     * * Careful to use, Riot will immediately shut down your Project.
      * @param {string} partyId Party ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */

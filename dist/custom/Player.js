@@ -7,11 +7,12 @@ const tslib_1 = require("tslib");
 class Player {
     /**
      * Class Constructor
-     * @param {ValRequestClient} AxiosClient Services Data
-     * @param {ValorantApiRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Request Client
+     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {string} UserAgent Request User Agent
      */
-    constructor(AxiosClient, Region, UserAgent) {
-        this.RequestClient = AxiosClient;
+    constructor(ValRequestClient, Region, UserAgent) {
+        this.RequestClient = ValRequestClient;
         this.Region = Region;
         this.UserAgent = UserAgent;
     }
@@ -78,7 +79,6 @@ class Player {
     }
     // NOT IN DOCS //
     /**
-     * * IDK what this is
      * @param {string} puuid PlayerUUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */

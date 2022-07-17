@@ -6,10 +6,11 @@ declare class Player {
     private UserAgent;
     /**
      * Class Constructor
-     * @param {ValRequestClient} AxiosClient Services Data
-     * @param {ValorantApiRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Request Client
+     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {string} UserAgent Request User Agent
      */
-    constructor(AxiosClient: ValRequestClient, Region: ValorantApiRegion, UserAgent: string);
+    constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion, UserAgent: string);
     /**
      * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
@@ -39,7 +40,6 @@ declare class Player {
      */
     FetchPlayerRestrictions(): Promise<ValorantApiRequestResponse<any>>;
     /**
-     * * IDK what this is
      * @param {string} puuid PlayerUUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */

@@ -13,11 +13,12 @@ class Player {
 
     /**
      * Class Constructor
-     * @param {ValRequestClient} AxiosClient Services Data
-     * @param {ValorantApiRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Request Client
+     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {string} UserAgent Request User Agent
      */
-    public constructor(AxiosClient: ValRequestClient, Region: ValorantApiRegion, UserAgent: string) {
-        this.RequestClient = AxiosClient;
+    public constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion, UserAgent: string) {
+        this.RequestClient = ValRequestClient;
         this.Region = Region;
 
         this.UserAgent = UserAgent;
@@ -84,7 +85,6 @@ class Player {
     // NOT IN DOCS //
 
     /**
-     * * IDK what this is
      * @param {string} puuid PlayerUUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */

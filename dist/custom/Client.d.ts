@@ -5,10 +5,10 @@ declare class Client {
     private Region;
     /**
      * Class Constructor
-     * @param {ValRequestClient} AxiosClient Services Data
-     * @param {ValorantApiRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Request Client
+     * @param {ValorantApiRegion} Region Region Service Data
      */
-    constructor(AxiosClient: ValRequestClient, Region: ValorantApiRegion);
+    constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion);
     /**
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */

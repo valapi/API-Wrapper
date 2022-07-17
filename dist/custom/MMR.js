@@ -7,11 +7,11 @@ const tslib_1 = require("tslib");
 class MMR {
     /**
      * Class Constructor
-     * @param {ValRequestClient} AxiosClient Services Data
-     * @param {ValorantApiRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Request Client
+     * @param {ValorantApiRegion} Region Region Service Data
      */
-    constructor(AxiosClient, Region) {
-        this.RequestClient = AxiosClient;
+    constructor(ValRequestClient, Region) {
+        this.RequestClient = ValRequestClient;
         this.Region = Region;
     }
     /**

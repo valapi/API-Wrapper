@@ -7,8 +7,8 @@ const tslib_1 = require("tslib");
 class Store {
     /**
      * Class Constructor
-     * @param {ValRequestClient} ValRequestClient Services Data
-     * @param {ValorantApiRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Request Client
+     * @param {ValorantApiRegion} Region Region Service Data
      */
     constructor(ValRequestClient, Region) {
         this.RequestClient = ValRequestClient;

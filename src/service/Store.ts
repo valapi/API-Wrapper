@@ -13,8 +13,8 @@ class Store {
 
     /**
      * Class Constructor
-     * @param {ValRequestClient} ValRequestClient Services Data
-     * @param {ValorantApiRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Request Client
+     * @param {ValorantApiRegion} Region Region Service Data
      */
     public constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion) {
         this.RequestClient = ValRequestClient;

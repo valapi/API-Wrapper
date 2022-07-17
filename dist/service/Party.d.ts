@@ -21,8 +21,8 @@ declare class Party {
     private Region;
     /**
      * Class Constructor
-     * @param {ValRequestClient} ValRequestClient Services Data
-     * @param {ValorantApiRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Request Client
+     * @param {ValorantApiRegion} Region Region Service Data
      */
     constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion);
     /**
@@ -80,6 +80,7 @@ declare class Party {
      */
     InviteToPartyByDisplayName(partyId: string, gameName: string, tagLine: string): Promise<ValorantApiRequestResponse<any>>;
     /**
+     * * Careful to use, Riot will immediately shut down your Project.
      * @param {string} partyId Party ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */

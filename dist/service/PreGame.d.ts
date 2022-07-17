@@ -4,9 +4,10 @@ declare class PreGame {
     private RequestClient;
     private Region;
     /**
-    * @param {ValRequestClient} ValRequestClient Services Data
-    * @param {ValorantApiRegion} Region Services Data
-    */
+     * Class Constructor
+     * @param {ValRequestClient} ValRequestClient Request Client
+     * @param {ValorantApiRegion} Region Region Service Data
+     */
     constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion);
     /**
      * Class Constructor
@@ -35,6 +36,7 @@ declare class PreGame {
      */
     GetPlayer(puuid: string): Promise<ValorantApiRequestResponse<any>>;
     /**
+     * * Careful to use, Riot will immediately shut down your Project.
      * @param {string} matchId Match ID
      * @param {string} agentId Character ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
@@ -47,6 +49,7 @@ declare class PreGame {
      */
     QuitMatch(matchId: string): Promise<ValorantApiRequestResponse<any>>;
     /**
+     * * Careful to use, Riot will immediately shut down your Project.
      * @param {string} matchId Match ID
      * @param {string} agentId Character ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}

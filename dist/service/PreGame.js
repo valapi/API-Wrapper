@@ -6,9 +6,10 @@ const tslib_1 = require("tslib");
 //service
 class PreGame {
     /**
-    * @param {ValRequestClient} ValRequestClient Services Data
-    * @param {ValorantApiRegion} Region Services Data
-    */
+     * Class Constructor
+     * @param {ValRequestClient} ValRequestClient Request Client
+     * @param {ValorantApiRegion} Region Region Service Data
+     */
     constructor(ValRequestClient, Region) {
         this.RequestClient = ValRequestClient;
         this.Region = Region;
@@ -60,6 +61,7 @@ class PreGame {
         });
     }
     /**
+     * * Careful to use, Riot will immediately shut down your Project.
      * @param {string} matchId Match ID
      * @param {string} agentId Character ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
@@ -80,6 +82,7 @@ class PreGame {
         });
     }
     /**
+     * * Careful to use, Riot will immediately shut down your Project.
      * @param {string} matchId Match ID
      * @param {string} agentId Character ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}

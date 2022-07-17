@@ -11,11 +11,11 @@ class Client {
 
     /**
      * Class Constructor
-     * @param {ValRequestClient} AxiosClient Services Data
-     * @param {ValorantApiRegion} Region Services Data
+     * @param {ValRequestClient} ValRequestClient Request Client
+     * @param {ValorantApiRegion} Region Region Service Data
      */
-    public constructor(AxiosClient: ValRequestClient, Region: ValorantApiRegion) {
-        this.RequestClient = AxiosClient;
+    public constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion) {
+        this.RequestClient = ValRequestClient;
         this.Region = Region;
     }
 

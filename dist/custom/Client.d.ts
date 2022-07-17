@@ -1,11 +1,11 @@
 import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
 import type { ValorantApiRegion } from "@valapi/lib";
 declare class Client {
-    protected RequestClient: ValRequestClient;
-    protected Region: ValorantApiRegion;
+    private RequestClient;
+    private Region;
     /**
      * Class Constructor
-     * @param {AxiosClient} AxiosClient Services Data
+     * @param {ValRequestClient} AxiosClient Services Data
      * @param {ValorantApiRegion} Region Services Data
      */
     constructor(AxiosClient: ValRequestClient, Region: ValorantApiRegion);

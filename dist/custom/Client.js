@@ -1,4 +1,5 @@
 "use strict";
+//import
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Client = void 0;
 const tslib_1 = require("tslib");
@@ -6,7 +7,7 @@ const tslib_1 = require("tslib");
 class Client {
     /**
      * Class Constructor
-     * @param {AxiosClient} AxiosClient Services Data
+     * @param {ValRequestClient} AxiosClient Services Data
      * @param {ValorantApiRegion} Region Services Data
      */
     constructor(AxiosClient, Region) {

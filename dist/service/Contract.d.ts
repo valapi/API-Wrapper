@@ -1,8 +1,8 @@
 import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
 import type { ValorantApiRegion } from "@valapi/lib";
 declare class Contract {
-    protected RequestClient: ValRequestClient;
-    protected Region: ValorantApiRegion;
+    private RequestClient;
+    private Region;
     /**
      * Class Constructor
      * @param {ValRequestClient} ValRequestClient Services Data
@@ -18,13 +18,13 @@ declare class Contract {
      */
     FetchActiveStory(): Promise<ValorantApiRequestResponse<any>>;
     /**
-     * @param {String} puuid Player UUID
+     * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     Fetch(puuid: string): Promise<ValorantApiRequestResponse<any>>;
     /**
-     * @param {String} puuid Player UUID
-     * @param {String} contractId Contract ID
+     * @param {string} puuid Player UUID
+     * @param {string} contractId Contract ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     Activate(puuid: string, contractId: string): Promise<ValorantApiRequestResponse<any>>;

@@ -1,4 +1,5 @@
 "use strict";
+//import
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CurrentGame = void 0;
 const tslib_1 = require("tslib");
@@ -14,7 +15,7 @@ class CurrentGame {
         this.Region = Region;
     }
     /**
-     * @param {String} matchId Match ID
+     * @param {string} matchId Match ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchAllChatMUCToken(matchId) {
@@ -23,7 +24,7 @@ class CurrentGame {
         });
     }
     /**
-     * @param {String} matchId Match ID
+     * @param {string} matchId Match ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchMatch(matchId) {
@@ -32,7 +33,7 @@ class CurrentGame {
         });
     }
     /**
-     * @param {String} matchId Match ID
+     * @param {string} matchId Match ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchMatchLoadouts(matchId) {
@@ -41,7 +42,7 @@ class CurrentGame {
         });
     }
     /**
-     * @param {String} puuid PlayerUUID
+     * @param {string} puuid PlayerUUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchPlayer(puuid) {
@@ -50,7 +51,7 @@ class CurrentGame {
         });
     }
     /**
-     * @param {String} matchId Match ID
+     * @param {string} matchId Match ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchTeamChatMUCToken(matchId) {
@@ -60,8 +61,8 @@ class CurrentGame {
     }
     /**
      * * Careful to use, Riot will immediately shut down your Project.
-     * @param {String} puuid Player UUID
-     * @param {String} matchId Match ID
+     * @param {string} puuid Player UUID
+     * @param {string} matchId Match ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     DisassociatePlayer(puuid, matchId) {

@@ -1,5 +1,5 @@
 import { Region as _Region, type ValorantApiError, type ValorantApiRequestData, ValEvent } from "@valapi/lib";
-import { Client as ValAuth, type ValAuthEngine, ValAuthData } from "@valapi/auth";
+import { Client as ValAuth, ValAuthEngine, ValAuthData } from "@valapi/auth";
 import { Contract as ContractService } from "../service/Contract";
 import { CurrentGame as CurrentGameService } from "../service/CurrentGame";
 import { Party as PartyService } from "../service/Party";
@@ -15,7 +15,7 @@ declare namespace ValWebClient {
         region?: keyof typeof _Region.from;
     }
     interface Event {
-        'ready': (data: ValWebClient) => void;
+        'ready': () => void;
         'expires': (data: {
             name: string;
             data: any;
@@ -51,12 +51,12 @@ declare class ValWebClient extends ValEvent {
     MMR: MMRService;
     Player: PlayerService;
     /**
-     * Create a new Valorant API Wrapper Client
+     * Create a new {@link ValWebClient} Client
      * @param {ValWebClient.Options} config Client Config
      */
     constructor(config?: ValWebClient.Options);
     private reload;
-    private fromCookie;
+    fromCookie(cookie: string): Promise<void>;
     /**
      * From {@link ValAuthData save} data
      * @param {ValAuthData} data {@link toJSON toJSON()} data

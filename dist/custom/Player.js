@@ -1,4 +1,5 @@
 "use strict";
+//import
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Player = void 0;
 const tslib_1 = require("tslib");
@@ -6,7 +7,7 @@ const tslib_1 = require("tslib");
 class Player {
     /**
      * Class Constructor
-     * @param {AxiosClient} AxiosClient Services Data
+     * @param {ValRequestClient} AxiosClient Services Data
      * @param {ValorantApiRegion} Region Services Data
      */
     constructor(AxiosClient, Region, UserAgent) {
@@ -16,7 +17,7 @@ class Player {
     }
     //Mike - Username From ID
     /**
-     * @param {String} puuid Player UUID
+     * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetUsername(puuid) {
@@ -41,7 +42,7 @@ class Player {
     }
     //PVP Endpoints
     /**
-     * @param {String} puuid PlayerUUID
+     * @param {string} puuid PlayerUUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     AccountXP(puuid) {
@@ -50,7 +51,7 @@ class Player {
         });
     }
     /**
-     * @param {String} puuid PlayerUUID
+     * @param {string} puuid PlayerUUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     Loadout(puuid) {
@@ -59,7 +60,7 @@ class Player {
         });
     }
     /**
-     * @param {String} puuid PlayerUUID
+     * @param {string} puuid PlayerUUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     LoadoutUpdate(puuid) {
@@ -78,7 +79,7 @@ class Player {
     // NOT IN DOCS //
     /**
      * * IDK what this is
-     * @param {String} puuid PlayerUUID
+     * @param {string} puuid PlayerUUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     MassRewards(puuid) {

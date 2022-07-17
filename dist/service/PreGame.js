@@ -1,4 +1,5 @@
 "use strict";
+//import
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PreGame = void 0;
 const tslib_1 = require("tslib");
@@ -14,7 +15,7 @@ class PreGame {
     }
     /**
      * Class Constructor
-     * @param {String} matchId Match ID
+     * @param {string} matchId Match ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchChatToken(matchId) {
@@ -23,7 +24,7 @@ class PreGame {
         });
     }
     /**
-     * @param {String} matchId Match ID
+     * @param {string} matchId Match ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchVoiceToken(matchId) {
@@ -32,7 +33,7 @@ class PreGame {
         });
     }
     /**
-     * @param {String} matchId Match ID
+     * @param {string} matchId Match ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetMatch(matchId) {
@@ -41,7 +42,7 @@ class PreGame {
         });
     }
     /**
-     * @param {String} matchId Match ID
+     * @param {string} matchId Match ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetMatchLoadouts(matchId) {
@@ -50,7 +51,7 @@ class PreGame {
         });
     }
     /**
-     * @param {String} puuid Player UUID
+     * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetPlayer(puuid) {
@@ -59,8 +60,8 @@ class PreGame {
         });
     }
     /**
-     * @param {String} matchId Match ID
-     * @param {String} agentId Character ID
+     * @param {string} matchId Match ID
+     * @param {string} agentId Character ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     LockCharacter(matchId, agentId) {
@@ -70,7 +71,7 @@ class PreGame {
     }
     /**
      * * Careful to use, Riot will immediately shut down your Project.
-     * @param {String} matchId Match ID
+     * @param {string} matchId Match ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     QuitMatch(matchId) {
@@ -79,8 +80,8 @@ class PreGame {
         });
     }
     /**
-     * @param {String} matchId Match ID
-     * @param {String} agentId Character ID
+     * @param {string} matchId Match ID
+     * @param {string} agentId Character ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     SelectCharacter(matchId, agentId) {

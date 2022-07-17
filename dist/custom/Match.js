@@ -1,4 +1,5 @@
 "use strict";
+//import
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Match = void 0;
 const tslib_1 = require("tslib");
@@ -6,7 +7,7 @@ const tslib_1 = require("tslib");
 class Match {
     /**
      * Class Constructor
-     * @param {AxiosClient} AxiosClient Services Data
+     * @param {ValRequestClient} AxiosClient Services Data
      * @param {ValorantApiRegion} Region Services Data
      */
     constructor(AxiosClient, Region) {
@@ -16,7 +17,7 @@ class Match {
     //PVP Endpoints
     /**
      * Get contract definitions
-     * @param {String} matchId Match ID
+     * @param {string} matchId Match ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchMatchDetails(matchId) {
@@ -25,10 +26,10 @@ class Match {
         });
     }
     /**
-     * @param {String} puuid Player UUID
-     * @param {String} queueId Queue
-     * @param {Number} startIndex Start Index (default: 0)
-     * @param {Number} endIndex End Index (default: 10)
+     * @param {string} puuid Player UUID
+     * @param {string} queueId Queue
+     * @param {number} startIndex Start Index (default: 0)
+     * @param {number} endIndex End Index (default: 10)
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchMatchHistory(puuid, queueId, startIndex = 0, endIndex = 10) {

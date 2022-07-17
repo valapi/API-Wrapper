@@ -20,18 +20,13 @@ const Match_1 = require("../custom/Match");
 const MMR_1 = require("../custom/MMR");
 const Player_1 = require("../custom/Player");
 //class
-const _defaultConfig = {
-    region: 'na',
-    client: auth_1.ValAuthEngineDefault.client,
-    axiosConfig: auth_1.ValAuthEngineDefault.axiosConfig,
-    expiresIn: auth_1.ValAuthEngineDefault.expiresIn,
-};
+const _defaultConfig = Object.assign(Object.assign({}, Engine_1.CONFIG_DEFAULT), { region: 'na' });
 /**
  * API from Web Client
  */
 class ValWebClient extends lib_1.ValEvent {
     /**
-     * Create a new Valorant API Wrapper Client
+     * Create a new {@link ValWebClient} Client
      * @param {ValWebClient.Options} config Client Config
      */
     constructor(config = {}) {
@@ -43,13 +38,12 @@ class ValWebClient extends lib_1.ValEvent {
         this.AuthClient.on('expires', ((data) => { this.emit('expires', data); }));
         this.AuthClient.on('error', ((data) => { this.emit('error', { errorCode: data.name, message: data.message, data: data.data }); }));
         //config
-        this.options = new Object(Object.assign(Object.assign({}, _defaultConfig), config));
+        this.options = Object.assign(Object.assign({}, _defaultConfig), config);
         this.RegionServices = new lib_1.ValRegion(this.AuthClient.region.live).toJSON();
         //axios
         this.RequestClient = new lib_1.ValRequestClient(this.options.axiosConfig);
         this.RequestClient.on('request', ((data) => { this.emit('request', data); }));
         this.RequestClient.on('error', ((data) => { this.emit('error', data); }));
-        //data
         //service
         this.Contract = new Contract_1.Contract(this.RequestClient, this.RegionServices);
         this.CurrentGame = new CurrentGame_1.CurrentGame(this.RequestClient, this.RegionServices);
@@ -60,16 +54,20 @@ class ValWebClient extends lib_1.ValEvent {
         this.Client = new Client_1.Client(this.RequestClient, this.RegionServices);
         this.Match = new Match_1.Match(this.RequestClient, this.RegionServices);
         this.MMR = new MMR_1.MMR(this.RequestClient, this.RegionServices);
-        this.Player = new Player_1.Player(this.RequestClient, this.RegionServices, Engine_1.CONFIG_UserAgent);
+        this.Player = new Player_1.Player(this.RequestClient, this.RegionServices, auth_1.ValAuthEngine.Default.userAgent);
         //event
-        this.emit('ready', this);
+        this.emit('ready');
     }
     //reload
     reload() {
         var _a, _b;
         const _data = this.AuthClient.toJSON();
         this.isError = _data.isError;
-        this.isMultifactor = _data.multifactor;
+        this.isMultifactor = _data.isMultifactor;
+        this.AuthClient.region = {
+            live: String(this.options.region),
+            pbe: "na",
+        };
         //config
         this.AuthClient.config = this.options;
         this.RegionServices = new lib_1.ValRegion(_data.region.live).toJSON();
@@ -82,10 +80,10 @@ class ValWebClient extends lib_1.ValEvent {
                 'X-Riot-ClientVersion': String((_a = this.AuthClient.config.client) === null || _a === void 0 ? void 0 : _a.version),
                 'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_b = this.AuthClient.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
             },
-            httpsAgent: new https_1.Agent({ keepAlive: true, ciphers: Engine_1.CONFIG_Ciphers.join(':'), honorCipherOrder: true, minVersion: 'TLSv1.2', maxVersion: 'TLSv1.3' }),
+            httpsAgent: new https_1.Agent({ keepAlive: true, ciphers: auth_1.ValAuthEngine.Default.ciphers, honorCipherOrder: true, minVersion: 'TLSv1.2', maxVersion: 'TLSv1.3' }),
             httpAgent: new http_1.Agent({ keepAlive: true }),
         };
-        this.RequestClient = new lib_1.ValRequestClient(new Object(Object.assign(Object.assign(Object.assign({}, this.AuthClient.config.axiosConfig), this.options.axiosConfig), _normalAxiosConfig)));
+        this.RequestClient = new lib_1.ValRequestClient(Object.assign(Object.assign({}, this.options.axiosConfig), _normalAxiosConfig));
         this.RequestClient.on('request', ((data) => { this.emit('request', data); }));
         this.RequestClient.on('error', ((data) => { this.emit('error', data); }));
         //service
@@ -98,14 +96,14 @@ class ValWebClient extends lib_1.ValEvent {
         this.Client = new Client_1.Client(this.RequestClient, this.RegionServices);
         this.Match = new Match_1.Match(this.RequestClient, this.RegionServices);
         this.MMR = new MMR_1.MMR(this.RequestClient, this.RegionServices);
-        this.Player = new Player_1.Player(this.RequestClient, this.RegionServices, Engine_1.CONFIG_UserAgent);
+        this.Player = new Player_1.Player(this.RequestClient, this.RegionServices, auth_1.ValAuthEngine.Default.userAgent);
         //event
-        this.emit('ready', this);
+        this.emit('ready');
     }
     //save
     fromCookie(cookie) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            this.AuthClient = yield auth_1.Client.fromCookie(cookie);
+            yield this.AuthClient.fromCookie(cookie);
             this.reload();
         });
     }
@@ -166,19 +164,17 @@ class ValWebClient extends lib_1.ValEvent {
      */
     setRegion(region) {
         this.options.region = region;
-        this.AuthClient.region.live = region;
         this.reload();
     }
     /**
      * @param {string} clientVersion Client Version
      * @returns {void}
      */
-    setClientVersion(clientVersion) {
-        var _a, _b;
-        if (clientVersion === void 0) { clientVersion = (_a = auth_1.ValAuthEngineDefault.client) === null || _a === void 0 ? void 0 : _a.version; }
+    setClientVersion(clientVersion = auth_1.ValAuthEngine.Default.client.version) {
+        var _a;
         this.options.client = {
             version: clientVersion,
-            platform: (_b = this.options.client) === null || _b === void 0 ? void 0 : _b.platform,
+            platform: (_a = this.options.client) === null || _a === void 0 ? void 0 : _a.platform,
         };
         this.reload();
     }
@@ -186,11 +182,10 @@ class ValWebClient extends lib_1.ValEvent {
      * @param {ValAuthEngine.ClientPlatfrom} clientPlatfrom Client Platfrom in json
      * @returns {void}
      */
-    setClientPlatfrom(clientPlatfrom) {
-        var _a, _b;
-        if (clientPlatfrom === void 0) { clientPlatfrom = (_a = auth_1.ValAuthEngineDefault.client) === null || _a === void 0 ? void 0 : _a.platform; }
+    setClientPlatfrom(clientPlatfrom = auth_1.ValAuthEngine.Default.client.platform) {
+        var _a;
         this.options.client = {
-            version: (_b = this.options.client) === null || _b === void 0 ? void 0 : _b.version,
+            version: (_a = this.options.client) === null || _a === void 0 ? void 0 : _a.version,
             platform: clientPlatfrom,
         };
         this.reload();

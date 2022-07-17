@@ -1,4 +1,5 @@
 "use strict";
+//import
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Session = void 0;
 const tslib_1 = require("tslib");
@@ -14,7 +15,7 @@ class Session {
         this.Region = Region;
     }
     /**
-     * @param {String} puuid Player UUID
+     * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     Get(puuid) {
@@ -24,7 +25,7 @@ class Session {
     }
     /**
      * * Careful to use, Riot will immediately shut down your Project.
-     * @param {String} puuid Player UUID
+     * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     ReConnect(puuid) {

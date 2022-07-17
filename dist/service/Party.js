@@ -1,4 +1,5 @@
 "use strict";
+//import
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Party = void 0;
 const tslib_1 = require("tslib");
@@ -15,7 +16,7 @@ class Party {
     }
     /**
      *
-     * @param {String} puuid Player UUID
+     * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     RemovePlayer(puuid) {
@@ -32,7 +33,7 @@ class Party {
         });
     }
     /**
-     * @param {String} partyId Party ID
+     * @param {string} partyId Party ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchMUCToken(partyId) {
@@ -41,7 +42,7 @@ class Party {
         });
     }
     /**
-     * @param {String} partyId Party ID
+     * @param {string} partyId Party ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchParty(partyId) {
@@ -50,7 +51,7 @@ class Party {
         });
     }
     /**
-     * @param {String} puuid Player UUID
+     * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchPlayer(puuid) {
@@ -59,7 +60,7 @@ class Party {
         });
     }
     /**
-     * @param {String} partyId Party ID
+     * @param {string} partyId Party ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchVoiceToken(partyId) {
@@ -68,8 +69,8 @@ class Party {
         });
     }
     /**
-     * @param {String} partyId Party ID
-     * @param {String} queueId Queue (EligibleQueues)
+     * @param {string} partyId Party ID
+     * @param {string} queueId Queue (EligibleQueues)
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     ChangeQueue(partyId, queueId) {
@@ -80,8 +81,8 @@ class Party {
         });
     }
     /**
-     * @param {String} partyId Party ID
-     * @param {String} requestId Request ID
+     * @param {string} partyId Party ID
+     * @param {string} requestId Request ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     DeclineRequest(partyId, requestId) {
@@ -90,7 +91,7 @@ class Party {
         });
     }
     /**
-     * @param {String} partyId Party ID
+     * @param {string} partyId Party ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     EnterMatchmakingQueue(partyId) {
@@ -99,9 +100,9 @@ class Party {
         });
     }
     /**
-     * @param {String} partyId Party ID
-     * @param {String} gameName In-Game Name
-     * @param {String} tagLine In-Game Tag
+     * @param {string} partyId Party ID
+     * @param {string} gameName In-Game Name
+     * @param {string} tagLine In-Game Tag
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     InviteToPartyByDisplayName(partyId, gameName, tagLine) {
@@ -110,7 +111,7 @@ class Party {
         });
     }
     /**
-     * @param {String} partyId Party ID
+     * @param {string} partyId Party ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     LeaveMatchmakingQueue(partyId) {
@@ -119,8 +120,8 @@ class Party {
         });
     }
     /**
-     * @param {String} puuid Player UUID
-     * @param {String} partyId Party ID
+     * @param {string} puuid Player UUID
+     * @param {string} partyId Party ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     RefreshCompetitiveTier(puuid, partyId) {
@@ -129,8 +130,8 @@ class Party {
         });
     }
     /**
-     * @param {String} puuid Player UUID
-     * @param {String} partyId Party ID
+     * @param {string} puuid Player UUID
+     * @param {string} partyId Party ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     RefreshPings(puuid, partyId) {
@@ -139,8 +140,8 @@ class Party {
         });
     }
     /**
-     * @param {String} puuid Player UUID
-     * @param {String} partyId Party ID
+     * @param {string} puuid Player UUID
+     * @param {string} partyId Party ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     RefreshPlayerIdentity(puuid, partyId) {
@@ -149,8 +150,8 @@ class Party {
         });
     }
     /**
-     * @param {String} partyId Party ID
-     * @param {String} accessibility Accessibility
+     * @param {string} partyId Party ID
+     * @param {string} accessibility Accessibility
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     SetAccessibility(partyId, accessibility) {
@@ -161,8 +162,8 @@ class Party {
         });
     }
     /**
-     * @param {String} partyId Party ID
-     * @param {CustomGame_Settings} settings Custom Game Settings
+     * @param {string} partyId Party ID
+     * @param {CustomGameSettings} settings Custom Game Settings
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     SetCustomGameSettings(partyId, settings) {
@@ -171,8 +172,8 @@ class Party {
         });
     }
     /**
-     * @param {String} puuid Player UUID
-     * @param {String} partyId Party ID
+     * @param {string} puuid Player UUID
+     * @param {string} partyId Party ID
      * @param {boolean} isReady Ready or not?
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
@@ -184,7 +185,7 @@ class Party {
         });
     }
     /**
-     * @param {String} partyId Party ID
+     * @param {string} partyId Party ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     StartCustomGame(partyId) {
@@ -194,8 +195,8 @@ class Party {
     }
     // NOT IN DOCS //
     /**
-     * @param {String} puuid Player UUID
-     * @param {String} partyId Party ID
+     * @param {string} puuid Player UUID
+     * @param {string} partyId Party ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     LeaveParty(puuid, partyId) {
@@ -204,7 +205,7 @@ class Party {
         });
     }
     /**
-     * @param {String} partyId Party ID
+     * @param {string} partyId Party ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     AutoBalance(partyId) {
@@ -213,9 +214,9 @@ class Party {
         });
     }
     /**
-     * @param {String} partyId Party ID
-     * @param {String} team Team
-     * @param {String} puuid Player UUID
+     * @param {string} partyId Party ID
+     * @param {string} team Team
+     * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     ChangeTeamInCustomGame(partyId, team, puuid) {
@@ -227,7 +228,7 @@ class Party {
     }
     /**
      * * Careful to use, Riot will immediately shut down your Project.
-     * @param {String} puuid Player UUID
+     * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     StartSoloExperience(puuid) {
@@ -236,9 +237,8 @@ class Party {
         });
     }
     /**
-     * * Careful to use, Riot will immediately shut down your Project.
-     * @param {String} puuid Player UUID
-     * @param {String} partyId Party ID
+     * @param {string} puuid Player UUID
+     * @param {string} partyId Party ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     TransferOwner(puuid, partyId) {

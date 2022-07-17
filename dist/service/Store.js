@@ -1,4 +1,5 @@
 "use strict";
+//import
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Store = void 0;
 const tslib_1 = require("tslib");
@@ -14,8 +15,8 @@ class Store {
         this.Region = Region;
     }
     /**
-     * @param {String} puuid Player UUID
-     * @param {String} itemTypeId Item Type
+     * @param {string} puuid Player UUID
+     * @param {string} itemTypeId Item Type
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetEntitlements(puuid, itemTypeId) {
@@ -32,7 +33,7 @@ class Store {
         });
     }
     /**
-     * @param {String} puuid Player UUID
+     * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetStorefront(puuid) {
@@ -41,7 +42,7 @@ class Store {
         });
     }
     /**
-     * @param {String} puuid Player UUID
+     * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     GetWallet(puuid) {
@@ -52,7 +53,7 @@ class Store {
     // NOT IN DOCS //
     /**
      * * NOT TESTED
-     * @param {String} puuid Player UUID
+     * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     RevealNightMarketOffers(puuid) {

@@ -1,4 +1,5 @@
 "use strict";
+//import
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MMR = void 0;
 const tslib_1 = require("tslib");
@@ -6,7 +7,7 @@ const tslib_1 = require("tslib");
 class MMR {
     /**
      * Class Constructor
-     * @param {AxiosClient} AxiosClient Services Data
+     * @param {ValRequestClient} AxiosClient Services Data
      * @param {ValorantApiRegion} Region Services Data
      */
     constructor(AxiosClient, Region) {
@@ -14,10 +15,10 @@ class MMR {
         this.Region = Region;
     }
     /**
-     * @param {String} puuid Player UUID
-     * @param {String} queueId Queue
-     * @param {Number} startIndex Start Index (default: 0)
-     * @param {Number} endIndex End Index (default: 10)
+     * @param {string} puuid Player UUID
+     * @param {string} queueId Queue
+     * @param {number} startIndex Start Index (default: 0)
+     * @param {number} endIndex End Index (default: 10)
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchCompetitiveUpdates(puuid, queueId, startIndex = 0, endIndex = 10) {
@@ -30,10 +31,10 @@ class MMR {
         });
     }
     /**
-     * @param {String} seasonId Season ID
-     * @param {Number} startIndex Start Index (default: 0)
-     * @param {Number} size Size (default: 510)
-     * @param {String} serachUsername Search Username
+     * @param {string} seasonId Season ID
+     * @param {number} startIndex Start Index (default: 0)
+     * @param {number} size Size (default: 510)
+     * @param {string} serachUsername Search Username
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchLeaderboard(seasonId, startIndex = 0, size = 510, serachUsername) {
@@ -46,7 +47,7 @@ class MMR {
         });
     }
     /**
-     * @param {String} puuid Player UUID
+     * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     FetchPlayer(puuid) {
@@ -56,7 +57,7 @@ class MMR {
     }
     // NOT IN DOCS //
     /**
-     * @param {String} puuid Player UUID
+     * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     HideActRankBadge(puuid) {

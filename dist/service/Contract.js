@@ -1,4 +1,5 @@
 "use strict";
+//import
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Contract = void 0;
 const tslib_1 = require("tslib");
@@ -30,7 +31,7 @@ class Contract {
         });
     }
     /**
-     * @param {String} puuid Player UUID
+     * @param {string} puuid Player UUID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     Fetch(puuid) {
@@ -39,8 +40,8 @@ class Contract {
         });
     }
     /**
-     * @param {String} puuid Player UUID
-     * @param {String} contractId Contract ID
+     * @param {string} puuid Player UUID
+     * @param {string} contractId Contract ID
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     Activate(puuid, contractId) {

@@ -123,6 +123,14 @@ class ValWebClient extends lib_1.ValEvent {
     toJSON() {
         return this.AuthClient.toJSON();
     }
+    /**
+     *
+     * @param {string} token Access Token
+     * @returns {string} Player UUID
+     */
+    getSubject(token) {
+        return this.AuthClient.parsePlayerUuid(token);
+    }
     //auth
     /**
      * Reconnect to the server

@@ -201,6 +201,15 @@ class ValWebClient extends ValEvent {
         return this.AuthClient.toJSON();
     }
 
+    /**
+     *
+     * @param {string} token Access Token
+     * @returns {string} Player UUID
+     */
+    public getSubject(token?: string): string {
+        return this.AuthClient.parsePlayerUuid(token);
+    }
+
     //auth
 
     /**

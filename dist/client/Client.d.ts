@@ -69,6 +69,12 @@ declare class ValWebClient extends ValEvent {
      */
     toJSON(): ValAuthData;
     /**
+     *
+     * @param {string} token Access Token
+     * @returns {string} Player UUID
+     */
+    getSubject(token?: string): string;
+    /**
      * Reconnect to the server
      * @param force force to reload (only token)
      * @returns {Promise<Array<ValAuth.Expire>>}

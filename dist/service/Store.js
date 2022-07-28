@@ -21,7 +21,7 @@ class Store {
      */
     GetEntitlements(puuid, itemTypeId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.playerData + `/store/v1/entitlements/${puuid}/${itemTypeId}`);
+            return yield this.RequestClient.get(`${this.Region.url.playerData}/store/v1/entitlements/${puuid}/${itemTypeId}`);
         });
     }
     /**
@@ -29,7 +29,7 @@ class Store {
      */
     GetOffers() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.playerData + `/store/v1/offers/`);
+            return yield this.RequestClient.get(`${this.Region.url.playerData}/store/v1/offers/`);
         });
     }
     /**
@@ -38,7 +38,7 @@ class Store {
      */
     GetStorefront(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.playerData + `/store/v2/storefront/${puuid}`);
+            return yield this.RequestClient.get(`${this.Region.url.playerData}/store/v2/storefront/${puuid}`);
         });
     }
     /**
@@ -47,7 +47,7 @@ class Store {
      */
     GetWallet(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.playerData + `/store/v1/wallet/${puuid}`);
+            return yield this.RequestClient.get(`${this.Region.url.playerData}/store/v1/wallet/${puuid}`);
         });
     }
     // NOT IN DOCS //
@@ -58,7 +58,7 @@ class Store {
      */
     RevealNightMarketOffers(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.playerData + `/store/v2/storefront/${puuid}/nightmarket/offers`);
+            return yield this.RequestClient.post(`${this.Region.url.playerData}/store/v2/storefront/${puuid}/nightmarket/offers`);
         });
     }
 }

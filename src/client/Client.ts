@@ -11,7 +11,7 @@ import {
     Client as ValAuth, ValAuthEngine,
     ValAuthData
 } from "@valapi/auth";
-import { CONFIG_DEFAULT } from "@valapi/auth/dist/client/Engine"
+import { CONFIG_DEFAULT } from "@valapi/auth/dist/client/Engine";
 import { Agent as HttpAgent } from "http";
 import { Agent as HttpsAgent } from "https";
 import type { AxiosRequestConfig } from "axios";
@@ -93,7 +93,7 @@ class ValWebClient extends ValEvent {
     public constructor(config: ValWebClient.Options = {}) {
         super();
         this.AuthClient = new ValAuth(config);
-        this.AuthClient.on('expires', ((data: ValAuth.Expire) => { this.emit('expires', data); }))
+        this.AuthClient.on('expires', ((data: ValAuth.Expire) => { this.emit('expires', data); }));
         this.AuthClient.on('error', ((data: { name: "ValAuth_Error", message: string, data?: any }) => { this.emit('error', { errorCode: data.name, message: data.message, data: data.data }); }));
 
         //config
@@ -217,7 +217,7 @@ class ValWebClient extends ValEvent {
      * @param force force to reload (only token)
      * @returns {Promise<Array<ValAuth.Expire>>}
      */
-    public async refresh(force?: Boolean): Promise<Array<ValAuth.Expire>> {
+    public async refresh(force?: boolean): Promise<Array<ValAuth.Expire>> {
         return this.AuthClient.refresh(force);
     }
 

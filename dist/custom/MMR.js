@@ -23,7 +23,7 @@ class MMR {
      */
     FetchCompetitiveUpdates(puuid, queueId, startIndex = 0, endIndex = 10) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            let _url = this.Region.url.playerData + `/mmr/v1/players/${puuid}/competitiveupdates?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
+            let _url = `${this.Region.url.playerData}/mmr/v1/players/${puuid}/competitiveupdates?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
             if (queueId) {
                 _url += `&queue=${queueId}`;
             }
@@ -39,7 +39,7 @@ class MMR {
      */
     FetchLeaderboard(seasonId, startIndex = 0, size = 510, serachUsername) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            let _url = this.Region.url.playerData + `/mmr/v1/leaderboards/affinity/${this.Region.data.api}/queue/competitive/season/${seasonId}?startIndex=${startIndex}&size=${size}`;
+            let _url = `${this.Region.url.playerData}/mmr/v1/leaderboards/affinity/${this.Region.data.api}/queue/competitive/season/${seasonId}?startIndex=${startIndex}&size=${size}`;
             if (serachUsername) {
                 _url += `&query=${serachUsername}`;
             }
@@ -52,7 +52,7 @@ class MMR {
      */
     FetchPlayer(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.playerData + `/mmr/v1/players/${puuid}`);
+            return yield this.RequestClient.get(`${this.Region.url.playerData}/mmr/v1/players/${puuid}`);
         });
     }
     // NOT IN DOCS //
@@ -62,7 +62,7 @@ class MMR {
      */
     HideActRankBadge(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.playerData + `/mmr/v1/players/${puuid}/hideactrankbadge`);
+            return yield this.RequestClient.post(`${this.Region.url.playerData}/mmr/v1/players/${puuid}/hideactrankbadge`);
         });
     }
 }

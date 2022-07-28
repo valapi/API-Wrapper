@@ -20,7 +20,7 @@ class CurrentGame {
      */
     FetchAllChatMUCToken(matchId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/allchatmuctoken`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/core-game/v1/matches/${matchId}/allchatmuctoken`);
         });
     }
     /**
@@ -29,7 +29,7 @@ class CurrentGame {
      */
     FetchMatch(matchId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/core-game/v1/matches/${matchId}`);
         });
     }
     /**
@@ -38,7 +38,7 @@ class CurrentGame {
      */
     FetchMatchLoadouts(matchId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/loadouts`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/core-game/v1/matches/${matchId}/loadouts`);
         });
     }
     /**
@@ -47,7 +47,7 @@ class CurrentGame {
      */
     FetchPlayer(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/players/${puuid}`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/core-game/v1/players/${puuid}`);
         });
     }
     /**
@@ -56,7 +56,7 @@ class CurrentGame {
      */
     FetchTeamChatMUCToken(matchId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/teamchatmuctoken`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/core-game/v1/matches/${matchId}/teamchatmuctoken`);
         });
     }
     /**
@@ -67,7 +67,7 @@ class CurrentGame {
      */
     DisassociatePlayer(puuid, matchId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/core-game/v1/players/${puuid}/disassociate/${matchId}`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/core-game/v1/players/${puuid}/disassociate/${matchId}`);
         });
     }
 }

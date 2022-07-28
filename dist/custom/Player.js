@@ -23,7 +23,7 @@ class Player {
      */
     GetUsername(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.put(this.Region.url.playerData + `/name-service/v2/players`, [
+            return yield this.RequestClient.put(`${this.Region.url.playerData}/name-service/v2/players`, [
                 `${puuid}`
             ]);
         });
@@ -48,7 +48,7 @@ class Player {
      */
     AccountXP(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.playerData + `/account-xp/v1/players/${puuid}`);
+            return yield this.RequestClient.get(`${this.Region.url.playerData}/account-xp/v1/players/${puuid}`);
         });
     }
     /**
@@ -57,7 +57,7 @@ class Player {
      */
     Loadout(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
+            return yield this.RequestClient.get(`${this.Region.url.playerData}/personalization/v2/players/${puuid}/playerloadout`);
         });
     }
     /**
@@ -66,7 +66,7 @@ class Player {
      */
     LoadoutUpdate(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.put(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
+            return yield this.RequestClient.put(`${this.Region.url.playerData}/personalization/v2/players/${puuid}/playerloadout`);
         });
     }
     /**
@@ -74,7 +74,7 @@ class Player {
      */
     FetchPlayerRestrictions() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.playerData + `/restrictions/v3/penalties`);
+            return yield this.RequestClient.get(`${this.Region.url.playerData}/restrictions/v3/penalties`);
         });
     }
     // NOT IN DOCS //
@@ -84,7 +84,7 @@ class Player {
      */
     MassRewards(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.playerData + `/mass-rewards/v1/players/${puuid}/reconcile`);
+            return yield this.RequestClient.post(`${this.Region.url.playerData}/mass-rewards/v1/players/${puuid}/reconcile`);
         });
     }
 }

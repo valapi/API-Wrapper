@@ -79,7 +79,7 @@ declare class ValWebClient extends ValEvent {
      * @param force force to reload (only token)
      * @returns {Promise<Array<ValAuth.Expire>>}
      */
-    refresh(force?: Boolean): Promise<Array<ValAuth.Expire>>;
+    refresh(force?: boolean): Promise<Array<ValAuth.Expire>>;
     /**
      * Login to Riot Account
      * @param {string} username Username

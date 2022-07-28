@@ -24,7 +24,7 @@ class Session {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async Get(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/session/v1/sessions/${puuid}`);
     }
 
     /**
@@ -33,7 +33,7 @@ class Session {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async ReConnect(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}/reconnect`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/session/v1/sessions/${puuid}/reconnect`);
     }
 }
 

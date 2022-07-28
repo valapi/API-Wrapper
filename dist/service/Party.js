@@ -21,7 +21,7 @@ class Party {
      */
     RemovePlayer(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.delete(this.Region.url.partyService + `/parties/v1/players/${puuid}`);
+            return yield this.RequestClient.delete(`${this.Region.url.partyService}/parties/v1/players/${puuid}`);
         });
     }
     /**
@@ -29,7 +29,7 @@ class Party {
      */
     FetchCustomGameConfigs() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/parties/v1/parties/customgameconfigs`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/parties/v1/parties/customgameconfigs`);
         });
     }
     /**
@@ -38,7 +38,7 @@ class Party {
      */
     FetchMUCToken(partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/parties/v1/parties/${partyId}/muctoken`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/muctoken`);
         });
     }
     /**
@@ -47,7 +47,7 @@ class Party {
      */
     FetchParty(partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/parties/v1/parties/${partyId}`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/parties/v1/parties/${partyId}`);
         });
     }
     /**
@@ -56,7 +56,7 @@ class Party {
      */
     FetchPlayer(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/parties/v1/players/${puuid}`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/parties/v1/players/${puuid}`);
         });
     }
     /**
@@ -65,7 +65,7 @@ class Party {
      */
     FetchVoiceToken(partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/parties/v1/parties/${partyId}/voicetoken`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/voicetoken`);
         });
     }
     /**
@@ -75,7 +75,7 @@ class Party {
      */
     ChangeQueue(partyId, queueId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/queue`, {
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/queue`, {
                 "queueID": String(queueId)
             });
         });
@@ -87,7 +87,7 @@ class Party {
      */
     DeclineRequest(partyId, requestId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/request/${requestId}/decline`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/request/${requestId}/decline`);
         });
     }
     /**
@@ -96,7 +96,7 @@ class Party {
      */
     EnterMatchmakingQueue(partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/matchmaking/join`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/matchmaking/join`);
         });
     }
     /**
@@ -107,7 +107,7 @@ class Party {
      */
     InviteToPartyByDisplayName(partyId, gameName, tagLine) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/invites/name/${gameName}/tag/${tagLine}`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/invites/name/${gameName}/tag/${tagLine}`);
         });
     }
     /**
@@ -117,7 +117,7 @@ class Party {
      */
     LeaveMatchmakingQueue(partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/matchmaking/leave`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/matchmaking/leave`);
         });
     }
     /**
@@ -127,7 +127,7 @@ class Party {
      */
     RefreshCompetitiveTier(puuid, partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/refreshCompetitiveTier`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${puuid}/members/${partyId}/refreshCompetitiveTier`);
         });
     }
     /**
@@ -137,7 +137,7 @@ class Party {
      */
     RefreshPings(puuid, partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/refreshPings`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${puuid}/members/${partyId}/refreshPings`);
         });
     }
     /**
@@ -147,7 +147,7 @@ class Party {
      */
     RefreshPlayerIdentity(puuid, partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/refreshPlayerIdentity`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${puuid}/members/${partyId}/refreshPlayerIdentity`);
         });
     }
     /**
@@ -157,7 +157,7 @@ class Party {
      */
     SetAccessibility(partyId, accessibility) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/accessibility`, {
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/accessibility`, {
                 "accessibility": `${accessibility}`
             });
         });
@@ -169,7 +169,7 @@ class Party {
      */
     SetCustomGameSettings(partyId, settings) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/customgamesettings`, settings);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/customgamesettings`, settings);
         });
     }
     /**
@@ -180,7 +180,7 @@ class Party {
      */
     SetMemberReady(puuid, partyId, isReady) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/setReady`, {
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${puuid}/members/${partyId}/setReady`, {
                 "ready": isReady
             });
         });
@@ -191,7 +191,7 @@ class Party {
      */
     StartCustomGame(partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/startcustomgame`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/startcustomgame`);
         });
     }
     // NOT IN DOCS //
@@ -202,7 +202,7 @@ class Party {
      */
     LeaveParty(puuid, partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/players/${puuid}/leaveparty/${partyId}`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/players/${puuid}/leaveparty/${partyId}`);
         });
     }
     /**
@@ -211,7 +211,7 @@ class Party {
      */
     AutoBalance(partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/balance`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/balance`);
         });
     }
     /**
@@ -222,7 +222,7 @@ class Party {
      */
     ChangeTeamInCustomGame(partyId, team, puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/customgamemembership/${team}`, {
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/customgamemembership/${team}`, {
                 "playerToPutOnTeam": String(puuid),
             });
         });
@@ -234,7 +234,7 @@ class Party {
      */
     StartSoloExperience(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/players/${puuid}/startsoloexperience`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/players/${puuid}/startsoloexperience`);
         });
     }
     /**
@@ -244,7 +244,7 @@ class Party {
      */
     TransferOwner(puuid, partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/members/${puuid}/owner`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/members/${puuid}/owner`);
         });
     }
 }

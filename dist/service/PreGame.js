@@ -21,7 +21,7 @@ class PreGame {
      */
     FetchChatToken(matchId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/chattoken`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/pregame/v1/matches/${matchId}/chattoken`);
         });
     }
     /**
@@ -30,7 +30,7 @@ class PreGame {
      */
     FetchVoiceToken(matchId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/voicetoken`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/pregame/v1/matches/${matchId}/voicetoken`);
         });
     }
     /**
@@ -39,7 +39,7 @@ class PreGame {
      */
     GetMatch(matchId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/pregame/v1/matches/${matchId}`);
         });
     }
     /**
@@ -48,7 +48,7 @@ class PreGame {
      */
     GetMatchLoadouts(matchId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/loadouts`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/pregame/v1/matches/${matchId}/loadouts`);
         });
     }
     /**
@@ -57,7 +57,7 @@ class PreGame {
      */
     GetPlayer(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/pregame/v1/players/${puuid}`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/pregame/v1/players/${puuid}`);
         });
     }
     /**
@@ -68,7 +68,7 @@ class PreGame {
      */
     LockCharacter(matchId, agentId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/lock/${agentId}`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/pregame/v1/matches/${matchId}/lock/${agentId}`);
         });
     }
     /**
@@ -78,7 +78,7 @@ class PreGame {
      */
     QuitMatch(matchId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/quit`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/pregame/v1/matches/${matchId}/quit`);
         });
     }
     /**
@@ -89,7 +89,7 @@ class PreGame {
      */
     SelectCharacter(matchId, agentId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/select/${agentId}`);
+            return yield this.RequestClient.post(`${this.Region.url.partyService}/pregame/v1/matches/${matchId}/select/${agentId}`);
         });
     }
 }

@@ -24,7 +24,7 @@ class CurrentGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchAllChatMUCToken(matchId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/allchatmuctoken`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/core-game/v1/matches/${matchId}/allchatmuctoken`);
     }
 
     /**
@@ -32,7 +32,7 @@ class CurrentGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchMatch(matchId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/core-game/v1/matches/${matchId}`);
     }
 
     /**
@@ -40,7 +40,7 @@ class CurrentGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchMatchLoadouts(matchId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/loadouts`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/core-game/v1/matches/${matchId}/loadouts`);
     }
 
     /**
@@ -48,7 +48,7 @@ class CurrentGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchPlayer(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/players/${puuid}`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/core-game/v1/players/${puuid}`);
     }
 
     /**
@@ -56,7 +56,7 @@ class CurrentGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchTeamChatMUCToken(matchId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/core-game/v1/matches/${matchId}/teamchatmuctoken`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/core-game/v1/matches/${matchId}/teamchatmuctoken`);
     }
 
     /**
@@ -66,7 +66,7 @@ class CurrentGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async DisassociatePlayer(puuid: string, matchId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/core-game/v1/players/${puuid}/disassociate/${matchId}`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/core-game/v1/players/${puuid}/disassociate/${matchId}`);
     }
 }
 

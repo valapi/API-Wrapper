@@ -22,7 +22,7 @@ class Match {
      */
     FetchMatchDetails(matchId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.playerData + `/match-details/v1/matches/${matchId}`);
+            return yield this.RequestClient.get(`${this.Region.url.playerData}/match-details/v1/matches/${matchId}`);
         });
     }
     /**
@@ -34,7 +34,7 @@ class Match {
      */
     FetchMatchHistory(puuid, queueId, startIndex = 0, endIndex = 10) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            let _url = this.Region.url.playerData + `/match-history/v1/history/${puuid}?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
+            let _url = `${this.Region.url.playerData}/match-history/v1/history/${puuid}?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
             if (queueId) {
                 _url += `&queue=${queueId}`;
             }

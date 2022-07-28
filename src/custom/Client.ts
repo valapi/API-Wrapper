@@ -25,14 +25,14 @@ class Client {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchContent(): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.sharedData + `/content-service/v3/content`);
+        return await this.RequestClient.get(`${this.Region.url.sharedData}/content-service/v3/content`);
     }
 
     /**
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchConfig(): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.sharedData + `/v1/config/${this.Region.data.api}`);
+        return await this.RequestClient.get(`${this.Region.url.sharedData}/v1/config/${this.Region.data.api}`);
     }
 }
 

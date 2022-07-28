@@ -19,7 +19,7 @@ class Contract {
      */
     DefinitionsFetch() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.playerData + `/contract-definitions/v3/item-upgrades`);
+            return yield this.RequestClient.get(`${this.Region.url.playerData}/contract-definitions/v3/item-upgrades`);
         });
     }
     /**
@@ -27,7 +27,7 @@ class Contract {
      */
     FetchActiveStory() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.playerData + `/contract-definitions/v2/definitions/story`);
+            return yield this.RequestClient.get(`${this.Region.url.playerData}/contract-definitions/v2/definitions/story`);
         });
     }
     /**
@@ -36,7 +36,7 @@ class Contract {
      */
     Fetch(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}`);
+            return yield this.RequestClient.get(`${this.Region.url.playerData}/contracts/v1/contracts/${puuid}`);
         });
     }
     /**
@@ -46,7 +46,7 @@ class Contract {
      */
     Activate(puuid, contractId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.post(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}/special/${contractId}`);
+            return yield this.RequestClient.post(`${this.Region.url.playerData}/contracts/v1/contracts/${puuid}/special/${contractId}`);
         });
     }
 }

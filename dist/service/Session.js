@@ -20,7 +20,7 @@ class Session {
      */
     Get(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/session/v1/sessions/${puuid}`);
         });
     }
     /**
@@ -30,7 +30,7 @@ class Session {
      */
     ReConnect(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.partyService + `/session/v1/sessions/${puuid}/reconnect`);
+            return yield this.RequestClient.get(`${this.Region.url.partyService}/session/v1/sessions/${puuid}/reconnect`);
         });
     }
 }

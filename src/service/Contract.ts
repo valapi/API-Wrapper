@@ -23,14 +23,14 @@ class Contract {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async DefinitionsFetch(): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.playerData + `/contract-definitions/v3/item-upgrades`);
+        return await this.RequestClient.get(`${this.Region.url.playerData}/contract-definitions/v3/item-upgrades`);
     }
 
     /**
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchActiveStory(): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.playerData + `/contract-definitions/v2/definitions/story`);
+        return await this.RequestClient.get(`${this.Region.url.playerData}/contract-definitions/v2/definitions/story`);
     }
 
     /**
@@ -38,7 +38,7 @@ class Contract {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async Fetch(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}`);
+        return await this.RequestClient.get(`${this.Region.url.playerData}/contracts/v1/contracts/${puuid}`);
     }
 
     /**
@@ -47,7 +47,7 @@ class Contract {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async Activate(puuid: string, contractId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.playerData + `/contracts/v1/contracts/${puuid}/special/${contractId}`);
+        return await this.RequestClient.post(`${this.Region.url.playerData}/contracts/v1/contracts/${puuid}/special/${contractId}`);
     }
 }
 

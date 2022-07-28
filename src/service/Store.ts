@@ -27,14 +27,14 @@ class Store {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async GetEntitlements(puuid: string, itemTypeId: keyof typeof ItemTypeId.from): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.playerData + `/store/v1/entitlements/${puuid}/${itemTypeId}`);
+        return await this.RequestClient.get(`${this.Region.url.playerData}/store/v1/entitlements/${puuid}/${itemTypeId}`);
     }
 
     /**
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async GetOffers(): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.playerData + `/store/v1/offers/`);
+        return await this.RequestClient.get(`${this.Region.url.playerData}/store/v1/offers/`);
     }
 
     /**
@@ -42,7 +42,7 @@ class Store {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async GetStorefront(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.playerData + `/store/v2/storefront/${puuid}`);
+        return await this.RequestClient.get(`${this.Region.url.playerData}/store/v2/storefront/${puuid}`);
     }
 
     /**
@@ -50,7 +50,7 @@ class Store {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async GetWallet(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.playerData + `/store/v1/wallet/${puuid}`);
+        return await this.RequestClient.get(`${this.Region.url.playerData}/store/v1/wallet/${puuid}`);
     }
 
     // NOT IN DOCS //
@@ -61,7 +61,7 @@ class Store {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async RevealNightMarketOffers(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.playerData + `/store/v2/storefront/${puuid}/nightmarket/offers`);
+        return await this.RequestClient.post(`${this.Region.url.playerData}/store/v2/storefront/${puuid}/nightmarket/offers`);
     }
 }
 

@@ -31,7 +31,7 @@ class Player {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async GetUsername(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.put(this.Region.url.playerData + `/name-service/v2/players`, [
+        return await this.RequestClient.put(`${this.Region.url.playerData}/name-service/v2/players`, [
             `${puuid}`
         ]);
     }
@@ -56,7 +56,7 @@ class Player {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async AccountXP(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.playerData + `/account-xp/v1/players/${puuid}`);
+        return await this.RequestClient.get(`${this.Region.url.playerData}/account-xp/v1/players/${puuid}`);
     }
 
     /**
@@ -64,7 +64,7 @@ class Player {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async Loadout(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
+        return await this.RequestClient.get(`${this.Region.url.playerData}/personalization/v2/players/${puuid}/playerloadout`);
     }
 
     /**
@@ -72,14 +72,14 @@ class Player {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async LoadoutUpdate(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.put(this.Region.url.playerData + `/personalization/v2/players/${puuid}/playerloadout`);
+        return await this.RequestClient.put(`${this.Region.url.playerData}/personalization/v2/players/${puuid}/playerloadout`);
     }
 
     /**
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchPlayerRestrictions(): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.playerData + `/restrictions/v3/penalties`);
+        return await this.RequestClient.get(`${this.Region.url.playerData}/restrictions/v3/penalties`);
     }
 
     // NOT IN DOCS //
@@ -89,7 +89,7 @@ class Player {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async MassRewards(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.playerData + `/mass-rewards/v1/players/${puuid}/reconcile`);
+        return await this.RequestClient.post(`${this.Region.url.playerData}/mass-rewards/v1/players/${puuid}/reconcile`);
     }
 }
 

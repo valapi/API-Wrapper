@@ -29,7 +29,7 @@ class Match {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchMatchDetails(matchId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.playerData + `/match-details/v1/matches/${matchId}`);
+        return await this.RequestClient.get(`${this.Region.url.playerData}/match-details/v1/matches/${matchId}`);
     }
 
     /**
@@ -39,8 +39,8 @@ class Match {
      * @param {number} endIndex End Index (default: 10)
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
-    public async FetchMatchHistory(puuid: string, queueId?: keyof typeof QueueId.from, startIndex: number = 0, endIndex: number = 10): Promise<ValorantApiRequestResponse<any>> {
-        let _url = this.Region.url.playerData + `/match-history/v1/history/${puuid}?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
+    public async FetchMatchHistory(puuid: string, queueId?: keyof typeof QueueId.from, startIndex = 0, endIndex = 10): Promise<ValorantApiRequestResponse<any>> {
+        let _url = `${this.Region.url.playerData}/match-history/v1/history/${puuid}?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
 
         if (queueId) {
             _url += `&queue=${queueId}`;

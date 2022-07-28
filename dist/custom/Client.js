@@ -20,7 +20,7 @@ class Client {
      */
     FetchContent() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.sharedData + `/content-service/v3/content`);
+            return yield this.RequestClient.get(`${this.Region.url.sharedData}/content-service/v3/content`);
         });
     }
     /**
@@ -28,7 +28,7 @@ class Client {
      */
     FetchConfig() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.RequestClient.get(this.Region.url.sharedData + `/v1/config/${this.Region.data.api}`);
+            return yield this.RequestClient.get(`${this.Region.url.sharedData}/v1/config/${this.Region.data.api}`);
         });
     }
 }

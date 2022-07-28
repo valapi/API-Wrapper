@@ -25,7 +25,7 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchChatToken(matchId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/chattoken`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/pregame/v1/matches/${matchId}/chattoken`);
     }
 
     /**
@@ -33,7 +33,7 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchVoiceToken(matchId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/voicetoken`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/pregame/v1/matches/${matchId}/voicetoken`);
     }
 
     /**
@@ -41,7 +41,7 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async GetMatch(matchId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/pregame/v1/matches/${matchId}`);
     }
 
     /**
@@ -49,7 +49,7 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async GetMatchLoadouts(matchId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/loadouts`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/pregame/v1/matches/${matchId}/loadouts`);
     }
 
     /**
@@ -57,7 +57,7 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async GetPlayer(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/pregame/v1/players/${puuid}`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/pregame/v1/players/${puuid}`);
     }
 
     /**
@@ -67,7 +67,7 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async LockCharacter(matchId: string, agentId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/lock/${agentId}`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/pregame/v1/matches/${matchId}/lock/${agentId}`);
     }
 
     /**
@@ -76,7 +76,7 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async QuitMatch(matchId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/quit`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/pregame/v1/matches/${matchId}/quit`);
     }
 
     /**
@@ -86,7 +86,7 @@ class PreGame {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async SelectCharacter(matchId: string, agentId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/pregame/v1/matches/${matchId}/select/${agentId}`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/pregame/v1/matches/${matchId}/select/${agentId}`);
     }
 }
 

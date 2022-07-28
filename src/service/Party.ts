@@ -47,14 +47,14 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async RemovePlayer(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.delete(this.Region.url.partyService + `/parties/v1/players/${puuid}`);
+        return await this.RequestClient.delete(`${this.Region.url.partyService}/parties/v1/players/${puuid}`);
     }
 
     /**
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchCustomGameConfigs(): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/parties/v1/parties/customgameconfigs`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/parties/v1/parties/customgameconfigs`);
     }
 
     /**
@@ -62,7 +62,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchMUCToken(partyId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/parties/v1/parties/${partyId}/muctoken`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/muctoken`);
     }
 
     /**
@@ -70,7 +70,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchParty(partyId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/parties/v1/parties/${partyId}`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/parties/v1/parties/${partyId}`);
     }
 
     /**
@@ -78,7 +78,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchPlayer(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/parties/v1/players/${puuid}`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/parties/v1/players/${puuid}`);
     }
 
     /**
@@ -86,7 +86,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async FetchVoiceToken(partyId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.get(this.Region.url.partyService + `/parties/v1/parties/${partyId}/voicetoken`);
+        return await this.RequestClient.get(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/voicetoken`);
     }
 
     /**
@@ -95,7 +95,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async ChangeQueue(partyId: string, queueId: keyof typeof QueueId.from): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/queue`, {
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/queue`, {
             "queueID": String(queueId)
         });
     }
@@ -106,7 +106,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async DeclineRequest(partyId: string, requestId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/request/${requestId}/decline`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/request/${requestId}/decline`);
     }
 
     /**
@@ -114,7 +114,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async EnterMatchmakingQueue(partyId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/matchmaking/join`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/matchmaking/join`);
     }
 
     /**
@@ -124,7 +124,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async InviteToPartyByDisplayName(partyId: string, gameName: string, tagLine: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/invites/name/${gameName}/tag/${tagLine}`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/invites/name/${gameName}/tag/${tagLine}`);
     }
 
     /**
@@ -133,7 +133,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async LeaveMatchmakingQueue(partyId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/matchmaking/leave`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/matchmaking/leave`);
     }
 
     /**
@@ -142,7 +142,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async RefreshCompetitiveTier(puuid: string, partyId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/refreshCompetitiveTier`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${puuid}/members/${partyId}/refreshCompetitiveTier`);
     }
 
     /**
@@ -151,7 +151,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async RefreshPings(puuid: string, partyId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/refreshPings`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${puuid}/members/${partyId}/refreshPings`);
     }
 
     /**
@@ -160,7 +160,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async RefreshPlayerIdentity(puuid: string, partyId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/refreshPlayerIdentity`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${puuid}/members/${partyId}/refreshPlayerIdentity`);
     }
 
     /**
@@ -169,7 +169,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async SetAccessibility(partyId: string, accessibility: PartySetAccessibility): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/accessibility`, {
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/accessibility`, {
             "accessibility": `${accessibility}`
         });
     }
@@ -180,7 +180,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async SetCustomGameSettings(partyId: string, settings: CustomGameSettings): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/customgamesettings`, settings);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/customgamesettings`, settings);
     }
 
     /**
@@ -190,7 +190,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async SetMemberReady(puuid: string, partyId: string, isReady: boolean): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${puuid}/members/${partyId}/setReady`, {
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${puuid}/members/${partyId}/setReady`, {
             "ready": isReady
         });
     }
@@ -200,7 +200,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async StartCustomGame(partyId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/startcustomgame`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/startcustomgame`);
     }
 
     // NOT IN DOCS //
@@ -211,7 +211,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async LeaveParty(puuid: string, partyId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/players/${puuid}/leaveparty/${partyId}`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/players/${puuid}/leaveparty/${partyId}`);
     }
 
     /**
@@ -219,7 +219,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async AutoBalance(partyId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/balance`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/balance`);
     }
 
     /**
@@ -229,7 +229,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async ChangeTeamInCustomGame(partyId: string, team: CustomGameTeam, puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/customgamemembership/${team}`, {
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/customgamemembership/${team}`, {
             "playerToPutOnTeam": String(puuid),
         });
     }
@@ -240,7 +240,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async StartSoloExperience(puuid: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/players/${puuid}/startsoloexperience`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/players/${puuid}/startsoloexperience`);
     }
 
     /**
@@ -249,7 +249,7 @@ class Party {
      * @returns {Promise<ValorantApiRequestResponse<any>>}
      */
     public async TransferOwner(puuid: string, partyId: string): Promise<ValorantApiRequestResponse<any>> {
-        return await this.RequestClient.post(this.Region.url.partyService + `/parties/v1/parties/${partyId}/members/${puuid}/owner`);
+        return await this.RequestClient.post(`${this.Region.url.partyService}/parties/v1/parties/${partyId}/members/${puuid}/owner`);
     }
 }
 

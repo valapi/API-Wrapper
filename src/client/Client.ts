@@ -56,8 +56,6 @@ declare interface ValWebClient {
 
 //class
 
-const _defaultConfig: ValWebClient.Options = { ...CONFIG_DEFAULT, ...{ region: 'na' } };
-
 /**
  * API from Web Client
  */
@@ -97,7 +95,7 @@ class ValWebClient extends ValEvent {
         this.AuthClient.on('error', ((data: { name: "ValAuth_Error", message: string, data?: any }) => { this.emit('error', { errorCode: data.name, message: data.message, data: data.data }); }));
 
         //config
-        this.options = { ..._defaultConfig, ...config };
+        this.options = { ...CONFIG_DEFAULT, ...config };
 
         this.RegionServices = new ValRegion(this.AuthClient.region.live as keyof typeof _Region.from).toJSON();
 
@@ -132,7 +130,7 @@ class ValWebClient extends ValEvent {
         this.isMultifactor = _data.isMultifactor;
 
         this.AuthClient.region = {
-            live: String(this.options.region),
+            live: this.options.region || _data.region.live,
             pbe: "na",
         };
 
@@ -218,7 +216,13 @@ class ValWebClient extends ValEvent {
      * @returns {Promise<Array<ValAuth.Expire>>}
      */
     public async refresh(force?: boolean): Promise<Array<ValAuth.Expire>> {
-        return this.AuthClient.refresh(force);
+        const ExpireData = await this.AuthClient.refresh(force);
+
+        if (this.options.region) {
+            this.AuthClient.region.live = this.options.region;
+        }
+
+        return ExpireData;
     }
 
     /**
@@ -293,6 +297,10 @@ class ValWebClient extends ValEvent {
     public static fromJSON(data: ValAuthData, options?: ValWebClient.Options): ValWebClient {
         const _WebClient = new ValWebClient(options);
         _WebClient.fromJSON(data);
+
+        if (!options?.region) {
+            _WebClient.setRegion(data.region.live as keyof typeof _Region.from);
+        }
 
         return _WebClient;
     }

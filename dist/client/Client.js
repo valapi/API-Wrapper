@@ -20,7 +20,6 @@ const Match_1 = require("../custom/Match");
 const MMR_1 = require("../custom/MMR");
 const Player_1 = require("../custom/Player");
 //class
-const _defaultConfig = Object.assign(Object.assign({}, Engine_1.CONFIG_DEFAULT), { region: 'na' });
 /**
  * API from Web Client
  */
@@ -38,7 +37,7 @@ class ValWebClient extends lib_1.ValEvent {
         this.AuthClient.on('expires', ((data) => { this.emit('expires', data); }));
         this.AuthClient.on('error', ((data) => { this.emit('error', { errorCode: data.name, message: data.message, data: data.data }); }));
         //config
-        this.options = Object.assign(Object.assign({}, _defaultConfig), config);
+        this.options = Object.assign(Object.assign({}, Engine_1.CONFIG_DEFAULT), config);
         this.RegionServices = new lib_1.ValRegion(this.AuthClient.region.live).toJSON();
         //axios
         this.RequestClient = new lib_1.ValRequestClient(this.options.axiosConfig);
@@ -65,7 +64,7 @@ class ValWebClient extends lib_1.ValEvent {
         this.isError = _data.isError;
         this.isMultifactor = _data.isMultifactor;
         this.AuthClient.region = {
-            live: String(this.options.region),
+            live: this.options.region || _data.region.live,
             pbe: "na",
         };
         //config
@@ -139,7 +138,11 @@ class ValWebClient extends lib_1.ValEvent {
      */
     refresh(force) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return this.AuthClient.refresh(force);
+            const ExpireData = yield this.AuthClient.refresh(force);
+            if (this.options.region) {
+                this.AuthClient.region.live = this.options.region;
+            }
+            return ExpireData;
         });
     }
     /**
@@ -208,6 +211,9 @@ class ValWebClient extends lib_1.ValEvent {
     static fromJSON(data, options) {
         const _WebClient = new ValWebClient(options);
         _WebClient.fromJSON(data);
+        if (!(options === null || options === void 0 ? void 0 : options.region)) {
+            _WebClient.setRegion(data.region.live);
+        }
         return _WebClient;
     }
     /**

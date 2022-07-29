@@ -1,32 +1,31 @@
-import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
-import type { ValorantApiRegion } from "@valapi/lib";
+import type { ValRequestClient, ValRegion } from "@valapi/lib";
 declare class Contract {
     private RequestClient;
     private Region;
     /**
-     * Class Constructor
+     *
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
-    constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion);
+    constructor(ValRequestClient: ValRequestClient, Region: ValRegion.Json);
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    DefinitionsFetch(): Promise<ValorantApiRequestResponse<any>>;
+    DefinitionsFetch(): Promise<ValRequestClient.Response<any>>;
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    FetchActiveStory(): Promise<ValorantApiRequestResponse<any>>;
+    FetchActiveStory(): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    Fetch(puuid: string): Promise<ValorantApiRequestResponse<any>>;
+    Fetch(puuid: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} puuid Player UUID
      * @param {string} contractId Contract ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    Activate(puuid: string, contractId: string): Promise<ValorantApiRequestResponse<any>>;
+    Activate(puuid: string, contractId: string): Promise<ValRequestClient.Response<any>>;
 }
 export { Contract };

@@ -6,9 +6,9 @@ const tslib_1 = require("tslib");
 //service
 class Client {
     /**
-     * Class Constructor
+     *
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
     constructor(ValRequestClient, Region) {
         this.RequestClient = ValRequestClient;
@@ -16,7 +16,7 @@ class Client {
     }
     //PVP Endpoints
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     FetchContent() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -24,7 +24,7 @@ class Client {
         });
     }
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     FetchConfig() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {

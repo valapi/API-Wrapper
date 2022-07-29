@@ -1,5 +1,5 @@
-import { Region as _Region, type ValorantApiError, type ValorantApiRequestData, ValEvent } from "@valapi/lib";
-import { Client as ValAuth, ValAuthEngine, ValAuthData } from "@valapi/auth";
+import { Region, ValRequestClient, ValEvent } from "@valapi/lib";
+import { Client as ValAuth, ValAuthEngine } from "@valapi/auth";
 import { Contract as ContractService } from "../service/Contract";
 import { CurrentGame as CurrentGameService } from "../service/CurrentGame";
 import { Party as PartyService } from "../service/Party";
@@ -11,17 +11,26 @@ import { Match as MatchService } from "../custom/Match";
 import { MMR as MMRService } from "../custom/MMR";
 import { Player as PlayerService } from "../custom/Player";
 declare namespace ValWebClient {
+    /**
+     * Client Config
+     */
     interface Options extends ValAuthEngine.Options {
-        region?: keyof typeof _Region.from;
+        /**
+         * Region
+         */
+        region?: Region.String;
     }
+    /**
+     * Client Events
+     */
     interface Event {
         'ready': () => void;
         'expires': (data: {
             name: string;
             data: any;
         }) => void;
-        'request': (data: ValorantApiRequestData) => void;
-        'error': (data: ValorantApiError) => void;
+        'request': (data: ValRequestClient.Request) => void;
+        'error': (data: ValEvent.Error) => void;
     }
 }
 declare interface ValWebClient {
@@ -58,16 +67,16 @@ declare class ValWebClient extends ValEvent {
     private reload;
     fromCookie(cookie: string): Promise<void>;
     /**
-     * From {@link ValAuthData save} data
-     * @param {ValAuthData} data {@link toJSON toJSON()} data
+     *
+     * @param {ValAuthEngine.Json} data {@link toJSON toJSON()} data
      * @returns {void}
      */
-    fromJSON(data: ValAuthData): void;
+    fromJSON(data: ValAuthEngine.Json): void;
     /**
-     * To {@link ValAuthData save} data
-     * @returns {ValAuthData}
+     *
+     * @returns {ValAuthEngine.Json}
      */
-    toJSON(): ValAuthData;
+    toJSON(): ValAuthEngine.Json;
     /**
      *
      * @param {string} token Access Token
@@ -97,7 +106,7 @@ declare class ValWebClient extends ValEvent {
      * @param {string} region Region
      * @returns {void}
      */
-    setRegion(region: keyof typeof _Region.from): void;
+    setRegion(region: Region.String): void;
     /**
      * @param {string} clientVersion Client Version
      * @returns {void}
@@ -109,12 +118,12 @@ declare class ValWebClient extends ValEvent {
      */
     setClientPlatfrom(clientPlatfrom?: ValAuthEngine.ClientPlatfrom): void;
     /**
-      * From {@link toJSON toJSON()} data
-      * @param {ValAuthData} data {@link toJSON toJSON()} data
+      *
+      * @param {ValAuthEngine.Json} data {@link toJSON toJSON()} data
       * @param {ValWebClient.Options} options Client Config
       * @returns {ValWebClient}
       */
-    static fromJSON(data: ValAuthData, options?: ValWebClient.Options): ValWebClient;
+    static fromJSON(data: ValAuthEngine.Json, options?: ValWebClient.Options): ValWebClient;
     /**
      * From ssid Cookie
      * @param {string} cookie ssid Cookie

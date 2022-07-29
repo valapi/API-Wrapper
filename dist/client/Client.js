@@ -5,9 +5,8 @@ exports.ValWebClient = void 0;
 const tslib_1 = require("tslib");
 const lib_1 = require("@valapi/lib");
 const auth_1 = require("@valapi/auth");
-const Engine_1 = require("@valapi/auth/dist/client/Engine");
-const http_1 = require("http");
 const https_1 = require("https");
+const http_1 = require("http");
 //service
 const Contract_1 = require("../service/Contract");
 const CurrentGame_1 = require("../service/CurrentGame");
@@ -37,7 +36,7 @@ class ValWebClient extends lib_1.ValEvent {
         this.AuthClient.on('expires', ((data) => { this.emit('expires', data); }));
         this.AuthClient.on('error', ((data) => { this.emit('error', { errorCode: data.name, message: data.message, data: data.data }); }));
         //config
-        this.options = Object.assign(Object.assign({}, Engine_1.CONFIG_DEFAULT), config);
+        this.options = Object.assign(Object.assign({}, auth_1.ValAuthEngine.Default.config), config);
         this.RegionServices = new lib_1.ValRegion(this.AuthClient.region.live).toJSON();
         //axios
         this.RequestClient = new lib_1.ValRequestClient(this.options.axiosConfig);
@@ -59,7 +58,7 @@ class ValWebClient extends lib_1.ValEvent {
     }
     //reload
     reload() {
-        var _a, _b;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
         const _data = this.AuthClient.toJSON();
         this.isError = _data.isError;
         this.isMultifactor = _data.isMultifactor;
@@ -71,18 +70,23 @@ class ValWebClient extends lib_1.ValEvent {
         this.AuthClient.config = this.options;
         this.RegionServices = new lib_1.ValRegion(_data.region.live).toJSON();
         //axios
-        const _normalAxiosConfig = {
+        let HttpsConfig = { keepAlive: true, ciphers: auth_1.ValAuthEngine.Default.ciphers, honorCipherOrder: true, minVersion: 'TLSv1.2', maxVersion: 'TLSv1.3' };
+        let HttpConfig = { keepAlive: true };
+        if (((_a = this.options.axiosConfig) === null || _a === void 0 ? void 0 : _a.proxy) && typeof ((_b = this.options.axiosConfig) === null || _b === void 0 ? void 0 : _b.proxy) !== 'boolean') {
+            HttpsConfig = Object.assign(Object.assign({}, HttpsConfig), { port: (_d = (_c = this.options.axiosConfig) === null || _c === void 0 ? void 0 : _c.proxy) === null || _d === void 0 ? void 0 : _d.port, host: (_f = (_e = this.options.axiosConfig) === null || _e === void 0 ? void 0 : _e.proxy) === null || _f === void 0 ? void 0 : _f.host });
+            HttpConfig = Object.assign(Object.assign({}, HttpConfig), { port: (_h = (_g = this.options.axiosConfig) === null || _g === void 0 ? void 0 : _g.proxy) === null || _h === void 0 ? void 0 : _h.port, host: (_k = (_j = this.options.axiosConfig) === null || _j === void 0 ? void 0 : _j.proxy) === null || _k === void 0 ? void 0 : _k.host });
+        }
+        this.RequestClient = new lib_1.ValRequestClient(Object.assign(Object.assign({}, this.options.axiosConfig), {
             headers: {
                 Cookie: _data.cookie.ssid,
                 'Authorization': `${_data.token_type} ${_data.access_token}`,
                 'X-Riot-Entitlements-JWT': _data.entitlements_token,
-                'X-Riot-ClientVersion': String((_a = this.AuthClient.config.client) === null || _a === void 0 ? void 0 : _a.version),
-                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_b = this.AuthClient.config.client) === null || _b === void 0 ? void 0 : _b.platform)),
+                'X-Riot-ClientVersion': String((_l = this.AuthClient.config.client) === null || _l === void 0 ? void 0 : _l.version),
+                'X-Riot-ClientPlatform': (0, lib_1.toUft8)(JSON.stringify((_m = this.AuthClient.config.client) === null || _m === void 0 ? void 0 : _m.platform)),
             },
-            httpsAgent: new https_1.Agent({ keepAlive: true, ciphers: auth_1.ValAuthEngine.Default.ciphers, honorCipherOrder: true, minVersion: 'TLSv1.2', maxVersion: 'TLSv1.3' }),
-            httpAgent: new http_1.Agent({ keepAlive: true }),
-        };
-        this.RequestClient = new lib_1.ValRequestClient(Object.assign(Object.assign({}, this.options.axiosConfig), _normalAxiosConfig));
+            httpsAgent: new https_1.Agent(HttpsConfig),
+            httpAgent: new http_1.Agent(HttpConfig)
+        }));
         this.RequestClient.on('request', ((data) => { this.emit('request', data); }));
         this.RequestClient.on('error', ((data) => { this.emit('error', data); }));
         //service
@@ -107,8 +111,8 @@ class ValWebClient extends lib_1.ValEvent {
         });
     }
     /**
-     * From {@link ValAuthData save} data
-     * @param {ValAuthData} data {@link toJSON toJSON()} data
+     *
+     * @param {ValAuthEngine.Json} data {@link toJSON toJSON()} data
      * @returns {void}
      */
     fromJSON(data) {
@@ -116,8 +120,8 @@ class ValWebClient extends lib_1.ValEvent {
         this.reload();
     }
     /**
-     * To {@link ValAuthData save} data
-     * @returns {ValAuthData}
+     *
+     * @returns {ValAuthEngine.Json}
      */
     toJSON() {
         return this.AuthClient.toJSON();
@@ -128,7 +132,7 @@ class ValWebClient extends lib_1.ValEvent {
      * @returns {string} Player UUID
      */
     getSubject(token) {
-        return this.AuthClient.parsePlayerUuid(token);
+        return this.AuthClient.parseToken(token);
     }
     //auth
     /**
@@ -203,8 +207,8 @@ class ValWebClient extends lib_1.ValEvent {
     }
     //static
     /**
-      * From {@link toJSON toJSON()} data
-      * @param {ValAuthData} data {@link toJSON toJSON()} data
+      *
+      * @param {ValAuthEngine.Json} data {@link toJSON toJSON()} data
       * @param {ValWebClient.Options} options Client Config
       * @returns {ValWebClient}
       */

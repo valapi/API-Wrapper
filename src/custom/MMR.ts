@@ -1,22 +1,19 @@
 //import
 
-import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
-import type { ValorantApiRegion } from "@valapi/lib";
-
-import { QueueId } from "@valapi/lib";
+import { type ValRequestClient, type ValRegion, QueueId } from "@valapi/lib";
 
 //service
 
 class MMR {
     private RequestClient: ValRequestClient;
-    private Region: ValorantApiRegion;
+    private Region: ValRegion.Json;
 
     /**
-     * Class Constructor
+     * 
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
-    public constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion) {
+    public constructor(ValRequestClient: ValRequestClient, Region: ValRegion.Json) {
         this.RequestClient = ValRequestClient;
         this.Region = Region;
     }
@@ -26,9 +23,9 @@ class MMR {
      * @param {string} queueId Queue
      * @param {number} startIndex Start Index (default: 0)
      * @param {number} endIndex End Index (default: 10)
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    public async FetchCompetitiveUpdates(puuid: string, queueId?: keyof typeof QueueId.from, startIndex = 0, endIndex = 10): Promise<ValorantApiRequestResponse<any>> {
+    public async FetchCompetitiveUpdates(puuid: string, queueId?: QueueId.String, startIndex = 0, endIndex = 10): Promise<ValRequestClient.Response<any>> {
         let _url = `${this.Region.url.playerData}/mmr/v1/players/${puuid}/competitiveupdates?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
 
         if (queueId) {
@@ -43,9 +40,9 @@ class MMR {
      * @param {number} startIndex Start Index (default: 0)
      * @param {number} size Size (default: 510)
      * @param {string} serachUsername Search Username
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    public async FetchLeaderboard(seasonId: string, startIndex = 0, size = 510, serachUsername?: string): Promise<ValorantApiRequestResponse<any>> {
+    public async FetchLeaderboard(seasonId: string, startIndex = 0, size = 510, serachUsername?: string): Promise<ValRequestClient.Response<any>> {
         let _url = `${this.Region.url.playerData}/mmr/v1/leaderboards/affinity/${this.Region.data.api}/queue/competitive/season/${seasonId}?startIndex=${startIndex}&size=${size}`;
 
         if (serachUsername) {
@@ -57,9 +54,9 @@ class MMR {
 
     /**
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    public async FetchPlayer(puuid: string): Promise<ValorantApiRequestResponse<any>> {
+    public async FetchPlayer(puuid: string): Promise<ValRequestClient.Response<any>> {
         return await this.RequestClient.get(`${this.Region.url.playerData}/mmr/v1/players/${puuid}`);
     }
 
@@ -67,9 +64,9 @@ class MMR {
 
     /**
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    public async HideActRankBadge(puuid: string): Promise<ValorantApiRequestResponse<any>> {
+    public async HideActRankBadge(puuid: string): Promise<ValRequestClient.Response<any>> {
         return await this.RequestClient.post(`${this.Region.url.playerData}/mmr/v1/players/${puuid}/hideactrankbadge`);
     }
 }

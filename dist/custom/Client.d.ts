@@ -1,21 +1,20 @@
-import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
-import type { ValorantApiRegion } from "@valapi/lib";
+import type { ValRequestClient, ValRegion } from "@valapi/lib";
 declare class Client {
     private RequestClient;
     private Region;
     /**
-     * Class Constructor
+     *
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
-    constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion);
+    constructor(ValRequestClient: ValRequestClient, Region: ValRegion.Json);
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    FetchContent(): Promise<ValorantApiRequestResponse<any>>;
+    FetchContent(): Promise<ValRequestClient.Response<any>>;
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    FetchConfig(): Promise<ValorantApiRequestResponse<any>>;
+    FetchConfig(): Promise<ValRequestClient.Response<any>>;
 }
 export { Client };

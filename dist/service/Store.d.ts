@@ -1,40 +1,38 @@
-import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
-import type { ValorantApiRegion } from "@valapi/lib";
-import { ItemTypeId } from "@valapi/lib";
+import { type ValRequestClient, type ValRegion, ItemTypeId } from "@valapi/lib";
 declare class Store {
     private RequestClient;
     private Region;
     /**
-     * Class Constructor
+     *
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
-    constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion);
+    constructor(ValRequestClient: ValRequestClient, Region: ValRegion.Json);
     /**
      * @param {string} puuid Player UUID
      * @param {string} itemTypeId Item Type
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    GetEntitlements(puuid: string, itemTypeId: keyof typeof ItemTypeId.from): Promise<ValorantApiRequestResponse<any>>;
+    GetEntitlements(puuid: string, itemTypeId: ItemTypeId.String): Promise<ValRequestClient.Response<any>>;
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    GetOffers(): Promise<ValorantApiRequestResponse<any>>;
-    /**
-     * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
-     */
-    GetStorefront(puuid: string): Promise<ValorantApiRequestResponse<any>>;
+    GetOffers(): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    GetWallet(puuid: string): Promise<ValorantApiRequestResponse<any>>;
+    GetStorefront(puuid: string): Promise<ValRequestClient.Response<any>>;
+    /**
+     * @param {string} puuid Player UUID
+     * @returns {Promise<ValRequestClient.Response<any>>}
+     */
+    GetWallet(puuid: string): Promise<ValRequestClient.Response<any>>;
     /**
      * * NOT TESTED
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    RevealNightMarketOffers(puuid: string): Promise<ValorantApiRequestResponse<any>>;
+    RevealNightMarketOffers(puuid: string): Promise<ValRequestClient.Response<any>>;
 }
 export { Store };

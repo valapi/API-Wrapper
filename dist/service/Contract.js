@@ -6,16 +6,16 @@ const tslib_1 = require("tslib");
 //service
 class Contract {
     /**
-     * Class Constructor
+     *
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
     constructor(ValRequestClient, Region) {
         this.RequestClient = ValRequestClient;
         this.Region = Region;
     }
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     DefinitionsFetch() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -23,7 +23,7 @@ class Contract {
         });
     }
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     FetchActiveStory() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -32,7 +32,7 @@ class Contract {
     }
     /**
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     Fetch(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -42,7 +42,7 @@ class Contract {
     /**
      * @param {string} puuid Player UUID
      * @param {string} contractId Contract ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     Activate(puuid, contractId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {

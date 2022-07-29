@@ -1,45 +1,44 @@
-import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
-import type { ValorantApiRegion } from "@valapi/lib";
+import type { ValRequestClient, ValRegion } from "@valapi/lib";
 declare class CurrentGame {
     private RequestClient;
     private Region;
     /**
-     * Class Constructor
+     *
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
-    constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion);
+    constructor(ValRequestClient: ValRequestClient, Region: ValRegion.Json);
     /**
      * @param {string} matchId Match ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    FetchAllChatMUCToken(matchId: string): Promise<ValorantApiRequestResponse<any>>;
+    FetchAllChatMUCToken(matchId: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} matchId Match ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    FetchMatch(matchId: string): Promise<ValorantApiRequestResponse<any>>;
+    FetchMatch(matchId: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} matchId Match ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    FetchMatchLoadouts(matchId: string): Promise<ValorantApiRequestResponse<any>>;
+    FetchMatchLoadouts(matchId: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} puuid PlayerUUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    FetchPlayer(puuid: string): Promise<ValorantApiRequestResponse<any>>;
+    FetchPlayer(puuid: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} matchId Match ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    FetchTeamChatMUCToken(matchId: string): Promise<ValorantApiRequestResponse<any>>;
+    FetchTeamChatMUCToken(matchId: string): Promise<ValRequestClient.Response<any>>;
     /**
      * * Careful to use, Riot will immediately shut down your Project.
      * @param {string} puuid Player UUID
      * @param {string} matchId Match ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    DisassociatePlayer(puuid: string, matchId: string): Promise<ValorantApiRequestResponse<any>>;
+    DisassociatePlayer(puuid: string, matchId: string): Promise<ValRequestClient.Response<any>>;
 }
 export { CurrentGame };

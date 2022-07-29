@@ -6,9 +6,9 @@ const tslib_1 = require("tslib");
 //service
 class Player {
     /**
-     * Class Constructor
+     *
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      * @param {string} UserAgent Request User Agent
      */
     constructor(ValRequestClient, Region, UserAgent) {
@@ -19,7 +19,7 @@ class Player {
     //Mike - Username From ID
     /**
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     GetUsername(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -30,7 +30,7 @@ class Player {
     }
     //Riot Auth
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     GetUserInfo() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -44,7 +44,7 @@ class Player {
     //PVP Endpoints
     /**
      * @param {string} puuid PlayerUUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     AccountXP(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -53,7 +53,7 @@ class Player {
     }
     /**
      * @param {string} puuid PlayerUUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     Loadout(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -62,7 +62,7 @@ class Player {
     }
     /**
      * @param {string} puuid PlayerUUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     LoadoutUpdate(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -70,7 +70,7 @@ class Player {
         });
     }
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     FetchPlayerRestrictions() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -80,7 +80,7 @@ class Player {
     // NOT IN DOCS //
     /**
      * @param {string} puuid PlayerUUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     MassRewards(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {

@@ -6,9 +6,9 @@ const tslib_1 = require("tslib");
 //service
 class Match {
     /**
-     * Class Constructor
+     *
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
     constructor(ValRequestClient, Region) {
         this.RequestClient = ValRequestClient;
@@ -18,7 +18,7 @@ class Match {
     /**
      * Get contract definitions
      * @param {string} matchId Match ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     FetchMatchDetails(matchId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -30,7 +30,7 @@ class Match {
      * @param {string} queueId Queue
      * @param {number} startIndex Start Index (default: 0)
      * @param {number} endIndex End Index (default: 10)
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     FetchMatchHistory(puuid, queueId, startIndex = 0, endIndex = 10) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {

@@ -1,20 +1,19 @@
 //import
 
-import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
-import type { ValorantApiRegion } from "@valapi/lib";
+import type { ValRequestClient, ValRegion } from "@valapi/lib";
 
 //service
 
 class Client {
     private RequestClient: ValRequestClient;
-    private Region: ValorantApiRegion;
+    private Region: ValRegion.Json;
 
     /**
-     * Class Constructor
+     * 
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
-    public constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion) {
+    public constructor(ValRequestClient: ValRequestClient, Region: ValRegion.Json) {
         this.RequestClient = ValRequestClient;
         this.Region = Region;
     }
@@ -22,16 +21,16 @@ class Client {
     //PVP Endpoints
 
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    public async FetchContent(): Promise<ValorantApiRequestResponse<any>> {
+    public async FetchContent(): Promise<ValRequestClient.Response<any>> {
         return await this.RequestClient.get(`${this.Region.url.sharedData}/content-service/v3/content`);
     }
 
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    public async FetchConfig(): Promise<ValorantApiRequestResponse<any>> {
+    public async FetchConfig(): Promise<ValRequestClient.Response<any>> {
         return await this.RequestClient.get(`${this.Region.url.sharedData}/v1/config/${this.Region.data.api}`);
     }
 }

@@ -6,9 +6,9 @@ const tslib_1 = require("tslib");
 //service
 class Party {
     /**
-     * Class Constructor
+     *
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
     constructor(ValRequestClient, Region) {
         this.RequestClient = ValRequestClient;
@@ -17,7 +17,7 @@ class Party {
     /**
      *
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     RemovePlayer(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -25,7 +25,7 @@ class Party {
         });
     }
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     FetchCustomGameConfigs() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -34,7 +34,7 @@ class Party {
     }
     /**
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     FetchMUCToken(partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -43,7 +43,7 @@ class Party {
     }
     /**
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     FetchParty(partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -52,7 +52,7 @@ class Party {
     }
     /**
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     FetchPlayer(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -61,7 +61,7 @@ class Party {
     }
     /**
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     FetchVoiceToken(partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -71,7 +71,7 @@ class Party {
     /**
      * @param {string} partyId Party ID
      * @param {string} queueId Queue (EligibleQueues)
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     ChangeQueue(partyId, queueId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -83,7 +83,7 @@ class Party {
     /**
      * @param {string} partyId Party ID
      * @param {string} requestId Request ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     DeclineRequest(partyId, requestId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -92,7 +92,7 @@ class Party {
     }
     /**
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     EnterMatchmakingQueue(partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -103,7 +103,7 @@ class Party {
      * @param {string} partyId Party ID
      * @param {string} gameName In-Game Name
      * @param {string} tagLine In-Game Tag
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     InviteToPartyByDisplayName(partyId, gameName, tagLine) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -113,7 +113,7 @@ class Party {
     /**
      * * Careful to use, Riot will immediately shut down your Project.
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     LeaveMatchmakingQueue(partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -123,7 +123,7 @@ class Party {
     /**
      * @param {string} puuid Player UUID
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     RefreshCompetitiveTier(puuid, partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -133,7 +133,7 @@ class Party {
     /**
      * @param {string} puuid Player UUID
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     RefreshPings(puuid, partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -143,7 +143,7 @@ class Party {
     /**
      * @param {string} puuid Player UUID
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     RefreshPlayerIdentity(puuid, partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -153,7 +153,7 @@ class Party {
     /**
      * @param {string} partyId Party ID
      * @param {string} accessibility Accessibility
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     SetAccessibility(partyId, accessibility) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -165,7 +165,7 @@ class Party {
     /**
      * @param {string} partyId Party ID
      * @param {CustomGameSettings} settings Custom Game Settings
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     SetCustomGameSettings(partyId, settings) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -176,7 +176,7 @@ class Party {
      * @param {string} puuid Player UUID
      * @param {string} partyId Party ID
      * @param {boolean} isReady Ready or not?
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     SetMemberReady(puuid, partyId, isReady) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -187,7 +187,7 @@ class Party {
     }
     /**
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     StartCustomGame(partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -198,7 +198,7 @@ class Party {
     /**
      * @param {string} puuid Player UUID
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     LeaveParty(puuid, partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -207,7 +207,7 @@ class Party {
     }
     /**
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     AutoBalance(partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -218,7 +218,7 @@ class Party {
      * @param {string} partyId Party ID
      * @param {string} team Team
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     ChangeTeamInCustomGame(partyId, team, puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -230,7 +230,7 @@ class Party {
     /**
      * * Careful to use, Riot will immediately shut down your Project.
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     StartSoloExperience(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -240,7 +240,7 @@ class Party {
     /**
      * @param {string} puuid Player UUID
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     TransferOwner(puuid, partyId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {

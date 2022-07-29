@@ -1,52 +1,51 @@
 //import
 
-import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
-import type { ValorantApiRegion } from "@valapi/lib";
+import type { ValRequestClient, ValRegion } from "@valapi/lib";
 
 //service
 
 class Contract {
     private RequestClient: ValRequestClient;
-    private Region: ValorantApiRegion;
+    private Region: ValRegion.Json;
 
     /**
-     * Class Constructor
+     * 
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
-    public constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion) {
+    public constructor(ValRequestClient: ValRequestClient, Region: ValRegion.Json) {
         this.RequestClient = ValRequestClient;
         this.Region = Region;
     }
 
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    public async DefinitionsFetch(): Promise<ValorantApiRequestResponse<any>> {
+    public async DefinitionsFetch(): Promise<ValRequestClient.Response<any>> {
         return await this.RequestClient.get(`${this.Region.url.playerData}/contract-definitions/v3/item-upgrades`);
     }
 
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    public async FetchActiveStory(): Promise<ValorantApiRequestResponse<any>> {
+    public async FetchActiveStory(): Promise<ValRequestClient.Response<any>> {
         return await this.RequestClient.get(`${this.Region.url.playerData}/contract-definitions/v2/definitions/story`);
     }
 
     /**
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    public async Fetch(puuid: string): Promise<ValorantApiRequestResponse<any>> {
+    public async Fetch(puuid: string): Promise<ValRequestClient.Response<any>> {
         return await this.RequestClient.get(`${this.Region.url.playerData}/contracts/v1/contracts/${puuid}`);
     }
 
     /**
      * @param {string} puuid Player UUID
      * @param {string} contractId Contract ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    public async Activate(puuid: string, contractId: string): Promise<ValorantApiRequestResponse<any>> {
+    public async Activate(puuid: string, contractId: string): Promise<ValRequestClient.Response<any>> {
         return await this.RequestClient.post(`${this.Region.url.playerData}/contracts/v1/contracts/${puuid}/special/${contractId}`);
     }
 }

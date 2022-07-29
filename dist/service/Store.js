@@ -6,9 +6,9 @@ const tslib_1 = require("tslib");
 //service
 class Store {
     /**
-     * Class Constructor
+     *
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
     constructor(ValRequestClient, Region) {
         this.RequestClient = ValRequestClient;
@@ -17,7 +17,7 @@ class Store {
     /**
      * @param {string} puuid Player UUID
      * @param {string} itemTypeId Item Type
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     GetEntitlements(puuid, itemTypeId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -25,7 +25,7 @@ class Store {
         });
     }
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     GetOffers() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -34,7 +34,7 @@ class Store {
     }
     /**
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     GetStorefront(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -43,7 +43,7 @@ class Store {
     }
     /**
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     GetWallet(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -54,7 +54,7 @@ class Store {
     /**
      * * NOT TESTED
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     RevealNightMarketOffers(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {

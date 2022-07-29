@@ -6,9 +6,9 @@ const tslib_1 = require("tslib");
 //service
 class MMR {
     /**
-     * Class Constructor
+     *
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
     constructor(ValRequestClient, Region) {
         this.RequestClient = ValRequestClient;
@@ -19,7 +19,7 @@ class MMR {
      * @param {string} queueId Queue
      * @param {number} startIndex Start Index (default: 0)
      * @param {number} endIndex End Index (default: 10)
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     FetchCompetitiveUpdates(puuid, queueId, startIndex = 0, endIndex = 10) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -35,7 +35,7 @@ class MMR {
      * @param {number} startIndex Start Index (default: 0)
      * @param {number} size Size (default: 510)
      * @param {string} serachUsername Search Username
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     FetchLeaderboard(seasonId, startIndex = 0, size = 510, serachUsername) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -48,7 +48,7 @@ class MMR {
     }
     /**
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     FetchPlayer(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -58,7 +58,7 @@ class MMR {
     // NOT IN DOCS //
     /**
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     HideActRankBadge(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {

@@ -1,22 +1,19 @@
 //import
 
-import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
-import type { ValorantApiRegion } from "@valapi/lib";
-
-import { QueueId } from "@valapi/lib";
+import { type ValRequestClient, type ValRegion, QueueId } from "@valapi/lib";
 
 //service
 
 class Match {
     private RequestClient: ValRequestClient;
-    private Region: ValorantApiRegion;
+    private Region: ValRegion.Json;
 
     /**
-     * Class Constructor
+     * 
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
-    public constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion) {
+    public constructor(ValRequestClient: ValRequestClient, Region: ValRegion.Json) {
         this.RequestClient = ValRequestClient;
         this.Region = Region;
     }
@@ -26,9 +23,9 @@ class Match {
     /**
      * Get contract definitions
      * @param {string} matchId Match ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    public async FetchMatchDetails(matchId: string): Promise<ValorantApiRequestResponse<any>> {
+    public async FetchMatchDetails(matchId: string): Promise<ValRequestClient.Response<any>> {
         return await this.RequestClient.get(`${this.Region.url.playerData}/match-details/v1/matches/${matchId}`);
     }
 
@@ -37,9 +34,9 @@ class Match {
      * @param {string} queueId Queue
      * @param {number} startIndex Start Index (default: 0)
      * @param {number} endIndex End Index (default: 10)
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    public async FetchMatchHistory(puuid: string, queueId?: keyof typeof QueueId.from, startIndex = 0, endIndex = 10): Promise<ValorantApiRequestResponse<any>> {
+    public async FetchMatchHistory(puuid: string, queueId?: QueueId.String, startIndex = 0, endIndex = 10): Promise<ValRequestClient.Response<any>> {
         let _url = `${this.Region.url.playerData}/match-history/v1/history/${puuid}?startIndex=${String(startIndex)}&endIndex=${String(endIndex)}`;
 
         if (queueId) {

@@ -1,6 +1,4 @@
-import type { ValRequestClient, ValorantApiRequestResponse } from "@valapi/lib";
-import type { ValorantApiRegion } from "@valapi/lib";
-import { QueueId } from "@valapi/lib";
+import { type ValRequestClient, type ValRegion, QueueId } from "@valapi/lib";
 declare type PartySetAccessibility = 'OPEN' | 'CLOSED';
 interface CustomGameSettings {
     "Map": string;
@@ -20,143 +18,143 @@ declare class Party {
     private RequestClient;
     private Region;
     /**
-     * Class Constructor
+     *
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
-    constructor(ValRequestClient: ValRequestClient, Region: ValorantApiRegion);
+    constructor(ValRequestClient: ValRequestClient, Region: ValRegion.Json);
     /**
      *
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    RemovePlayer(puuid: string): Promise<ValorantApiRequestResponse<any>>;
+    RemovePlayer(puuid: string): Promise<ValRequestClient.Response<any>>;
     /**
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    FetchCustomGameConfigs(): Promise<ValorantApiRequestResponse<any>>;
-    /**
-     * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
-     */
-    FetchMUCToken(partyId: string): Promise<ValorantApiRequestResponse<any>>;
+    FetchCustomGameConfigs(): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    FetchParty(partyId: string): Promise<ValorantApiRequestResponse<any>>;
+    FetchMUCToken(partyId: string): Promise<ValRequestClient.Response<any>>;
+    /**
+     * @param {string} partyId Party ID
+     * @returns {Promise<ValRequestClient.Response<any>>}
+     */
+    FetchParty(partyId: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    FetchPlayer(puuid: string): Promise<ValorantApiRequestResponse<any>>;
+    FetchPlayer(puuid: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    FetchVoiceToken(partyId: string): Promise<ValorantApiRequestResponse<any>>;
+    FetchVoiceToken(partyId: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} partyId Party ID
      * @param {string} queueId Queue (EligibleQueues)
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    ChangeQueue(partyId: string, queueId: keyof typeof QueueId.from): Promise<ValorantApiRequestResponse<any>>;
+    ChangeQueue(partyId: string, queueId: QueueId.String): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} partyId Party ID
      * @param {string} requestId Request ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    DeclineRequest(partyId: string, requestId: string): Promise<ValorantApiRequestResponse<any>>;
+    DeclineRequest(partyId: string, requestId: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    EnterMatchmakingQueue(partyId: string): Promise<ValorantApiRequestResponse<any>>;
+    EnterMatchmakingQueue(partyId: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} partyId Party ID
      * @param {string} gameName In-Game Name
      * @param {string} tagLine In-Game Tag
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    InviteToPartyByDisplayName(partyId: string, gameName: string, tagLine: string): Promise<ValorantApiRequestResponse<any>>;
+    InviteToPartyByDisplayName(partyId: string, gameName: string, tagLine: string): Promise<ValRequestClient.Response<any>>;
     /**
      * * Careful to use, Riot will immediately shut down your Project.
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    LeaveMatchmakingQueue(partyId: string): Promise<ValorantApiRequestResponse<any>>;
+    LeaveMatchmakingQueue(partyId: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} puuid Player UUID
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    RefreshCompetitiveTier(puuid: string, partyId: string): Promise<ValorantApiRequestResponse<any>>;
+    RefreshCompetitiveTier(puuid: string, partyId: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} puuid Player UUID
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    RefreshPings(puuid: string, partyId: string): Promise<ValorantApiRequestResponse<any>>;
+    RefreshPings(puuid: string, partyId: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} puuid Player UUID
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    RefreshPlayerIdentity(puuid: string, partyId: string): Promise<ValorantApiRequestResponse<any>>;
+    RefreshPlayerIdentity(puuid: string, partyId: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} partyId Party ID
      * @param {string} accessibility Accessibility
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    SetAccessibility(partyId: string, accessibility: PartySetAccessibility): Promise<ValorantApiRequestResponse<any>>;
+    SetAccessibility(partyId: string, accessibility: PartySetAccessibility): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} partyId Party ID
      * @param {CustomGameSettings} settings Custom Game Settings
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    SetCustomGameSettings(partyId: string, settings: CustomGameSettings): Promise<ValorantApiRequestResponse<any>>;
+    SetCustomGameSettings(partyId: string, settings: CustomGameSettings): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} puuid Player UUID
      * @param {string} partyId Party ID
      * @param {boolean} isReady Ready or not?
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    SetMemberReady(puuid: string, partyId: string, isReady: boolean): Promise<ValorantApiRequestResponse<any>>;
+    SetMemberReady(puuid: string, partyId: string, isReady: boolean): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    StartCustomGame(partyId: string): Promise<ValorantApiRequestResponse<any>>;
+    StartCustomGame(partyId: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} puuid Player UUID
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    LeaveParty(puuid: string, partyId: string): Promise<ValorantApiRequestResponse<any>>;
+    LeaveParty(puuid: string, partyId: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    AutoBalance(partyId: string): Promise<ValorantApiRequestResponse<any>>;
+    AutoBalance(partyId: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} partyId Party ID
      * @param {string} team Team
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    ChangeTeamInCustomGame(partyId: string, team: CustomGameTeam, puuid: string): Promise<ValorantApiRequestResponse<any>>;
+    ChangeTeamInCustomGame(partyId: string, team: CustomGameTeam, puuid: string): Promise<ValRequestClient.Response<any>>;
     /**
      * * Careful to use, Riot will immediately shut down your Project.
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    StartSoloExperience(puuid: string): Promise<ValorantApiRequestResponse<any>>;
+    StartSoloExperience(puuid: string): Promise<ValRequestClient.Response<any>>;
     /**
      * @param {string} puuid Player UUID
      * @param {string} partyId Party ID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
-    TransferOwner(puuid: string, partyId: string): Promise<ValorantApiRequestResponse<any>>;
+    TransferOwner(puuid: string, partyId: string): Promise<ValRequestClient.Response<any>>;
 }
 export { Party };
 export type { PartySetAccessibility, CustomGameSettings, CustomGameTeam };

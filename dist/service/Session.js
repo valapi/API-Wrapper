@@ -6,9 +6,9 @@ const tslib_1 = require("tslib");
 //service
 class Session {
     /**
-     * Class Constructor
+     *
      * @param {ValRequestClient} ValRequestClient Request Client
-     * @param {ValorantApiRegion} Region Region Service Data
+     * @param {ValRegion.Json} Region Region Service Data
      */
     constructor(ValRequestClient, Region) {
         this.RequestClient = ValRequestClient;
@@ -16,7 +16,7 @@ class Session {
     }
     /**
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     Get(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -26,7 +26,7 @@ class Session {
     /**
      * * Careful to use, Riot will immediately shut down your Project.
      * @param {string} puuid Player UUID
-     * @returns {Promise<ValorantApiRequestResponse<any>>}
+     * @returns {Promise<ValRequestClient.Response<any>>}
      */
     ReConnect(puuid) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {

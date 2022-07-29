@@ -1,20 +1,14 @@
 //import
 
 import {
-    toUft8, Region as _Region,
-    type ValorantApiError,
-    ValRegion, type ValorantApiRegion,
-    ValRequestClient, type ValorantApiRequestData, ValEvent
+    toUft8, Region,
+    ValRegion,
+    ValRequestClient, ValEvent
 } from "@valapi/lib";
 
-import {
-    Client as ValAuth, ValAuthEngine,
-    ValAuthData
-} from "@valapi/auth";
-import { CONFIG_DEFAULT } from "@valapi/auth/dist/client/Engine";
-import { Agent as HttpAgent } from "http";
-import { Agent as HttpsAgent } from "https";
-import type { AxiosRequestConfig } from "axios";
+import { Client as ValAuth, ValAuthEngine } from "@valapi/auth";
+import { type AgentOptions as HttpsAgentOptions, Agent as HttpsAgent } from "https";
+import { type AgentOptions as HttpAgentOptions, Agent as HttpAgent } from "http";
 
 //service
 
@@ -33,15 +27,24 @@ import { Player as PlayerService } from "../custom/Player";
 //interface
 
 namespace ValWebClient {
+    /**
+     * Client Config
+     */
     export interface Options extends ValAuthEngine.Options {
-        region?: keyof typeof _Region.from;
+        /**
+         * Region
+         */
+        region?: Region.String;
     }
 
+    /**
+     * Client Events
+     */
     export interface Event {
         'ready': () => void;
         'expires': (data: { name: string, data: any }) => void;
-        'request': (data: ValorantApiRequestData) => void;
-        'error': (data: ValorantApiError) => void;
+        'request': (data: ValRequestClient.Request) => void;
+        'error': (data: ValEvent.Error) => void;
     }
 }
 
@@ -64,7 +67,7 @@ class ValWebClient extends ValEvent {
 
     //reload
     private AuthClient: ValAuth;
-    private RegionServices: ValorantApiRegion;
+    private RegionServices: ValRegion.Json;
     private RequestClient: ValRequestClient;
 
     //data
@@ -95,14 +98,14 @@ class ValWebClient extends ValEvent {
         this.AuthClient.on('error', ((data: { name: "ValAuth_Error", message: string, data?: any }) => { this.emit('error', { errorCode: data.name, message: data.message, data: data.data }); }));
 
         //config
-        this.options = { ...CONFIG_DEFAULT, ...config };
+        this.options = { ...ValAuthEngine.Default.config, ...config };
 
-        this.RegionServices = new ValRegion(this.AuthClient.region.live as keyof typeof _Region.from).toJSON();
+        this.RegionServices = new ValRegion(this.AuthClient.region.live as Region.String).toJSON();
 
         //axios
         this.RequestClient = new ValRequestClient(this.options.axiosConfig);
-        this.RequestClient.on('request', ((data: ValorantApiRequestData) => { this.emit('request', data); }));
-        this.RequestClient.on('error', ((data: ValorantApiError) => { this.emit('error', data); }));
+        this.RequestClient.on('request', ((data: ValRequestClient.Request) => { this.emit('request', data); }));
+        this.RequestClient.on('error', ((data: ValEvent.Error) => { this.emit('error', data); }));
 
         //service
         this.Contract = new ContractService(this.RequestClient, this.RegionServices);
@@ -137,23 +140,33 @@ class ValWebClient extends ValEvent {
         //config
         this.AuthClient.config = this.options;
 
-        this.RegionServices = new ValRegion(_data.region.live as keyof typeof _Region.from).toJSON();
+        this.RegionServices = new ValRegion(_data.region.live as Region.String).toJSON();
 
         //axios
-        const _normalAxiosConfig: AxiosRequestConfig = {
-            headers: {
-                Cookie: _data.cookie.ssid,
-                'Authorization': `${_data.token_type} ${_data.access_token}`,
-                'X-Riot-Entitlements-JWT': _data.entitlements_token,
-                'X-Riot-ClientVersion': String(this.AuthClient.config.client?.version),
-                'X-Riot-ClientPlatform': toUft8(JSON.stringify(this.AuthClient.config.client?.platform)),
+        let HttpsConfig: HttpsAgentOptions = { keepAlive: true, ciphers: ValAuthEngine.Default.ciphers, honorCipherOrder: true, minVersion: 'TLSv1.2', maxVersion: 'TLSv1.3' };
+        let HttpConfig: HttpAgentOptions = { keepAlive: true };
+
+        if (this.options.axiosConfig?.proxy && typeof this.options.axiosConfig?.proxy !== 'boolean') {
+            HttpsConfig = { ...HttpsConfig, ...{ port: this.options.axiosConfig?.proxy?.port, host: this.options.axiosConfig?.proxy?.host } };
+            HttpConfig = { ...HttpConfig, ...{ port: this.options.axiosConfig?.proxy?.port, host: this.options.axiosConfig?.proxy?.host } };
+        }
+
+        this.RequestClient = new ValRequestClient({
+            ...this.options.axiosConfig,
+            ...{
+                headers: {
+                    Cookie: _data.cookie.ssid,
+                    'Authorization': `${_data.token_type} ${_data.access_token}`,
+                    'X-Riot-Entitlements-JWT': _data.entitlements_token,
+                    'X-Riot-ClientVersion': String(this.AuthClient.config.client?.version),
+                    'X-Riot-ClientPlatform': toUft8(JSON.stringify(this.AuthClient.config.client?.platform)),
+                },
+                httpsAgent: new HttpsAgent(HttpsConfig),
+                httpAgent: new HttpAgent(HttpConfig)
             },
-            httpsAgent: new HttpsAgent({ keepAlive: true, ciphers: ValAuthEngine.Default.ciphers, honorCipherOrder: true, minVersion: 'TLSv1.2', maxVersion: 'TLSv1.3' }),
-            httpAgent: new HttpAgent({ keepAlive: true }),
-        };
-        this.RequestClient = new ValRequestClient({ ...this.options.axiosConfig, ..._normalAxiosConfig });
-        this.RequestClient.on('request', ((data: ValorantApiRequestData) => { this.emit('request', data); }));
-        this.RequestClient.on('error', ((data: ValorantApiError) => { this.emit('error', data); }));
+        });
+        this.RequestClient.on('request', ((data: ValRequestClient.Request) => { this.emit('request', data); }));
+        this.RequestClient.on('error', ((data: ValEvent.Error) => { this.emit('error', data); }));
 
         //service
         this.Contract = new ContractService(this.RequestClient, this.RegionServices);
@@ -181,21 +194,21 @@ class ValWebClient extends ValEvent {
     }
 
     /**
-     * From {@link ValAuthData save} data
-     * @param {ValAuthData} data {@link toJSON toJSON()} data
+     * 
+     * @param {ValAuthEngine.Json} data {@link toJSON toJSON()} data
      * @returns {void}
      */
-    public fromJSON(data: ValAuthData): void {
+    public fromJSON(data: ValAuthEngine.Json): void {
         this.AuthClient.fromJSON(data);
 
         this.reload();
     }
 
     /**
-     * To {@link ValAuthData save} data
-     * @returns {ValAuthData}
+     * 
+     * @returns {ValAuthEngine.Json}
      */
-    public toJSON(): ValAuthData {
+    public toJSON(): ValAuthEngine.Json {
         return this.AuthClient.toJSON();
     }
 
@@ -205,7 +218,7 @@ class ValWebClient extends ValEvent {
      * @returns {string} Player UUID
      */
     public getSubject(token?: string): string {
-        return this.AuthClient.parsePlayerUuid(token);
+        return this.AuthClient.parseToken(token);
     }
 
     //auth
@@ -254,7 +267,7 @@ class ValWebClient extends ValEvent {
      * @param {string} region Region
      * @returns {void}
      */
-    public setRegion(region: keyof typeof _Region.from): void {
+    public setRegion(region: Region.String): void {
         this.options.region = region;
 
         this.reload();
@@ -289,17 +302,17 @@ class ValWebClient extends ValEvent {
     //static
 
     /**
-      * From {@link toJSON toJSON()} data
-      * @param {ValAuthData} data {@link toJSON toJSON()} data
+      * 
+      * @param {ValAuthEngine.Json} data {@link toJSON toJSON()} data
       * @param {ValWebClient.Options} options Client Config
       * @returns {ValWebClient}
       */
-    public static fromJSON(data: ValAuthData, options?: ValWebClient.Options): ValWebClient {
+    public static fromJSON(data: ValAuthEngine.Json, options?: ValWebClient.Options): ValWebClient {
         const _WebClient = new ValWebClient(options);
         _WebClient.fromJSON(data);
 
         if (!options?.region) {
-            _WebClient.setRegion(data.region.live as keyof typeof _Region.from);
+            _WebClient.setRegion(data.region.live as Region.String);
         }
 
         return _WebClient;
